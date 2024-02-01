@@ -1,0 +1,117 @@
+{
+  "version": "6.0",
+  "nxVersion": "17.3.1",
+  "deps": {
+    "nx": "^17.3.1"
+  },
+  "pathMappings": {},
+  "nxJsonPlugins": [],
+  "fileMap": {
+    "projectFileMap": {
+      "dailyscrum": [
+        {
+          "file": "apps/dailyscrum/.eslintrc.json",
+          "hash": "10616060546436571437"
+        },
+        {
+          "file": "apps/dailyscrum/.gitignore",
+          "hash": "15751075988610075934"
+        },
+        {
+          "file": "apps/dailyscrum/README.md",
+          "hash": "12205685531602560652"
+        },
+        {
+          "file": "apps/dailyscrum/next.config.mjs",
+          "hash": "6567081978241091914"
+        },
+        {
+          "file": "apps/dailyscrum/package-lock.json",
+          "hash": "11910106291124367726"
+        },
+        {
+          "file": "apps/dailyscrum/package.json",
+          "hash": "5150850943371605477",
+          "deps": [
+            "npm:react",
+            "npm:react-dom",
+            "npm:next",
+            "npm:typescript",
+            "npm:@types/node",
+            "npm:@types/react",
+            "npm:@types/react-dom",
+            "npm:autoprefixer",
+            "npm:postcss",
+            "npm:tailwindcss",
+            "npm:eslint",
+            "npm:eslint-config-next"
+          ]
+        },
+        {
+          "file": "apps/dailyscrum/postcss.config.js",
+          "hash": "8055263870272897227"
+        },
+        {
+          "file": "apps/dailyscrum/public/next.svg",
+          "hash": "8300767200008744458"
+        },
+        {
+          "file": "apps/dailyscrum/public/vercel.svg",
+          "hash": "2376673330454856631"
+        },
+        {
+          "file": "apps/dailyscrum/src/app/favicon.ico",
+          "hash": "9157999678830540297"
+        },
+        {
+          "file": "apps/dailyscrum/src/app/globals.css",
+          "hash": "10620967136394561243"
+        },
+        {
+          "file": "apps/dailyscrum/src/app/layout.tsx",
+          "hash": "14869893044596788660"
+        },
+        {
+          "file": "apps/dailyscrum/src/app/page.tsx",
+          "hash": "10369145332882436686"
+        },
+        {
+          "file": "apps/dailyscrum/tailwind.config.ts",
+          "hash": "8266647255848899898"
+        },
+        {
+          "file": "apps/dailyscrum/tsconfig.json",
+          "hash": "4320684160905164141"
+        }
+      ],
+      "ui": [
+        {
+          "file": "packages/ui/package.json",
+          "hash": "9669663329732255796"
+        }
+      ]
+    },
+    "nonProjectFiles": [
+      {
+        "file": ".gitignore",
+        "hash": "11612638887042922903"
+      },
+      {
+        "file": "LICENSE",
+        "hash": "3436599895438545929"
+      },
+      {
+        "file": "package.json",
+        "hash": "16092268471015577805"
+      },
+      {
+        "file": "pnpm-lock.yaml",
+        "hash": "5490684737068652234"
+      },
+      {
+        "file": "pnpm-workspace.yaml",
+        "hash": "7577147420081313510"
+      }
+    ]
+  }
+}

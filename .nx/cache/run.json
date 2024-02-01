@@ -1,0 +1,21 @@
+{
+  "run": {
+    "command": "nx dev dailyscrum",
+    "startTime": "2024-02-01T02:39:00.287Z",
+    "endTime": "2024-02-01T02:39:02.944Z",
+    "inner": false
+  },
+  "tasks": [
+    {
+      "taskId": "dailyscrum:dev",
+      "target": "dev",
+      "projectName": "dailyscrum",
+      "hash": "15384039426272633813",
+      "startTime": "2024-02-01T02:39:00.291Z",
+      "endTime": "2024-02-01T02:39:02.943Z",
+      "params": "",
+      "cacheStatus": "cache-miss",
+      "status": 0
+    }
+  ]
+}
