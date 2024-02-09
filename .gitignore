@@ -2,3 +2,4 @@ node_modules
 dist
 build
 .nx
+.DS_Store
