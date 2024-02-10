@@ -1,7 +1,7 @@
-import type * as CLSX from 'clsx';
+import type * as CLSX from "clsx";
 
-declare module 'class-variance-authority/types' {
-  export type ClassPropKey = 'class' | 'className';
+declare module "class-variance-authority/types" {
+  export type ClassPropKey = "class" | "className";
   export type ClassValue = CLSX.ClassValue;
   export type ClassProp =
     | {
@@ -17,5 +17,5 @@ declare module 'class-variance-authority/types' {
         className?: never;
       };
   export type OmitUndefined<T> = T extends undefined ? never : T;
-  export type StringToBoolean<T> = T extends 'true' | 'false' ? boolean : T;
+  export type StringToBoolean<T> = T extends "true" | "false" ? boolean : T;
 }

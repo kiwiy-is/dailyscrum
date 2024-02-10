@@ -2,7 +2,9 @@
   "name": "dailyscrum",
   "version": "1.0.0",
   "description": "",
-  "scripts": {},
+  "scripts": {
+    "prettify": "prettier --write ."
+  },
   "keywords": [],
   "devDependencies": {
     "@nx/eslint": "17.3.1",

@@ -1,11 +1,11 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
-import { resolve } from 'path';
-import dts from 'vite-plugin-dts';
-import tailwindcss from 'tailwindcss';
-import { readdirSync } from 'fs';
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import { resolve } from "path";
+import dts from "vite-plugin-dts";
+import tailwindcss from "tailwindcss";
+import { readdirSync } from "fs";
 
-const componentsDir = resolve(__dirname, 'src/components');
+const componentsDir = resolve(__dirname, "src/components");
 
 const getFiles = (dir: string): string[] => {
   const dirents = readdirSync(dir, { withFileTypes: true });
@@ -21,12 +21,12 @@ const components = getFiles(componentsDir);
 const entry = components.reduce(
   (entries, componentPath) => {
     const key = componentPath
-      .replace(componentsDir, 'components')
-      .replace('.tsx', '');
+      .replace(componentsDir, "components")
+      .replace(".tsx", "");
     return { ...entries, [key]: componentPath };
   },
   {
-    index: resolve(__dirname, 'src/index.ts'),
+    index: resolve(__dirname, "src/index.ts"),
   }
 );
 
@@ -40,7 +40,7 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@': resolve(__dirname, './src'),
+      "@": resolve(__dirname, "./src"),
     },
   },
   css: {
@@ -51,19 +51,19 @@ export default defineConfig({
   build: {
     lib: {
       entry,
-      formats: ['es'],
+      formats: ["es"],
       fileName: (format, entryName) => {
         return `${entryName}.${format}.js`;
       },
     },
     rollupOptions: {
-      external: ['react', 'react/jsx-runtime', 'react-dom', 'tailwindcss'],
+      external: ["react", "react/jsx-runtime", "react-dom", "tailwindcss"],
       output: {
         globals: {
-          react: 'React',
-          'react/jsx-runtime': 'react/jsx-runtime',
-          'react-dom': 'ReactDOM',
-          tailwindcss: 'tailwindcss',
+          react: "React",
+          "react/jsx-runtime": "react/jsx-runtime",
+          "react-dom": "ReactDOM",
+          tailwindcss: "tailwindcss",
         },
       },
     },

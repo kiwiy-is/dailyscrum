@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { Button } from 'ui/button';
+import { Button } from "ui/button";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from 'ui/shadcn-ui/accordion';
+} from "ui/shadcn-ui/accordion";
 
 export default function Page() {
   return (
