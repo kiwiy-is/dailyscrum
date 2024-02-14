@@ -2,6 +2,10 @@
   "name": "ui",
   "private": true,
   "exports": {
+    ".": {
+      "import": "./dist/index.es.js",
+      "types": "./dist/index.d.ts"
+    },
     "./*": {
       "import": "./dist/components/*.es.js",
       "types": "./dist/components/*.d.ts"
