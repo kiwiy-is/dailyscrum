@@ -1,9 +1,11 @@
-import { redirect } from "next/navigation";
-
 export default async function Page({
   params: { teamId },
 }: {
   params: { teamId: string };
 }) {
-  redirect(`/teams/${teamId}/dashboard`);
+  return (
+    <div>
+      <h1>Settings</h1>
+    </div>
+  );
 }
