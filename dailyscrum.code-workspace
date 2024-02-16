@@ -1,0 +1,21 @@
+{
+  "folders": [
+    {
+      "name": "root",
+      "path": "./"
+    },
+    {
+      "name": "apps",
+      "path": "./apps"
+    },
+    {
+      "name": "packages",
+      "path": "./packages"
+    },
+    {
+      "name": "experiments",
+      "path": "./experiments"
+    }
+  ],
+  "settings": {}
+}
