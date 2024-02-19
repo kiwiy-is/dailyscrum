@@ -1,5 +1,5 @@
 import Link from "next/link";
-import TeamSelect from "./team-select";
+import TeamSelection from "./team-selection";
 
 export default function Layout({
   children,
@@ -15,7 +15,7 @@ export default function Layout({
       </header>
       <aside className="border-r col-span-1 row-span-1">
         <div className="w-[272px] px-4 py-6 flex flex-col gap-y-6">
-          <TeamSelect />
+          <TeamSelection />
           <Link
             href="/teams/[teamId]/dashboard"
             as={`/teams/${params.teamId}/dashboard`}
