@@ -22,6 +22,6 @@ RUN pnpm install --prod=false
 
 RUN pnpm exec nx build dailyscrum
 
-EXPOSE 3000
+EXPOSE 4001
 
 CMD ["pnpm", "exec", "nx", "start", "dailyscrum"]
