@@ -1,7 +1,7 @@
 export default async function Page({
-  params: { teamId },
+  params: { orgId },
 }: {
-  params: { teamId: string };
+  params: { orgId: string };
 }) {
   return (
     <div>

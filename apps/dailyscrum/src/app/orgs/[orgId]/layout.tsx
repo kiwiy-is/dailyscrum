@@ -1,12 +1,12 @@
 import Link from "next/link";
-import TeamSelection from "./team-selection";
+import OrgSelection from "./org-selection";
 
 export default function Layout({
   children,
   params,
 }: {
   children: React.ReactNode;
-  params: { teamId: string };
+  params: { orgId: string };
 }) {
   return (
     <div className="grid grid-rows-[auto,1fr] grid-cols-[auto,1fr] min-h-screen">
@@ -15,16 +15,16 @@ export default function Layout({
       </header>
       <aside className="border-r col-span-1 row-span-1">
         <div className="w-[272px] px-4 py-6 flex flex-col gap-y-6">
-          <TeamSelection />
+          <OrgSelection />
           <Link
-            href="/teams/[teamId]/dashboard"
-            as={`/teams/${params.teamId}/dashboard`}
+            href="/orgs/[orgId]/dashboard"
+            as={`/orgs/${params.orgId}/dashboard`}
           >
             Dashboard
           </Link>
           <Link
-            href="/teams/[teamId]/settings"
-            as={`/teams/${params.teamId}/settings`}
+            href="/orgs/[orgId]/settings"
+            as={`/orgs/${params.orgId}/settings`}
           >
             Settings
           </Link>
