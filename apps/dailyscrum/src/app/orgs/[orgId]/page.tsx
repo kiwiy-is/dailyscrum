@@ -1,9 +1,9 @@
 import { redirect } from "next/navigation";
 
 export default async function Page({
-  params: { teamId },
+  params: { orgId },
 }: {
-  params: { teamId: string };
+  params: { orgId: string };
 }) {
-  redirect(`/teams/${teamId}/dashboard`);
+  redirect(`/orgs/${orgId}/dashboard`);
 }
