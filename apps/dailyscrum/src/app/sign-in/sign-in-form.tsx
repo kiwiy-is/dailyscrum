@@ -28,7 +28,7 @@ type Props = {
   error?: string;
 };
 
-const SignInCard = ({ onSignIn, error }: Props) => {
+const SignInForm = ({ onSignIn, error }: Props) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -51,38 +51,31 @@ const SignInCard = ({ onSignIn, error }: Props) => {
   });
 
   return (
-    <Card className="w-[440px]">
-      <CardHeader>
-        <CardTitle>Sign in</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form onSubmit={onSubmit} className="space-y-8">
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input placeholder="name@example.com" {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    We'll send you a sign in link to this email address.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+    <Form {...form}>
+      <form onSubmit={onSubmit} className="space-y-8">
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+              <FormControl>
+                <Input placeholder="name@example.com" {...field} />
+              </FormControl>
+              <FormDescription>
+                We'll send you a sign in link to this email address.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-            <Button type="submit" className="w-full" loading={isPending}>
-              Sign in
-            </Button>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+        <Button type="submit" className="w-full" loading={isPending}>
+          Sign in
+        </Button>
+      </form>
+    </Form>
   );
 };
 
-export default SignInCard;
+export default SignInForm;
