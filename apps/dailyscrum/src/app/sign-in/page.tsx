@@ -1,11 +1,12 @@
-import SignInCard from "./sign-in-card";
 import { KiwiyIsSymbol } from "ui/kiwiy-is-symbol";
 import { createClient } from "@/lib/supabase/server";
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { getSearchParams } from "next-impl-getters/get-search-params";
+import { Card, CardContent, CardHeader, CardTitle } from "ui/shadcn-ui/card";
+import SignInForm from "./sign-in-form";
 
-export async function signIn(email: string) {
+async function signIn(email: string) {
   "use server";
 
   const headerList = headers();
@@ -35,7 +36,14 @@ export default function Page() {
   return (
     <div className="h-screen flex flex-col justify-center items-center space-y-8">
       <KiwiyIsSymbol />
-      <SignInCard onSignIn={signIn} error={error} />
+      <Card className="w-[440px]">
+        <CardHeader>
+          <CardTitle>Sign in</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <SignInForm onSignIn={signIn} error={error} />
+        </CardContent>
+      </Card>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { CheckIcon, ChevronsUpDownIcon, PlusCircleIcon } from "lucide-react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useState } from "react";
 import { cn } from "ui";
 import { Button } from "ui/button";
@@ -23,19 +24,28 @@ type Org = {
 type Props = {
   orgs: Org[];
   selectedOrg: Org;
-  onOrgSelect: (orgId: string) => void;
 };
 
-function OrgSelection({ orgs, selectedOrg, onOrgSelect }: Props) {
+function OrganizationSelection({ orgs, selectedOrg }: Props) {
   const [open, setOpen] = useState(false);
+
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   const handleCommandItemSelect = useCallback(
     (orgId: string) => () => {
       setOpen(false);
-      onOrgSelect(orgId);
+      router.push(`/orgs/${orgId}/dashboard`);
     },
-    [onOrgSelect]
+    []
   );
+
+  const handleCreateOrgSelect = useCallback(() => {
+    const params = new URLSearchParams(searchParams);
+    params.set("dialog", "create-new-organization");
+    window.history.replaceState(null, "", `${pathname}?${params.toString()}`);
+  }, []);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -44,7 +54,7 @@ function OrgSelection({ orgs, selectedOrg, onOrgSelect }: Props) {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          aria-label="Select a team"
+          aria-label="Select an organization"
           size="sm"
           className={cn("w-full justify-between")}
         >
@@ -57,20 +67,20 @@ function OrgSelection({ orgs, selectedOrg, onOrgSelect }: Props) {
       </PopoverTrigger>
       <PopoverContent className="w-[240px] p-0">
         <Command>
-          <CommandInput placeholder="Search team..." />
+          <CommandInput placeholder="Search..." />
           <CommandList>
-            <CommandEmpty>No team found.</CommandEmpty>
+            <CommandEmpty>No organization found.</CommandEmpty>
             <CommandGroup>
-              {orgs.map((team) => (
+              {orgs.map((org) => (
                 <CommandItem
-                  key={team.id}
-                  onSelect={handleCommandItemSelect(team.id)}
+                  key={org.id}
+                  onSelect={handleCommandItemSelect(org.id)}
                 >
-                  {team.name}
+                  {org.name}
                   <CheckIcon
                     className={cn(
                       "ml-auto h-4 w-4",
-                      selectedOrg.id === team.id ? "" : "opacity-0"
+                      selectedOrg.id === org.id ? "" : "opacity-0"
                     )}
                     strokeWidth={1}
                   />
@@ -81,9 +91,9 @@ function OrgSelection({ orgs, selectedOrg, onOrgSelect }: Props) {
             <CommandSeparator alwaysRender />
 
             <CommandGroup forceMount>
-              <CommandItem onSelect={() => {}} forceMount>
+              <CommandItem onSelect={handleCreateOrgSelect} forceMount>
                 <PlusCircleIcon className="mr-2 h-4 w-4 " strokeWidth={1} />
-                Create Org
+                Create an organization
               </CommandItem>
             </CommandGroup>
           </CommandList>
@@ -93,4 +103,4 @@ function OrgSelection({ orgs, selectedOrg, onOrgSelect }: Props) {
   );
 }
 
-export default OrgSelection;
+export default OrganizationSelection;
