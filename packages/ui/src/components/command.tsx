@@ -17,6 +17,6 @@ export const CommandInput = (
 export const CommandItem = (
   props: React.ComponentProps<typeof command.CommandItem>
 ) => {
-  const className = cn("text-sm", props.className);
+  const className = cn("text-sm cursor-pointer", props.className);
   return <command.CommandItem {...props} className={className} />;
 };
