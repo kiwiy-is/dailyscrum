@@ -15,7 +15,7 @@ type Props = {};
 const MyPageLink = (props: Props) => {
   return (
     <TooltipProvider>
-      <Tooltip delayDuration={350}>
+      <Tooltip>
         <TooltipTrigger asChild>
           <div>
             <Button
@@ -28,8 +28,8 @@ const MyPageLink = (props: Props) => {
             </Button>
           </div>
         </TooltipTrigger>
-        <TooltipContent>
-          <p>The page is not available yet. Please check back later.</p>
+        <TooltipContent side="right">
+          <p>The page is under development. Please check back later.</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
