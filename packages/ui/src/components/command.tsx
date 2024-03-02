@@ -7,7 +7,11 @@ export const CommandInput = (
   props: React.ComponentProps<typeof command.CommandInput>
 ) => {
   const className = cn("h-10", props.className);
-  return <command.CommandInput {...props} className={className} />;
+  return (
+    <div className="[&>div>svg]:stroke-1 [&>div>svg]:opacity-100">
+      <command.CommandInput {...props} className={className} />
+    </div>
+  );
 };
 
 export const CommandItem = (

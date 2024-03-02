@@ -15,26 +15,26 @@ import {
 } from "ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "ui/shadcn-ui/popover";
 
-type Team = {
+type Org = {
   id: string;
   name: string;
 };
 
 type Props = {
-  teams: Team[];
-  selectedTeam: Team;
-  onTeamSelect: (teamId: string) => void;
+  orgs: Org[];
+  selectedOrg: Org;
+  onOrgSelect: (orgId: string) => void;
 };
 
-function TeamSelection({ teams, selectedTeam, onTeamSelect }: Props) {
+function OrgSelection({ orgs, selectedOrg, onOrgSelect }: Props) {
   const [open, setOpen] = useState(false);
 
   const handleCommandItemSelect = useCallback(
-    (teamId: string) => () => {
+    (orgId: string) => () => {
       setOpen(false);
-      onTeamSelect(teamId);
+      onOrgSelect(orgId);
     },
-    [onTeamSelect]
+    [onOrgSelect]
   );
 
   return (
@@ -48,8 +48,11 @@ function TeamSelection({ teams, selectedTeam, onTeamSelect }: Props) {
           size="sm"
           className={cn("w-full justify-between")}
         >
-          {selectedTeam.name}
-          <ChevronsUpDownIcon className="ml-auto h-4 w-4 shrink-0 opacity-50" />
+          {selectedOrg.name}
+          <ChevronsUpDownIcon
+            className="ml-auto h-4 w-4 shrink-0 "
+            strokeWidth={1}
+          />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[240px] p-0">
@@ -58,7 +61,7 @@ function TeamSelection({ teams, selectedTeam, onTeamSelect }: Props) {
           <CommandList>
             <CommandEmpty>No team found.</CommandEmpty>
             <CommandGroup>
-              {teams.map((team) => (
+              {orgs.map((team) => (
                 <CommandItem
                   key={team.id}
                   onSelect={handleCommandItemSelect(team.id)}
@@ -67,8 +70,9 @@ function TeamSelection({ teams, selectedTeam, onTeamSelect }: Props) {
                   <CheckIcon
                     className={cn(
                       "ml-auto h-4 w-4",
-                      selectedTeam.id === team.id ? "opacity-50" : "opacity-0"
+                      selectedOrg.id === team.id ? "" : "opacity-0"
                     )}
+                    strokeWidth={1}
                   />
                 </CommandItem>
               ))}
@@ -78,8 +82,8 @@ function TeamSelection({ teams, selectedTeam, onTeamSelect }: Props) {
 
             <CommandGroup forceMount>
               <CommandItem onSelect={() => {}} forceMount>
-                <PlusCircleIcon className="mr-2 h-4 w-4 opacity-50" />
-                Create Team
+                <PlusCircleIcon className="mr-2 h-4 w-4 " strokeWidth={1} />
+                Create Org
               </CommandItem>
             </CommandGroup>
           </CommandList>
@@ -89,4 +93,4 @@ function TeamSelection({ teams, selectedTeam, onTeamSelect }: Props) {
   );
 }
 
-export default TeamSelection;
+export default OrgSelection;
