@@ -1,8 +1,9 @@
 import { getParams } from "next-impl-getters/get-params";
 import { cookies } from "next/headers";
 import { Database } from "@/lib/supabase/database";
-import { createClient } from "@/lib/supabase/server";
+import { createAuthClient } from "@/lib/supabase/auth-client";
 import OrganizationSelection from "./organization-selection";
+import { createClient } from "@/lib/supabase/client";
 
 type Props = {
   children?: React.ReactNode;
@@ -11,39 +12,38 @@ type Props = {
 const OrganizationSelectionLoader: React.FC<Props> = async (props) => {
   const { orgId } = getParams() as { orgId: string };
 
-  const supabase = createClient<Database>(cookies());
+  const authClient = createAuthClient<Database>(cookies());
+
+  const client = createClient<Database>();
 
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } = await authClient.auth.getUser();
 
   if (!user) {
     return null;
   }
 
-  const { data: organizations } = await supabase
-    .from("organizations")
+  const { data: orgs } = await client
+    .from("orgs")
     .select(
       `
       id: hash_id,
       name,
-      members (
+      members!inner(
         user_id
       )
     `
     )
-    .filter("members.user_id", "eq", user.id);
+    .eq("members.user_id", user.id);
 
-  if (!organizations) {
+  if (!orgs) {
     return null;
   }
 
-  const selectedOrg =
-    organizations.find((org) => org.id === orgId) ?? organizations[0];
+  const selectedOrg = orgs.find((org) => org.id === orgId) ?? orgs[0];
 
-  return (
-    <OrganizationSelection orgs={organizations} selectedOrg={selectedOrg} />
-  );
+  return <OrganizationSelection orgs={orgs} selectedOrg={selectedOrg} />;
 };
 
 export default OrganizationSelectionLoader;

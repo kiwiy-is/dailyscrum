@@ -1,5 +1,5 @@
 import { KiwiyIsSymbol } from "ui/kiwiy-is-symbol";
-import { createClient } from "@/lib/supabase/server";
+import { createAuthClient } from "@/lib/supabase/auth-client";
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { getSearchParams } from "next-impl-getters/get-search-params";
@@ -14,8 +14,8 @@ async function signIn(email: string) {
   const origin = headerList.get("origin");
 
   const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
-  const { error } = await supabase.auth.signInWithOtp({
+  const authClient = createAuthClient(cookieStore);
+  const { error } = await authClient.auth.signInWithOtp({
     email,
     options: {
       emailRedirectTo: `${origin}/auth/confirm`,
