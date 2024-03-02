@@ -44,7 +44,7 @@ const SignInForm = ({ onSignIn, error }: Props) => {
 
   const [isPending, startTransition] = useTransition();
 
-  const onSubmit = form.handleSubmit((values) => {
+  const handleSubmit = form.handleSubmit((values) => {
     startTransition(() => {
       onSignIn(values.email);
     });
@@ -52,7 +52,7 @@ const SignInForm = ({ onSignIn, error }: Props) => {
 
   return (
     <Form {...form}>
-      <form onSubmit={onSubmit} className="space-y-8">
+      <form onSubmit={handleSubmit} className="space-y-8">
         <FormField
           control={form.control}
           name="email"

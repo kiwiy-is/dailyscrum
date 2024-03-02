@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createAuthClient } from "@/lib/supabase/auth-client";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -7,17 +7,17 @@ import { Button } from "ui/button";
 const signOut = async () => {
   "use server";
 
-  const supabase = createClient(cookies());
-  await supabase.auth.signOut();
+  const authClient = createAuthClient(cookies());
+  await authClient.auth.signOut();
   return redirect("/sign-in");
 };
 
 export default async function Page() {
-  const supabase = createClient(cookies());
+  const authClient = createAuthClient(cookies());
 
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } = await authClient.auth.getUser();
 
   return (
     <div>

@@ -1,9 +1,9 @@
-import { createClient } from "@/lib/supabase/server";
+import { createAuthClient } from "@/lib/supabase/auth-client";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
-  const supabase = createClient(cookies());
+  const supabase = createAuthClient(cookies());
   const { searchParams } = new URL(request.url);
 
   const code = searchParams.get("code");
