@@ -9,34 +9,81 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      daily_scrum_update_questions: {
+        Row: {
+          brief_question: string;
+          created_at: string;
+          description: string | null;
+          id: number;
+          is_required: boolean;
+          max_length: number | null;
+          order: number;
+          org_daily_scrum_update_form_id: number;
+          placeholder: string | null;
+          question: string;
+        };
+        Insert: {
+          brief_question: string;
+          created_at?: string;
+          description?: string | null;
+          id?: number;
+          is_required: boolean;
+          max_length?: number | null;
+          order: number;
+          org_daily_scrum_update_form_id: number;
+          placeholder?: string | null;
+          question: string;
+        };
+        Update: {
+          brief_question?: string;
+          created_at?: string;
+          description?: string | null;
+          id?: number;
+          is_required?: boolean;
+          max_length?: number | null;
+          order?: number;
+          org_daily_scrum_update_form_id?: number;
+          placeholder?: string | null;
+          question?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "daily_scrum_update_questions_org_daily_scrum_update_form_id_fke";
+            columns: ["org_daily_scrum_update_form_id"];
+            isOneToOne: false;
+            referencedRelation: "org_daily_scrum_update_forms";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
       members: {
         Row: {
           created_at: string;
           id: number;
-          organization_id: number;
+          org_id: number;
           updated_at: string;
           user_id: string;
         };
         Insert: {
           created_at?: string;
           id?: number;
-          organization_id: number;
+          org_id: number;
           updated_at?: string;
           user_id?: string;
         };
         Update: {
           created_at?: string;
           id?: number;
-          organization_id?: number;
+          org_id?: number;
           updated_at?: string;
           user_id?: string;
         };
         Relationships: [
           {
             foreignKeyName: "public_members_organization_id_fkey";
-            columns: ["organization_id"];
+            columns: ["org_id"];
             isOneToOne: false;
-            referencedRelation: "organizations";
+            referencedRelation: "orgs";
             referencedColumns: ["id"];
           },
           {
@@ -48,7 +95,68 @@ export type Database = {
           }
         ];
       };
-      organizations: {
+      org_daily_scrum_update_forms: {
+        Row: {
+          created_at: string;
+          description: string;
+          id: number;
+          org_id: number;
+        };
+        Insert: {
+          created_at?: string;
+          description?: string;
+          id?: number;
+          org_id: number;
+        };
+        Update: {
+          created_at?: string;
+          description?: string;
+          id?: number;
+          org_id?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "public_organization_daily_scrum_update_organization_id_fkey";
+            columns: ["org_id"];
+            isOneToOne: false;
+            referencedRelation: "orgs";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      org_settings: {
+        Row: {
+          attribute_key: string;
+          attribute_value: string;
+          created_at: string;
+          id: number;
+          org_id: number;
+        };
+        Insert: {
+          attribute_key?: string;
+          attribute_value?: string;
+          created_at?: string;
+          id?: number;
+          org_id: number;
+        };
+        Update: {
+          attribute_key?: string;
+          attribute_value?: string;
+          created_at?: string;
+          id?: number;
+          org_id?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "public_organizationSettings_organization_id_fkey";
+            columns: ["org_id"];
+            isOneToOne: false;
+            referencedRelation: "orgs";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      orgs: {
         Row: {
           created_at: string;
           hash_id: string;
@@ -61,7 +169,7 @@ export type Database = {
           hash_id?: string;
           id?: number;
           name?: string;
-          updated_at: string;
+          updated_at?: string;
         };
         Update: {
           created_at?: string;

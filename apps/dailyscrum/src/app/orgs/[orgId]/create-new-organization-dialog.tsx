@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useTransition } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -22,6 +22,7 @@ import {
 import { Input } from "ui/shadcn-ui/input";
 import { usePathname, useSearchParams } from "next/navigation";
 import { Button } from "ui/button";
+import { createNewOrganization } from "./actions";
 
 const formSchema = z.object({
   name: z.string().min(1),
@@ -31,6 +32,7 @@ type Props = {};
 
 const CreateNewOrganizationDialog = (props: Props) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -63,9 +65,10 @@ const CreateNewOrganizationDialog = (props: Props) => {
 
   const handleSubmit = useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {
-      event.preventDefault();
       form.handleSubmit((values) => {
-        console.log(values.name);
+        startTransition(() => {
+          createNewOrganization(values.name);
+        });
       })(event);
     },
     []
@@ -100,7 +103,12 @@ const CreateNewOrganizationDialog = (props: Props) => {
         </form>
 
         <DialogFooter>
-          <Button type="submit" form="create-new-organization-form" size="sm">
+          <Button
+            type="submit"
+            form="create-new-organization-form"
+            size="sm"
+            loading={isPending}
+          >
             Create
           </Button>
         </DialogFooter>
