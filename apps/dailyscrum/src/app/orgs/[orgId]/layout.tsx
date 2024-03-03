@@ -1,7 +1,10 @@
-import Link from "next/link";
 import OrganizationSelection from "./organization-selection-loader";
 import React from "react";
 import CreateNewOrganizationDialog from "./create-new-organization-dialog";
+import { Button, buttonVariants } from "ui/button";
+import { cn } from "ui";
+import NavLink from "@/components/nav-link";
+import MyPageLink from "./my-page-link";
 
 export default function Layout({
   children,
@@ -19,18 +22,42 @@ export default function Layout({
         <aside className="border-r col-span-1 row-span-1">
           <div className="w-[272px] px-4 py-6 flex flex-col gap-y-6">
             <OrganizationSelection />
-            <Link
-              href="/orgs/[orgId]/dashboard"
-              as={`/orgs/${params.orgId}/dashboard`}
-            >
-              Dashboard
-            </Link>
-            <Link
-              href="/orgs/[orgId]/settings"
-              as={`/orgs/${params.orgId}/settings`}
-            >
-              Settings
-            </Link>
+
+            <div>
+              <Button />
+            </div>
+
+            <nav className="flex flex-col gap-y-1">
+              <NavLink
+                href={`/orgs/${params.orgId}/dashboard`}
+                activeClassName="bg-accent"
+                className={cn(
+                  buttonVariants({
+                    variant: "ghost",
+                    size: "sm",
+                  }),
+                  "justify-start"
+                )}
+              >
+                Dashboard
+              </NavLink>
+
+              <MyPageLink />
+
+              <NavLink
+                href={`/orgs/${params.orgId}/settings`}
+                activeClassName="bg-accent"
+                className={cn(
+                  buttonVariants({
+                    variant: "ghost",
+                    size: "sm",
+                  }),
+                  "justify-start"
+                )}
+              >
+                Settings
+              </NavLink>
+            </nav>
           </div>
         </aside>
         <main className="col-span-1 row-span-1 bg-white ">
