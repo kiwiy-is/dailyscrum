@@ -7,13 +7,16 @@ import { Loader2Icon } from "lucide-react";
 type BaseButtonVariants = VariantProps<typeof ShadcnButton.buttonVariants>;
 
 type ExtendedButtonVariants = Omit<BaseButtonVariants, "size"> & {
-  size?: BaseButtonVariants["size"] | "icon-sm";
+  size?: BaseButtonVariants["size"] | "icon-sm" | "xs";
 };
 
 const buttonVariants = (inputVariants: ExtendedButtonVariants) => {
   const adjustedVariants = {
     ...inputVariants,
-    size: inputVariants.size === "icon-sm" ? null : inputVariants.size,
+    size:
+      inputVariants.size === "icon-sm" || inputVariants.size === "xs"
+        ? null
+        : inputVariants.size,
   };
   return ShadcnButton.buttonVariants(adjustedVariants);
 };
@@ -30,8 +33,12 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <ShadcnButton.Button
         ref={ref}
-        className={cn(className, [size === "icon-sm" ? "h-9 w-9" : null])}
-        size={size === "icon-sm" ? null : size}
+        className={cn(
+          size === "icon-sm" && "h-9 w-9",
+          size === "xs" && "h-7 rounded-md px-2.5 text-xs",
+          className
+        )}
+        size={size === "icon-sm" || size === "xs" ? null : size}
         disabled={disabled || loading}
         {...props}
       >

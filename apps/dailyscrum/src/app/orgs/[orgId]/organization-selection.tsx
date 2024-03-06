@@ -61,7 +61,7 @@ function OrganizationSelection({ orgs, selectedOrg }: Props) {
           {selectedOrg.name}
           <ChevronsUpDownIcon
             className="ml-auto h-4 w-4 shrink-0 "
-            strokeWidth={1}
+            strokeWidth={1.75}
           />
         </Button>
       </PopoverTrigger>
@@ -82,7 +82,7 @@ function OrganizationSelection({ orgs, selectedOrg }: Props) {
                       "ml-auto h-4 w-4",
                       selectedOrg.id === org.id ? "" : "opacity-0"
                     )}
-                    strokeWidth={1}
+                    strokeWidth={1.75}
                   />
                 </CommandItem>
               ))}
@@ -92,7 +92,7 @@ function OrganizationSelection({ orgs, selectedOrg }: Props) {
 
             <CommandGroup forceMount>
               <CommandItem onSelect={handleCreateOrgSelect} forceMount>
-                <PlusCircleIcon className="mr-2 h-4 w-4 " strokeWidth={1} />
+                <PlusCircleIcon className="mr-2 h-4 w-4 " strokeWidth={1.75} />
                 Create an organization
               </CommandItem>
             </CommandGroup>
