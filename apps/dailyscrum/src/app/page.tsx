@@ -13,9 +13,9 @@ export default async function Home() {
     redirect("/sign-in");
   }
 
-  const { data: orgs } = await listOrgsWhereCurrentUserIsMember();
+  const { data: orgs, error } = await listOrgsWhereCurrentUserIsMember();
 
-  if (!orgs || orgs.length === 0) {
+  if (!orgs || error || orgs.length === 0) {
     return null;
   }
 

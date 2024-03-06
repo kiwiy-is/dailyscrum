@@ -11,11 +11,22 @@ export async function createNewOrganization(name: string) {
   let org;
 
   try {
-    org = await createOrgWhereCurrentUserIsMember({
-      name,
-    });
+    const { data, error: createOrgError } =
+      await createOrgWhereCurrentUserIsMember({
+        name,
+      });
 
-    await initializeOrg(org.id);
+    if (createOrgError) {
+      throw new Error(createOrgError.message);
+    }
+
+    org = data;
+
+    const { error: initializeOrgError } = await initializeOrg(org.id);
+
+    if (initializeOrgError) {
+      throw new Error(initializeOrgError.message);
+    }
   } catch (error) {
     console.error(error);
     throw new Error("An unexpected error occurred. Please try again later.");

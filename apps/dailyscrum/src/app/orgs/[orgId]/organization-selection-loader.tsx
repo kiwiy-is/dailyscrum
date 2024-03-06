@@ -9,9 +9,9 @@ type Props = {
 const OrganizationSelectionLoader: React.FC<Props> = async (props) => {
   const { orgId } = getParams() as { orgId: string };
 
-  const { data: orgs } = await listOrgsWhereCurrentUserIsMember();
+  const { data: orgs, error } = await listOrgsWhereCurrentUserIsMember();
 
-  if (!orgs) {
+  if (!orgs || error) {
     return null;
   }
 

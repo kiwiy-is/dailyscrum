@@ -9,27 +9,7 @@ import { cookies } from "next/headers";
 export async function getCurrentUser() {
   // TODO: consider wrapping this with unstable_cache
   const authClient = createAuthClient(cookies());
-  const {
-    data: { user },
-    error: getUserError,
-  } = await authClient.auth.getUser();
-
-  if (getUserError) {
-    return {
-      data: {
-        user: null,
-      },
-      error: {
-        message: getUserError.message,
-      },
-    };
-  }
-
-  return {
-    data: {
-      user,
-    },
-  };
+  return await authClient.auth.getUser();
 }
 
 export async function listOrgsWhereCurrentUserIsMember() {
@@ -40,14 +20,12 @@ export async function listOrgsWhereCurrentUserIsMember() {
 
   if (getCurrentUserError) {
     return {
-      data: { user: null },
       error: getCurrentUserError,
     };
   }
 
   if (!user) {
     return {
-      data: { user: null },
       error: {
         message: "User not found",
       },
@@ -56,7 +34,7 @@ export async function listOrgsWhereCurrentUserIsMember() {
 
   const client = createClient<Database>();
 
-  return unstable_cache(
+  const { data, error } = await unstable_cache(
     async () => {
       return client
         .from("orgs")
@@ -77,21 +55,8 @@ export async function listOrgsWhereCurrentUserIsMember() {
       revalidate: false,
     }
   )();
-}
 
-export function listAllOrgs() {
-  const client = createClient<Database>();
-
-  return unstable_cache(
-    async () => {
-      return client.from("orgs").select("*");
-    },
-    ["all-orgs"],
-    {
-      tags: ["all-orgs"],
-      revalidate: false,
-    }
-  )();
+  return { data, error };
 }
 
 export async function createOrgWhereCurrentUserIsMember(
@@ -103,11 +68,11 @@ export async function createOrgWhereCurrentUserIsMember(
   } = await getCurrentUser();
 
   if (getCurrentUserError) {
-    throw new Error(getCurrentUserError.message);
+    return { error: getCurrentUserError };
   }
 
   if (!user) {
-    throw new Error("User not found");
+    return { error: { message: "User not found" } };
   }
 
   const client = createClient<Database>();
@@ -118,7 +83,7 @@ export async function createOrgWhereCurrentUserIsMember(
     .select();
 
   if (insertOrgError) {
-    throw new Error(insertOrgError.message);
+    return { error: insertOrgError };
   }
 
   const [org] = orgs;
@@ -133,12 +98,14 @@ export async function createOrgWhereCurrentUserIsMember(
   });
 
   if (insertMemberError) {
-    throw new Error(insertMemberError.message);
+    return { error: insertMemberError };
   }
 
   revalidateTag(`orgs-where-current-user-is-member`);
 
-  return org;
+  return {
+    data: org,
+  };
 }
 
 export async function initializeOrg(orgId: number) {
@@ -153,7 +120,7 @@ export async function initializeOrg(orgId: number) {
     });
 
   if (insertOrgSettingsError) {
-    throw new Error(insertOrgSettingsError.message);
+    return { error: insertOrgSettingsError };
   }
 
   const {
@@ -169,13 +136,13 @@ export async function initializeOrg(orgId: number) {
     .select();
 
   if (insertOrgDailyScrumUpdateFormError) {
-    throw new Error(insertOrgDailyScrumUpdateFormError.message);
+    return { error: insertOrgDailyScrumUpdateFormError };
   }
 
   const orgDailyScrumUpdateForm = orgDailyScrumUpdateForms[0];
 
   if (!orgDailyScrumUpdateForm) {
-    throw new Error("Org Daily Scrum Update Form not found");
+    return { error: { message: "Org Daily Scrum Update Form not found" } };
   }
 
   const { error: insertOrgDailyScrumUpdateQuestionsError } = await client
@@ -216,6 +183,8 @@ export async function initializeOrg(orgId: number) {
     ]);
 
   if (insertOrgDailyScrumUpdateQuestionsError) {
-    throw new Error(insertOrgDailyScrumUpdateQuestionsError.message);
+    return { error: insertOrgDailyScrumUpdateQuestionsError };
   }
+
+  return {};
 }
