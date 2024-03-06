@@ -1,4 +1,6 @@
+import { getCurrentUser } from "@/lib/services";
 import { createAuthClient } from "@/lib/supabase/auth-client";
+import { revalidateTag } from "next/cache";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -9,15 +11,12 @@ const signOut = async () => {
 
   const authClient = createAuthClient(cookies());
   await authClient.auth.signOut();
-  return redirect("/sign-in");
 };
 
 export default async function Page() {
-  const authClient = createAuthClient(cookies());
-
   const {
     data: { user },
-  } = await authClient.auth.getUser();
+  } = await getCurrentUser();
 
   return (
     <div>
@@ -26,6 +25,8 @@ export default async function Page() {
           <form action={signOut}>
             <Button>Sign Out</Button>
           </form>
+
+          <h2>User</h2>
           <pre>{JSON.stringify(user, null, 2)}</pre>
         </div>
       ) : (

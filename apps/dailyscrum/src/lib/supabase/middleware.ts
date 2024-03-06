@@ -1,8 +1,7 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
 
-const createClient = (request: NextRequest) => {
-  // Create an unmodified response
+export const updateSession = async (request: NextRequest) => {
   let response = NextResponse.next({
     request: {
       headers: request.headers,
@@ -57,15 +56,7 @@ const createClient = (request: NextRequest) => {
     }
   );
 
-  return { supabase, response };
-};
-
-export const updateSession = async (request: NextRequest) => {
-  const { supabase, response } = createClient(request);
-
-  // This will refresh session if expired - required for Server Components
-  // https://supabase.com/docs/guides/auth/server-side/nextjs
-  await supabase.auth.getUser();
+  await supabase.auth.getSession();
 
   return response;
 };

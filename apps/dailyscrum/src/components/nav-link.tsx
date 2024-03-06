@@ -9,7 +9,7 @@ type Props = React.ComponentProps<typeof Link> & {
   children: React.ReactNode;
 };
 
-const NavLink = ({ children, ...props }: Props) => {
+const NavLink = ({ children, activeClassName, ...props }: Props) => {
   const pathname = usePathname();
 
   const isActive = pathname === props.href;
@@ -17,7 +17,7 @@ const NavLink = ({ children, ...props }: Props) => {
   return (
     <Link
       {...props}
-      className={cn(props.className, isActive && props.activeClassName)}
+      className={cn(props.className, isActive && activeClassName)}
     >
       {children}
     </Link>

@@ -1,37 +1,29 @@
-import { Database } from "@/lib/supabase/database";
-import { createAuthClient } from "@/lib/supabase/auth-client";
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
+import {
+  getCurrentUser,
+  listOrgsWhereCurrentUserIsMember,
+} from "@/lib/services";
 
 export default async function Home() {
-  const authClient = createAuthClient<Database>(cookies());
-  const client = createClient<Database>();
-
   const {
     data: { user },
-  } = await authClient.auth.getUser();
+  } = await getCurrentUser();
 
   if (!user) {
     redirect("/sign-in");
   }
 
-  const { data: orgs } = await client
-    .from("orgs")
-    .select(
-      `
-      id: hash_id,
-      members!inner(
-        user_id
-      )
-      `
-    )
-    .eq("members.user_id", user.id);
+  const { data: orgs, error } = await listOrgsWhereCurrentUserIsMember();
 
-  if (!orgs || orgs.length === 0) {
+  if (!orgs || error || orgs.length === 0) {
     return null;
   }
 
-  const org = orgs[0];
+  const [org] = orgs;
+
+  if (!org) {
+    return null;
+  }
+
   redirect(`/orgs/${org.id}`);
 }
