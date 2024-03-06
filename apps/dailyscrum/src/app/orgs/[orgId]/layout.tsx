@@ -6,7 +6,7 @@ import { cn } from "ui";
 import NavLink from "@/components/nav-link";
 import MyPageLink from "./my-page-link";
 
-export default function Layout({
+export default async function Layout({
   children,
   params,
 }: {
