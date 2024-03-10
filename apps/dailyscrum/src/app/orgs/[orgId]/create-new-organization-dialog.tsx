@@ -11,7 +11,7 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "ui/shadcn-ui/dialog";
+} from "ui/dialog";
 import {
   Form,
   FormField,

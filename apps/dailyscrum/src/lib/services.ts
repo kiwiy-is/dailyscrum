@@ -111,23 +111,11 @@ export async function createOrgWhereCurrentUserIsMember(
 export async function initializeOrg(orgId: number) {
   const client = createClient<Database>();
 
-  const { error: insertOrgSettingsError } = await client
-    .from("org_settings")
-    .insert({
-      org_id: orgId,
-      attribute_key: "timeZone",
-      attribute_value: "America/New_York",
-    });
-
-  if (insertOrgSettingsError) {
-    return { error: insertOrgSettingsError };
-  }
-
   const {
     data: orgDailyScrumUpdateForms,
     error: insertOrgDailyScrumUpdateFormError,
   } = await client
-    .from("org_daily_scrum_update_forms")
+    .from("daily_scrum_update_forms")
     .insert({
       org_id: orgId,
       description:
@@ -143,6 +131,25 @@ export async function initializeOrg(orgId: number) {
 
   if (!orgDailyScrumUpdateForm) {
     return { error: { message: "Org Daily Scrum Update Form not found" } };
+  }
+
+  const { error: insertOrgSettingsError } = await client
+    .from("org_settings")
+    .insert([
+      {
+        org_id: orgId,
+        attribute_key: "time_zone",
+        attribute_value: "America/New_York",
+      },
+      {
+        org_id: orgId,
+        attribute_key: "selected_daily_scrum_update_form_id",
+        attribute_value: String(orgDailyScrumUpdateForm.id),
+      },
+    ]);
+
+  if (insertOrgSettingsError) {
+    return { error: insertOrgSettingsError };
   }
 
   const { error: insertOrgDailyScrumUpdateQuestionsError } = await client
@@ -187,4 +194,163 @@ export async function initializeOrg(orgId: number) {
   }
 
   return {};
+}
+
+export async function getOrgByHashId(hashId: string) {
+  const client = createClient<Database>();
+
+  return unstable_cache(
+    async () => {
+      return client.from("orgs").select("*").eq("hash_id", hashId).single();
+    },
+    [`org-${hashId}`],
+    {
+      tags: [`org-${hashId}`],
+      revalidate: false,
+    }
+  )();
+}
+
+export async function getOrgSettings(orgId: number) {
+  const client = createClient<Database>();
+
+  return unstable_cache(
+    async () => {
+      return client.from("org_settings").select("*").eq("org_id", orgId);
+    },
+    [`org-settings-${orgId}`],
+    {
+      tags: [`org-settings-${orgId}`],
+      revalidate: false,
+    }
+  )();
+}
+
+export async function getDailyScrumUpdateFormWithQuestions(formId: number) {
+  const client = createClient<Database>();
+
+  return unstable_cache(
+    async () => {
+      return client
+        .from("daily_scrum_update_forms")
+        .select("*, dailyScrumUpdateQuestions:daily_scrum_update_questions(*)")
+        .eq("id", formId)
+        .single();
+    },
+    [`daily-scrum-update-form-with-questions-${formId}`],
+    {
+      tags: [`daily-scrum-update-form-with-questions-${formId}`],
+      revalidate: false,
+    }
+  )();
+}
+
+export async function getDailyScrumUpdateEntriesCount(
+  formId: number,
+  date: string
+) {
+  const {
+    data: { user },
+    error: getCurrentUserError,
+  } = await getCurrentUser();
+
+  if (getCurrentUserError) {
+    return {
+      count: null,
+      error: getCurrentUserError,
+    };
+  }
+
+  if (!user) {
+    return {
+      count: null,
+      error: {
+        message: "User not found",
+      },
+    };
+  }
+
+  const client = createClient<Database>();
+
+  return unstable_cache(
+    async () => {
+      return client
+        .from("daily_scrum_update_entries")
+        .select("*", { count: "exact", head: true })
+        .eq("daily_scrum_update_form_id", formId)
+        .gte("date", date)
+        .lte("date", date)
+        .eq("submitted_user_id", user.id);
+    },
+    [`daily-scrum-update-entries-count-${formId}-${date}-${user.id}`],
+    {
+      tags: [`daily-scrum-update-entries-count-${formId}-${date}-${user.id}`],
+      revalidate: false,
+    }
+  )();
+}
+
+export async function createDailyScrumUpdateEntry(
+  formId: number,
+  date: string,
+  timeZone: string
+) {
+  const {
+    data: { user },
+    error: getCurrentUserError,
+  } = await getCurrentUser();
+
+  if (getCurrentUserError) {
+    return {
+      data: null,
+      error: getCurrentUserError,
+    };
+  }
+
+  if (!user) {
+    return {
+      data: null,
+      error: {
+        message: "User not found",
+      },
+    };
+  }
+
+  const client = createClient<Database>();
+
+  const response = await client
+    .from("daily_scrum_update_entries")
+    .insert({
+      daily_scrum_update_form_id: formId,
+      date,
+      submitted_user_id: user.id,
+      time_zone: timeZone,
+    })
+    .select("*")
+    .single();
+
+  revalidateTag(
+    `daily-scrum-update-entries-count-${formId}-${date}-${user.id}`
+  );
+
+  return response;
+}
+
+export function createDailyScrumUpdateAnswers(
+  entryId: number,
+  answers: {
+    [x: number]: string;
+  }
+) {
+  const client = createClient<Database>();
+
+  const promises = Object.entries(answers).map(([key, value]) => {
+    return client.from("daily_scrum_update_answers").insert({
+      daily_scrum_update_entry_id: entryId,
+      daily_scrum_update_question_id: parseInt(key, 10),
+      answer: value,
+    });
+  });
+
+  return Promise.all(promises);
 }
