@@ -8,7 +8,7 @@ export const CommandInput = (
 ) => {
   const className = cn("h-10", props.className);
   return (
-    <div className="[&>div>svg]:stroke-1.75 [&>div>svg]:opacity-100">
+    <div className="[&>div>svg]:stroke-2 [&>div>svg]:opacity-50">
       <command.CommandInput {...props} className={className} />
     </div>
   );

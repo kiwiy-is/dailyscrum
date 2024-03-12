@@ -1,4 +1,4 @@
-import OrganizationSelection from "./organization-selection-loader";
+import OrganizationSelectionLoader from "./organization-selection-loader";
 import React from "react";
 import CreateNewOrganizationDialog from "./create-new-organization-dialog";
 import { Button, buttonVariants } from "ui/button";
@@ -8,6 +8,8 @@ import MyPageLink from "./my-page-link";
 import { LayoutDashboardIcon, PlusIcon, Settings2Icon } from "lucide-react";
 import { KiwiyIsSymbol } from "ui/kiwiy-is-symbol";
 import UserMenu from "./user-menu";
+import AddScrumUpdateDialogLoader from "./add-scrum-update-dialog-loader";
+import AddUpdateButton from "./add-update-button";
 
 export default async function Layout({
   children,
@@ -39,13 +41,11 @@ export default async function Layout({
         <aside className="border-r col-span-1 row-span-1">
           <div className="w-[272px] px-4 pt-6 pb-4 flex flex-col justify-between h-full">
             <div className=" flex flex-col gap-y-6">
-              <OrganizationSelection />
+              {/* TODO: Maybe rename it to organization-selection-combobox? */}
+              <OrganizationSelectionLoader />
 
               <div className="flex flex-col gap-y-1">
-                <Button className="justify-center  gap-x-2" size="sm">
-                  <PlusIcon width={16} height={16} strokeWidth={1.75} />
-                  <span className="mr-4">Add update</span>
-                </Button>
+                <AddUpdateButton />
               </div>
 
               <nav className="flex flex-col gap-y-1">
@@ -60,11 +60,7 @@ export default async function Layout({
                     "justify-start gap-x-2"
                   )}
                 >
-                  <LayoutDashboardIcon
-                    width={16}
-                    height={16}
-                    strokeWidth={1.75}
-                  />
+                  <LayoutDashboardIcon width={16} height={16} strokeWidth={2} />
                   <span>Dashboard</span>
                 </NavLink>
 
@@ -81,7 +77,7 @@ export default async function Layout({
                     "justify-start gap-x-2"
                   )}
                 >
-                  <Settings2Icon width={16} height={16} strokeWidth={1.75} />
+                  <Settings2Icon width={16} height={16} strokeWidth={2} />
                   <span>Settings</span>
                 </NavLink>
               </nav>
@@ -97,6 +93,7 @@ export default async function Layout({
         </main>
       </div>
       <CreateNewOrganizationDialog />
+      <AddScrumUpdateDialogLoader />
     </>
   );
 }

@@ -9,6 +9,116 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      daily_scrum_update_answers: {
+        Row: {
+          answer: string;
+          created_at: string;
+          daily_scrum_update_entry_id: number;
+          daily_scrum_update_question_id: number;
+          id: number;
+        };
+        Insert: {
+          answer?: string;
+          created_at?: string;
+          daily_scrum_update_entry_id: number;
+          daily_scrum_update_question_id: number;
+          id?: number;
+        };
+        Update: {
+          answer?: string;
+          created_at?: string;
+          daily_scrum_update_entry_id?: number;
+          daily_scrum_update_question_id?: number;
+          id?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "public_daily_scrum_update_answers_daily_scrum_update_entry_id_f";
+            columns: ["daily_scrum_update_entry_id"];
+            isOneToOne: false;
+            referencedRelation: "daily_scrum_update_entries";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "public_daily_scrum_update_answers_daily_scrum_update_question_i";
+            columns: ["daily_scrum_update_question_id"];
+            isOneToOne: false;
+            referencedRelation: "daily_scrum_update_questions";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      daily_scrum_update_entries: {
+        Row: {
+          created_at: string;
+          daily_scrum_update_form_id: number;
+          date: string;
+          id: number;
+          submitted_user_id: string;
+          time_zone: string;
+        };
+        Insert: {
+          created_at?: string;
+          daily_scrum_update_form_id: number;
+          date: string;
+          id?: number;
+          submitted_user_id: string;
+          time_zone?: string;
+        };
+        Update: {
+          created_at?: string;
+          daily_scrum_update_form_id?: number;
+          date?: string;
+          id?: number;
+          submitted_user_id?: string;
+          time_zone?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "public_daily_scrum_update_entries_daily_scrum_update_form_id_fk";
+            columns: ["daily_scrum_update_form_id"];
+            isOneToOne: false;
+            referencedRelation: "daily_scrum_update_forms";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "public_daily_scrum_update_entries_submitted_user_id_fkey";
+            columns: ["submitted_user_id"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      daily_scrum_update_forms: {
+        Row: {
+          created_at: string;
+          description: string;
+          id: number;
+          org_id: number;
+        };
+        Insert: {
+          created_at?: string;
+          description?: string;
+          id?: number;
+          org_id: number;
+        };
+        Update: {
+          created_at?: string;
+          description?: string;
+          id?: number;
+          org_id?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "public_daily_scrum_update_forms_org_id_fkey";
+            columns: ["org_id"];
+            isOneToOne: false;
+            referencedRelation: "orgs";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
       daily_scrum_update_questions: {
         Row: {
           brief_question: string;
@@ -48,10 +158,10 @@ export type Database = {
         };
         Relationships: [
           {
-            foreignKeyName: "daily_scrum_update_questions_org_daily_scrum_update_form_id_fke";
+            foreignKeyName: "public_daily_scrum_update_questions_org_daily_scrum_update_form";
             columns: ["org_daily_scrum_update_form_id"];
             isOneToOne: false;
-            referencedRelation: "org_daily_scrum_update_forms";
+            referencedRelation: "daily_scrum_update_forms";
             referencedColumns: ["id"];
           }
         ];
@@ -80,46 +190,17 @@ export type Database = {
         };
         Relationships: [
           {
-            foreignKeyName: "public_members_organization_id_fkey";
+            foreignKeyName: "public_members_org_id_fkey";
             columns: ["org_id"];
             isOneToOne: false;
             referencedRelation: "orgs";
             referencedColumns: ["id"];
           },
           {
-            foreignKeyName: "public_organizations_users_user_id_fkey";
+            foreignKeyName: "public_members_user_id_fkey";
             columns: ["user_id"];
             isOneToOne: false;
             referencedRelation: "users";
-            referencedColumns: ["id"];
-          }
-        ];
-      };
-      org_daily_scrum_update_forms: {
-        Row: {
-          created_at: string;
-          description: string;
-          id: number;
-          org_id: number;
-        };
-        Insert: {
-          created_at?: string;
-          description?: string;
-          id?: number;
-          org_id: number;
-        };
-        Update: {
-          created_at?: string;
-          description?: string;
-          id?: number;
-          org_id?: number;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "public_organization_daily_scrum_update_organization_id_fkey";
-            columns: ["org_id"];
-            isOneToOne: false;
-            referencedRelation: "orgs";
             referencedColumns: ["id"];
           }
         ];
@@ -148,7 +229,7 @@ export type Database = {
         };
         Relationships: [
           {
-            foreignKeyName: "public_organizationSettings_organization_id_fkey";
+            foreignKeyName: "public_org_settings_org_id_fkey";
             columns: ["org_id"];
             isOneToOne: false;
             referencedRelation: "orgs";

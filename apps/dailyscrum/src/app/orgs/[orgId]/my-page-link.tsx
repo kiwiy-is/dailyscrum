@@ -25,7 +25,7 @@ const MyPageLink = (props: Props) => {
               className={cn("justify-start", "gap-x-2")}
               disabled
             >
-              <ScrollTextIcon width={16} height={16} strokeWidth={1.75} />
+              <ScrollTextIcon width={16} height={16} strokeWidth={2} />
               <span>My updates</span>
             </Button>
           </div>

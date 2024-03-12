@@ -6,13 +6,15 @@
     "dev": "next dev -p 4001",
     "build": "next build",
     "start": "next start -p 4001",
-    "lint": "next lint"
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
     "@supabase/ssr": "^0.1.0",
     "@supabase/supabase-js": "^2.39.7",
     "lucide-react": "^0.323.0",
+    "luxon": "^3.4.4",
     "next": "14.1.0",
     "next-impl-getters": "^1.0.0",
     "react": "^18",
@@ -23,6 +25,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@types/luxon": "^3.4.2",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

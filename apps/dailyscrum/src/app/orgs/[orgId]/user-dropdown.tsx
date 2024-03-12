@@ -34,7 +34,7 @@ const UserDropdown = ({ trigger, label, ...props }: Props) => {
               className="mr-2"
               width={16}
               height={16}
-              strokeWidth={1.75}
+              strokeWidth={2}
             />
             <span>Account</span>
           </DropdownMenuItem>
@@ -43,7 +43,7 @@ const UserDropdown = ({ trigger, label, ...props }: Props) => {
               className="mr-2"
               width={16}
               height={16}
-              strokeWidth={1.75}
+              strokeWidth={2}
             />
             <span>Appearance</span>
           </DropdownMenuItem>
@@ -52,7 +52,7 @@ const UserDropdown = ({ trigger, label, ...props }: Props) => {
               className="mr-2"
               width={16}
               height={16}
-              strokeWidth={1.75}
+              strokeWidth={2}
             />
             <span>Toggle theme</span>
           </DropdownMenuItem>{" "}
@@ -61,7 +61,7 @@ const UserDropdown = ({ trigger, label, ...props }: Props) => {
               className="mr-2"
               width={16}
               height={16}
-              strokeWidth={1.75}
+              strokeWidth={2}
             />
             <span>Sign out</span>
           </DropdownMenuItem>
