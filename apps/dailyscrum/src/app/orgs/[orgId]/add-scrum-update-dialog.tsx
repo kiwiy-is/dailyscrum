@@ -170,12 +170,6 @@ export const AddScrumUpdateDialog: React.FC<AddScrumUpdateDialogProps> = ({
         .refine(
           (date) => {
             const selectedDate = DateTime.fromJSDate(date);
-            console.log("runs?", {
-              selectedDate,
-              today,
-              sameDay: selectedDate.hasSame(today, "day"),
-              hasAddedDailyScrumUpdateForToday,
-            });
             return !(
               selectedDate.hasSame(today, "day") &&
               hasAddedDailyScrumUpdateForToday

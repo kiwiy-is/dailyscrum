@@ -60,7 +60,9 @@ export async function listOrgsWhereCurrentUserIsMember() {
 }
 
 export async function createOrgWhereCurrentUserIsMember(
-  orgInsertData: Database["public"]["Tables"]["orgs"]["Insert"]
+  orgValues: Required<
+    Pick<Database["public"]["Tables"]["orgs"]["Insert"], "name">
+  >
 ) {
   const {
     data: { user },
@@ -79,7 +81,7 @@ export async function createOrgWhereCurrentUserIsMember(
 
   const { data: orgs, error: insertOrgError } = await client
     .from("orgs")
-    .insert(orgInsertData)
+    .insert(orgValues)
     .select();
 
   if (insertOrgError) {
@@ -291,9 +293,12 @@ export async function getDailyScrumUpdateEntriesCount(
 }
 
 export async function createDailyScrumUpdateEntry(
-  formId: number,
-  date: string,
-  timeZone: string
+  entryValues: Required<
+    Pick<
+      Database["public"]["Tables"]["daily_scrum_update_entries"]["Insert"],
+      "daily_scrum_update_form_id" | "date" | "time_zone"
+    >
+  >
 ) {
   const {
     data: { user },
@@ -321,16 +326,14 @@ export async function createDailyScrumUpdateEntry(
   const response = await client
     .from("daily_scrum_update_entries")
     .insert({
-      daily_scrum_update_form_id: formId,
-      date,
+      ...entryValues,
       submitted_user_id: user.id,
-      time_zone: timeZone,
     })
     .select("*")
     .single();
 
   revalidateTag(
-    `daily-scrum-update-entries-count-${formId}-${date}-${user.id}`
+    `daily-scrum-update-entries-count-${entryValues.daily_scrum_update_form_id}-${entryValues.date}-${user.id}`
   );
 
   return response;
@@ -338,19 +341,19 @@ export async function createDailyScrumUpdateEntry(
 
 export function createDailyScrumUpdateAnswers(
   entryId: number,
-  answers: {
-    [x: number]: string;
-  }
+  answersValues: Required<
+    Pick<
+      Database["public"]["Tables"]["daily_scrum_update_answers"]["Insert"],
+      "daily_scrum_update_question_id" | "answer"
+    >
+  >[]
 ) {
   const client = createClient<Database>();
 
-  const promises = Object.entries(answers).map(([key, value]) => {
-    return client.from("daily_scrum_update_answers").insert({
+  return client.from("daily_scrum_update_answers").insert(
+    answersValues.map((answer) => ({
+      ...answer,
       daily_scrum_update_entry_id: entryId,
-      daily_scrum_update_question_id: parseInt(key, 10),
-      answer: value,
-    });
-  });
-
-  return Promise.all(promises);
+    }))
+  );
 }

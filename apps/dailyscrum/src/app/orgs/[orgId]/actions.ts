@@ -55,21 +55,27 @@ export async function addUpdate(
     }
 
     const { data: entry, error: insertDailyScrumUpdateEntryError } =
-      await createDailyScrumUpdateEntry(formId, dateString, timeZone);
+      await createDailyScrumUpdateEntry({
+        daily_scrum_update_form_id: formId,
+        date: dateString,
+        time_zone: timeZone,
+      });
 
     if (insertDailyScrumUpdateEntryError) {
       throw new Error(insertDailyScrumUpdateEntryError.message);
     }
 
-    const responses = await createDailyScrumUpdateAnswers(
-      entry.id,
-      dynamicFormValues
-    );
+    const { error: createDailyScrumUpdateAnswersError } =
+      await createDailyScrumUpdateAnswers(
+        entry.id,
+        Object.entries(dynamicFormValues).map(([key, value]) => ({
+          daily_scrum_update_question_id: parseInt(key, 10),
+          answer: value,
+        }))
+      );
 
-    for (const response of responses) {
-      if (response.error) {
-        throw new Error(response.error.message);
-      }
+    if (createDailyScrumUpdateAnswersError) {
+      throw new Error(createDailyScrumUpdateAnswersError.message);
     }
   } catch (error) {
     console.error(error);
