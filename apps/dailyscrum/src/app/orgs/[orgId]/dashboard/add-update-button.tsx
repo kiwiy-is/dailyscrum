@@ -16,10 +16,16 @@ const AddUpdateButton = (props: Props) => {
     params.set("dialog", "add-scrum-update");
     window.history.replaceState(null, "", `${pathname}?${params.toString()}`);
   }, []);
+
   return (
-    <Button className="justify-center  gap-x-2" size="sm" onClick={handleClick}>
+    <Button
+      variant="default"
+      size="sm"
+      className="justify-start gap-x-2 text-xs h-8"
+      onClick={handleClick}
+    >
       <PlusIcon width={16} height={16} strokeWidth={2} />
-      <span className="mr-4">Add update</span>
+      <span>Add update</span>
     </Button>
   );
 };
