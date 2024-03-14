@@ -13,7 +13,7 @@ import {
 
 type Props = {};
 
-const MyPageLink = (props: Props) => {
+const MyUpdatesLink = (props: Props) => {
   return (
     <TooltipProvider>
       <Tooltip>
@@ -38,4 +38,4 @@ const MyPageLink = (props: Props) => {
   );
 };
 
-export default MyPageLink;
+export default MyUpdatesLink;
