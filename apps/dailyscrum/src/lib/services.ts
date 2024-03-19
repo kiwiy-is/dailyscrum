@@ -6,6 +6,8 @@ import { revalidateTag, unstable_cache } from "next/cache";
 import { createAuthClient } from "@/lib/supabase/auth-client";
 import { cookies } from "next/headers";
 
+// TODO: Rename file name to 'queries.ts'
+
 export async function getCurrentUser() {
   // TODO: consider wrapping this with unstable_cache
   const authClient = createAuthClient(cookies());
@@ -158,7 +160,7 @@ export async function initializeOrg(orgId: number) {
     .from("daily_scrum_update_questions")
     .insert([
       {
-        org_daily_scrum_update_form_id: orgDailyScrumUpdateForm.id,
+        daily_scrum_update_form_id: orgDailyScrumUpdateForm.id,
         question: "What did I accomplish yesterday?",
         brief_question: "Yesterday's Progress",
         placeholder: "Your accomplishments from yesterday",
@@ -169,7 +171,7 @@ export async function initializeOrg(orgId: number) {
         order: 0,
       },
       {
-        org_daily_scrum_update_form_id: orgDailyScrumUpdateForm.id,
+        daily_scrum_update_form_id: orgDailyScrumUpdateForm.id,
         question: "What will I work on today?",
         brief_question: "Today's Plan",
         placeholder: "Today's tasks and goals",
@@ -179,7 +181,7 @@ export async function initializeOrg(orgId: number) {
         order: 1,
       },
       {
-        org_daily_scrum_update_form_id: orgDailyScrumUpdateForm.id,
+        daily_scrum_update_form_id: orgDailyScrumUpdateForm.id,
         question: "Do you have any blockers or impediments?",
         brief_question: "Obstacles",
         placeholder: "Current blockers or challenges",

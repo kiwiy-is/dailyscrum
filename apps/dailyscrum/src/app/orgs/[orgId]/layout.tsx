@@ -22,7 +22,7 @@ export default async function Layout({
     <>
       <div className="grid grid-rows-[auto,1fr] grid-cols-[auto,1fr] min-h-screen h-screen">
         <aside className="border-r col-span-1 row-span-2">
-          <div className="w-[272px] h-full flex flex-col flex-1 px-4 pt-6 pb-4 space-y-6">
+          <div className="w-[224px] h-full flex flex-col flex-1 px-4 pt-6 pb-4 space-y-6">
             <div className="flex items-center gap-2">
               <KiwiyIsSymbol width={26} height={26} />
               <span className="text-base font-bold">dailyscrum</span>
@@ -77,7 +77,7 @@ export default async function Layout({
           </div>
         </header>
         <ScrollArea>
-          <main className="py-8 px-8 max-w-5xl">{children}</main>
+          <main className="py-8 px-8">{children}</main>
         </ScrollArea>
       </div>
       <CreateNewOrganizationDialog />

@@ -128,7 +128,7 @@ export type Database = {
           is_required: boolean;
           max_length: number | null;
           order: number;
-          org_daily_scrum_update_form_id: number;
+          daily_scrum_update_form_id: number;
           placeholder: string | null;
           question: string;
         };
@@ -140,7 +140,7 @@ export type Database = {
           is_required: boolean;
           max_length?: number | null;
           order: number;
-          org_daily_scrum_update_form_id: number;
+          daily_scrum_update_form_id: number;
           placeholder?: string | null;
           question: string;
         };
@@ -152,14 +152,14 @@ export type Database = {
           is_required?: boolean;
           max_length?: number | null;
           order?: number;
-          org_daily_scrum_update_form_id?: number;
+          daily_scrum_update_form_id?: number;
           placeholder?: string | null;
           question?: string;
         };
         Relationships: [
           {
             foreignKeyName: "public_daily_scrum_update_questions_org_daily_scrum_update_form";
-            columns: ["org_daily_scrum_update_form_id"];
+            columns: ["daily_scrum_update_form_id"];
             isOneToOne: false;
             referencedRelation: "daily_scrum_update_forms";
             referencedColumns: ["id"];
