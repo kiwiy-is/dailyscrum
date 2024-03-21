@@ -6,7 +6,9 @@ import {
   createOrgWhereCurrentUserIsMember,
   initializeOrg,
 } from "@/lib/services";
+import { createAuthClient } from "@/lib/supabase/auth-client";
 import { DateTime } from "luxon";
+import { cookies } from "next/headers";
 
 import { redirect } from "next/navigation";
 
@@ -81,4 +83,10 @@ export async function addUpdate(
     console.error(error);
     throw new Error("An unexpected error occurred. Please try again later.");
   }
+}
+
+export async function signOut() {
+  const authClient = createAuthClient(cookies());
+  await authClient.auth.signOut();
+  redirect("/sign-in");
 }

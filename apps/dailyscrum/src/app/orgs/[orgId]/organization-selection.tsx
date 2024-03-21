@@ -66,15 +66,26 @@ function OrganizationSelection({ orgs, selectedOrg }: Props) {
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[240px] p-0" align="start">
-        <Command>
+        <Command
+          filter={(value, search) => {
+            const org = orgs[parseInt(value, 10)];
+
+            if (org?.name.includes(search)) {
+              return 1;
+            }
+            return 0;
+          }}
+        >
           <CommandInput placeholder="Search..." />
           <CommandList>
             <CommandEmpty>No organization found.</CommandEmpty>
             <CommandGroup>
-              {orgs.map((org) => (
+              {orgs.map((org, index) => (
                 <CommandItem
                   key={org.id}
+                  id={org.id}
                   onSelect={handleCommandItemSelect(org.id)}
+                  value={String(index)} // NOTE: the string value is coerced into lower case. Using index instead of id.
                 >
                   {org.name}
                   <CheckIcon

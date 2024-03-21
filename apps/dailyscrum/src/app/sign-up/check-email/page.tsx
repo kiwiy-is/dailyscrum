@@ -14,7 +14,7 @@ export default function Page() {
         <CardHeader>
           <CardTitle>Check your email</CardTitle>
           <CardDescription>
-            A sign in link will be sent to the email address you provided.
+            A sign up link will be sent to the email address you provided.
             Please check your email.
           </CardDescription>
         </CardHeader>

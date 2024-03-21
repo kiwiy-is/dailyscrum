@@ -17,13 +17,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { z } from "zod";
 import { useTransition } from "react";
-import { signIn } from "./actions";
+import { signUp } from "./actions";
 
 const formSchema = z.object({
   email: z.string().email(),
 });
 
-const SignInForm = () => {
+const SignUpForm = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -35,7 +35,7 @@ const SignInForm = () => {
 
   const handleSubmit = form.handleSubmit((values) => {
     startTransition(async () => {
-      const { error } = await signIn(values.email);
+      const { error } = await signUp(values.email);
       form.setError("email", { message: error.message });
     });
   });
@@ -53,7 +53,7 @@ const SignInForm = () => {
                 <Input placeholder="name@example.com" {...field} />
               </FormControl>
               <FormDescription>
-                We'll send you a sign in link to this email address.
+                We'll send you a sign up link to this email address.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -61,11 +61,11 @@ const SignInForm = () => {
         />
 
         <Button type="submit" className="w-full" loading={isPending}>
-          Sign in
+          Sign up
         </Button>
       </form>
     </Form>
   );
 };
 
-export default SignInForm;
+export default SignUpForm;

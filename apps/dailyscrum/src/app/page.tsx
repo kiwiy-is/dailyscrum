@@ -3,6 +3,7 @@ import {
   getCurrentUser,
   listOrgsWhereCurrentUserIsMember,
 } from "@/lib/services";
+import { getCurrentUserProfile } from "./queries";
 
 export default async function Home() {
   const {
@@ -11,6 +12,13 @@ export default async function Home() {
 
   if (!user) {
     redirect("/sign-in");
+  }
+
+  const { data: profile, error: getProfileError } =
+    await getCurrentUserProfile();
+
+  if (getProfileError) {
+    redirect("/sign-up/complete");
   }
 
   const { data: orgs, error } = await listOrgsWhereCurrentUserIsMember();
@@ -25,5 +33,5 @@ export default async function Home() {
     return null;
   }
 
-  redirect(`/orgs/${org.id}`);
+  return redirect(`/orgs/${org.id}`);
 }

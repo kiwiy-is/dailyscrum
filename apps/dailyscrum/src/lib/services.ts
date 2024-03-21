@@ -143,7 +143,7 @@ export async function initializeOrg(orgId: number) {
       {
         org_id: orgId,
         attribute_key: "time_zone",
-        attribute_value: "America/New_York",
+        attribute_value: "America/New_York", // TODO: Get user timezone
       },
       {
         org_id: orgId,
