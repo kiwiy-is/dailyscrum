@@ -65,7 +65,7 @@ function OrganizationSelection({ orgs, selectedOrg }: Props) {
           />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[240px] p-0">
+      <PopoverContent className="w-[240px] p-0" align="start">
         <Command>
           <CommandInput placeholder="Search..." />
           <CommandList>
