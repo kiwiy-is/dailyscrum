@@ -34,7 +34,7 @@ export default async function Layout({
 
             <nav className="flex flex-col flex-1 space-y-1">
               <NavLink
-                href={`/orgs/${params.orgId}/board`}
+                href={`/daily-scrum/orgs/${params.orgId}/board`}
                 activeClassName="bg-accent"
                 className={cn(
                   buttonVariants({
@@ -51,7 +51,7 @@ export default async function Layout({
               <MyUpdatesLink />
 
               <NavLink
-                href={`/orgs/${params.orgId}/settings`}
+                href={`/daily-scrum/orgs/${params.orgId}/settings`}
                 activeClassName="bg-accent"
                 className={cn(
                   buttonVariants({

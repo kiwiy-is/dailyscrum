@@ -32,5 +32,5 @@ export async function GET(request: NextRequest) {
     return new Response("Invalid request", { status: 400 });
   }
 
-  redirect("/");
+  redirect("/daily-scrum");
 }

@@ -24,5 +24,5 @@ export async function signUp(email: string) {
     };
   }
 
-  return redirect("/sign-up/check-email");
+  return redirect("/daily-scrum/sign-up/check-email");
 }

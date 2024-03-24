@@ -37,7 +37,7 @@ export async function createNewOrganization(name: string) {
     throw new Error("An unexpected error occurred. Please try again later.");
   }
 
-  redirect(`/orgs/${org.hash_id}`);
+  redirect(`/daily-scrum/orgs/${org.hash_id}`);
 }
 
 export async function addUpdate(
@@ -88,5 +88,5 @@ export async function addUpdate(
 export async function signOut() {
   const authClient = createAuthClient(cookies());
   await authClient.auth.signOut();
-  redirect("/sign-in");
+  redirect("/daily-scrum/sign-in");
 }
