@@ -17,10 +17,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { z } from "zod";
 import { useTransition } from "react";
-import { completeSignUp } from "../actions";
+import { completeSignUp } from "./actions";
 
 const formSchema = z.object({
-  name: z.string(),
+  name: z.string().min(1),
 });
 
 const CompleteSignUpForm = () => {
