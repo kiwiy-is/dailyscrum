@@ -15,7 +15,7 @@ export async function signIn(email: string) {
   const { error } = await authClient.auth.signInWithOtp({
     email,
     options: {
-      emailRedirectTo: `${origin}/auth/confirm`,
+      emailRedirectTo: `${origin}/daily-scrum/auth/confirm`,
     },
   });
 
