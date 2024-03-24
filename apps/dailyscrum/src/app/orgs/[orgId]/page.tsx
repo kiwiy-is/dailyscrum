@@ -9,5 +9,5 @@ export default async function Page({
   params: { orgId: string };
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  redirect(`/orgs/${orgId}/dashboard`);
+  redirect(`/orgs/${orgId}/board`);
 }

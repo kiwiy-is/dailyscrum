@@ -34,7 +34,7 @@ export default async function Layout({
 
             <nav className="flex flex-col flex-1 space-y-1">
               <NavLink
-                href={`/orgs/${params.orgId}/dashboard`}
+                href={`/orgs/${params.orgId}/board`}
                 activeClassName="bg-accent"
                 className={cn(
                   buttonVariants({
@@ -45,7 +45,7 @@ export default async function Layout({
                 )}
               >
                 <LayoutDashboardIcon width={16} height={16} strokeWidth={2} />
-                <span>Dashboard</span>
+                <span>Board</span>
               </NavLink>
 
               <MyUpdatesLink />

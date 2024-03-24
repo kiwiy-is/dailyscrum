@@ -12,7 +12,7 @@ export default async function Page() {
     <div className="flex flex-col space-y-8 max-w-screen-2xl">
       <div className="flex justify-between items-start">
         <div className="space-y-0.5">
-          <h1 className="text-xl font-bold leading-8 ">Dashboard</h1>
+          <h1 className="text-xl font-bold leading-8 ">Board</h1>
           {/* NOTE: A description text location */}
           {/* <p className="text-sm text-muted-foreground">
             See the organization's daily scrum updates.
