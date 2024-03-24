@@ -15,6 +15,7 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
 } from "ui/dropdown-menu";
+import { signOut } from "./actions";
 
 type Props = {
   trigger?: React.ReactNode;
@@ -56,7 +57,11 @@ const UserDropdown = ({ trigger, label, ...props }: Props) => {
             />
             <span>Toggle theme</span>
           </DropdownMenuItem>{" "}
-          <DropdownMenuItem>
+          <DropdownMenuItem
+            onSelect={async () => {
+              await signOut();
+            }}
+          >
             <LogOutIcon
               className="mr-2"
               width={16}

@@ -1,10 +1,14 @@
 import { redirect } from "next/navigation";
 import {
+  createOrgWhereCurrentUserIsMember,
   getCurrentUser,
+  initializeOrg,
   listOrgsWhereCurrentUserIsMember,
 } from "@/lib/services";
+import { getCurrentUserProfile } from "./queries";
 
 export default async function Home() {
+  console.log("home start...");
   const {
     data: { user },
   } = await getCurrentUser();
@@ -13,17 +17,43 @@ export default async function Home() {
     redirect("/sign-in");
   }
 
+  const { data: profile, error: getProfileError } =
+    await getCurrentUserProfile();
+
+  if (!profile || getProfileError) {
+    redirect("/sign-up/complete");
+  }
+
   const { data: orgs, error } = await listOrgsWhereCurrentUserIsMember();
 
-  if (!orgs || error || orgs.length === 0) {
+  if (!orgs || error) {
     return null;
   }
 
-  const [org] = orgs;
+  if (orgs.length > 0) {
+    const [org] = orgs;
 
-  if (!org) {
+    if (!org) {
+      return null;
+    }
+
+    return redirect(`/orgs/${org.id}`);
+  }
+
+  const { data: org, error: createOrgError } =
+    await createOrgWhereCurrentUserIsMember({
+      name: "My organization",
+    });
+
+  if (!org && createOrgError) {
     return null;
   }
 
-  redirect(`/orgs/${org.id}`);
+  const { error: initializeOrgError } = await initializeOrg(org.id);
+
+  if (initializeOrgError) {
+    return null;
+  }
+
+  return redirect(`/orgs/${org.id}`);
 }

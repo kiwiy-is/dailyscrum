@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "ui/shadcn-ui/card";
-import SignInForm from "./sign-in-form";
+import SignUpForm from "./sign-up-form";
 import Link from "next/link";
 
 export default function Page() {
@@ -16,20 +16,20 @@ export default function Page() {
       <KiwiyIsSymbol />
       <Card className="w-[440px]">
         <CardHeader>
-          <CardTitle>Sign in</CardTitle>
-          <CardDescription>Sign in to your account.</CardDescription>
+          <CardTitle>Sign up</CardTitle>
+          <CardDescription>Create a new account.</CardDescription>
         </CardHeader>
         <CardContent>
-          <SignInForm />
+          <SignUpForm />
         </CardContent>
         <CardFooter className=" justify-center">
           <p className="text-sm text-muted-foreground">
             Don't have an account?
             <Link
-              href="/sign-up"
+              href="/sign-in"
               className="underline underline-offset-4 hover:text-foreground ml-1"
             >
-              Sign up
+              Sign in
             </Link>
             .
           </p>

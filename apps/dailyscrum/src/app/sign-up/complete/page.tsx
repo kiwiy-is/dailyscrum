@@ -6,6 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "ui/shadcn-ui/card";
+import CompleteSignUpForm from "./complete-sign-up-form";
 
 export default function Page() {
   return (
@@ -13,13 +14,13 @@ export default function Page() {
       <KiwiyIsSymbol />
       <Card className="w-[440px]">
         <CardHeader>
-          <CardTitle>Check your email</CardTitle>
+          <CardTitle>Complete sign up</CardTitle>
+          <CardDescription>
+            Please fill out the form to complete sign up.
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <CardDescription>
-            A sign in link will be sent to the email address you provided.
-            Please check your email.
-          </CardDescription>
+          <CompleteSignUpForm />
         </CardContent>
       </Card>
     </div>

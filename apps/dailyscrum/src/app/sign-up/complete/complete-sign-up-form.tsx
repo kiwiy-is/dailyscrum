@@ -17,17 +17,17 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { z } from "zod";
 import { useTransition } from "react";
-import { signIn } from "./actions";
+import { completeSignUp } from "./actions";
 
 const formSchema = z.object({
-  email: z.string().email(),
+  name: z.string().min(1),
 });
 
-const SignInForm = () => {
+const CompleteSignUpForm = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
+      name: "",
     },
   });
 
@@ -35,8 +35,8 @@ const SignInForm = () => {
 
   const handleSubmit = form.handleSubmit((values) => {
     startTransition(async () => {
-      const { error } = await signIn(values.email);
-      form.setError("email", { message: error.message });
+      const { error } = await completeSignUp(values.name);
+      form.setError("name", { message: error.message });
     });
   });
 
@@ -45,15 +45,16 @@ const SignInForm = () => {
       <form onSubmit={handleSubmit} className="space-y-6">
         <FormField
           control={form.control}
-          name="email"
+          name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="name@example.com" {...field} />
+                <Input placeholder="Name" {...field} />
               </FormControl>
+
               <FormDescription>
-                We'll send you a sign in link to this email address.
+                Choose a name that will be visible to others.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -61,11 +62,11 @@ const SignInForm = () => {
         />
 
         <Button type="submit" className="w-full" loading={isPending}>
-          Sign in
+          Sign up
         </Button>
       </form>
     </Form>
   );
 };
 
-export default SignInForm;
+export default CompleteSignUpForm;

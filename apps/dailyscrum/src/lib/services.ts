@@ -22,12 +22,14 @@ export async function listOrgsWhereCurrentUserIsMember() {
 
   if (getCurrentUserError) {
     return {
+      data: null,
       error: getCurrentUserError,
     };
   }
 
   if (!user) {
     return {
+      data: null,
       error: {
         message: "User not found",
       },
@@ -36,7 +38,7 @@ export async function listOrgsWhereCurrentUserIsMember() {
 
   const client = createClient<Database>();
 
-  const { data, error } = await unstable_cache(
+  return await unstable_cache(
     async () => {
       return client
         .from("orgs")
@@ -57,8 +59,6 @@ export async function listOrgsWhereCurrentUserIsMember() {
       revalidate: false,
     }
   )();
-
-  return { data, error };
 }
 
 export async function createOrgWhereCurrentUserIsMember(
@@ -72,11 +72,14 @@ export async function createOrgWhereCurrentUserIsMember(
   } = await getCurrentUser();
 
   if (getCurrentUserError) {
-    return { error: getCurrentUserError };
+    return {
+      data: null,
+      error: getCurrentUserError,
+    };
   }
 
   if (!user) {
-    return { error: { message: "User not found" } };
+    return { data: null, error: { message: "User not found" } };
   }
 
   const client = createClient<Database>();
@@ -87,7 +90,7 @@ export async function createOrgWhereCurrentUserIsMember(
     .select();
 
   if (insertOrgError) {
-    return { error: insertOrgError };
+    return { data: null, error: insertOrgError };
   }
 
   const [org] = orgs;
@@ -102,7 +105,10 @@ export async function createOrgWhereCurrentUserIsMember(
   });
 
   if (insertMemberError) {
-    return { error: insertMemberError };
+    return {
+      data: null,
+      error: insertMemberError,
+    };
   }
 
   revalidateTag(`orgs-where-current-user-is-member`);
@@ -143,7 +149,7 @@ export async function initializeOrg(orgId: number) {
       {
         org_id: orgId,
         attribute_key: "time_zone",
-        attribute_value: "America/New_York",
+        attribute_value: "America/New_York", // TODO: Get user timezone
       },
       {
         org_id: orgId,
