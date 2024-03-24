@@ -20,8 +20,8 @@ COPY . .
 
 RUN pnpm install --prod=false
 
-RUN pnpm exec nx build dailyscrum
+RUN pnpm exec nx build daily-scrum
 
 EXPOSE 4001
 
-CMD ["pnpm", "exec", "nx", "start", "dailyscrum"]
+CMD ["pnpm", "exec", "nx", "start", "daily-scrum"]

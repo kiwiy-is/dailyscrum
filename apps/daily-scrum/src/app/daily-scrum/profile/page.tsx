@@ -1,9 +1,7 @@
 import { getCurrentUser } from "@/lib/services";
 import { createAuthClient } from "@/lib/supabase/auth-client";
-import { revalidateTag } from "next/cache";
 import { cookies } from "next/headers";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { Button } from "ui/button";
 
 const signOut = async () => {

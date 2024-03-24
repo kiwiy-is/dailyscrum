@@ -5,7 +5,7 @@ import {
   initializeOrg,
   listOrgsWhereCurrentUserIsMember,
 } from "@/lib/services";
-import { getCurrentUserProfile } from "./queries";
+import { getCurrentUserProfile } from "../queries";
 
 export default async function Home() {
   console.log("home start...");
@@ -14,14 +14,14 @@ export default async function Home() {
   } = await getCurrentUser();
 
   if (!user) {
-    redirect("/sign-in");
+    redirect("/daily-scrum/sign-in");
   }
 
   const { data: profile, error: getProfileError } =
     await getCurrentUserProfile();
 
   if (!profile || getProfileError) {
-    redirect("/sign-up/complete");
+    redirect("/daily-scrum/sign-up/complete");
   }
 
   const { data: orgs, error } = await listOrgsWhereCurrentUserIsMember();
@@ -37,7 +37,7 @@ export default async function Home() {
       return null;
     }
 
-    return redirect(`/orgs/${org.id}`);
+    return redirect(`/daily-scrum/orgs/${org.id}`);
   }
 
   const { data: org, error: createOrgError } =
@@ -55,5 +55,5 @@ export default async function Home() {
     return null;
   }
 
-  return redirect(`/orgs/${org.id}`);
+  return redirect(`/daily-scrum/orgs/${org.id}`);
 }

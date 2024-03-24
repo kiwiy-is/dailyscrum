@@ -27,5 +27,5 @@ export async function signIn(email: string) {
 
   revalidateTag("orgs-where-current-user-is-member");
 
-  return redirect("/sign-in/check-email");
+  return redirect("/daily-scrum/sign-in/check-email");
 }

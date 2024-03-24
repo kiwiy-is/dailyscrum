@@ -28,7 +28,7 @@ export async function completeSignUp(name: string) {
     .single();
 
   if (profile) {
-    return redirect("/redirect?to=/");
+    return redirect("/redirect?to=/daily-scrum");
   }
 
   const { data: newProfile, error: insertNewProfileError } = await client
@@ -44,5 +44,5 @@ export async function completeSignUp(name: string) {
     return { error: insertNewProfileError };
   }
 
-  return redirect("/redirect?to=/");
+  return redirect("/redirect?to=/daily-scrum");
 }
