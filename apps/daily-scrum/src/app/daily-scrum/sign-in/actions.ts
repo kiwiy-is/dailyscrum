@@ -1,7 +1,6 @@
 "use server";
 
 import { createAuthClient } from "@/lib/supabase/auth-client";
-import { revalidateTag } from "next/cache";
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -25,7 +24,5 @@ export async function signIn(email: string) {
     };
   }
 
-  revalidateTag("orgs-where-current-user-is-member");
-
-  return redirect("/daily-scrum/sign-in/check-email");
+  redirect("/daily-scrum/sign-in/check-email");
 }

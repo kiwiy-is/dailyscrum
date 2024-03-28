@@ -26,7 +26,7 @@ export default function Page() {
           <p className="text-sm text-muted-foreground">
             Don't have an account?
             <Link
-              href="/sign-up"
+              href="/daily-scrum/sign-up"
               className="underline underline-offset-4 hover:text-foreground ml-1"
             >
               Sign up

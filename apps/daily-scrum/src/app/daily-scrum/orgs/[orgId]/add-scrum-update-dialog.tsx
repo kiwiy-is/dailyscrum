@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useMemo, useTransition } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-
 import {
   Form,
   FormControl,
@@ -280,7 +279,14 @@ export const AddScrumUpdateDialog: React.FC<AddScrumUpdateDialogProps> = ({
               ...formValues,
               ...dynamicFormValues,
             } as unknown as FormValues & DynamicFormValues;
-            await addUpdate(dailyScrumUpdateFormId, timeZone, mergedValues);
+
+            // TODO: handle error
+            const { error } = await addUpdate(
+              dailyScrumUpdateFormId,
+              timeZone,
+              mergedValues
+            );
+
             closeDialog();
             toast({
               description: (

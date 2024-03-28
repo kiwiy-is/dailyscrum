@@ -1,7 +1,8 @@
 import React from "react";
 import DatePicker from "./date-picker";
 import { getParams } from "next-impl-getters/get-params";
-import { getOrgByHashId, getOrgSettings } from "@/lib/services";
+import { getOrgByHashId } from "@/services/orgs";
+import { getOrgSettings } from "@/services/org-settings";
 
 type Props = {};
 

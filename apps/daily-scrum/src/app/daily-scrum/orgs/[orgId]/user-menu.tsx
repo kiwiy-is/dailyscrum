@@ -2,15 +2,12 @@ import { UserRoundIcon } from "lucide-react";
 import React from "react";
 import { Button } from "ui/button";
 import UserDropdown from "./user-dropdown";
-import { getCurrentUser } from "@/lib/services";
+import { getCurrentUser } from "@/services/users";
 
 type Props = {};
 
 const UserMenu = async (props: Props) => {
-  const {
-    data: { user },
-    error,
-  } = await getCurrentUser();
+  const { data: user, error } = await getCurrentUser();
 
   if (error || !user) {
     return null;

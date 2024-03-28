@@ -1,24 +1,19 @@
 import React from "react";
 import { AddScrumUpdateDialog } from "./add-scrum-update-dialog";
-import {
-  getCurrentUser,
-  getOrgByHashId,
-  getDailyScrumUpdateFormWithQuestions,
-  getOrgSettings,
-  getDailyScrumUpdateEntriesCount,
-} from "@/lib/services";
 import { getParams } from "next-impl-getters/get-params";
 import { DateTime } from "luxon";
+import { getCurrentUser } from "@/services/users";
+import { getOrgByHashId } from "@/services/orgs";
+import { getDailyScrumUpdateForm } from "@/services/daily-scrum-update-forms";
+import { getDailyScrumUpdateEntriesCountOfCurrentUser } from "@/services/daily-scrum-update-entries";
+import { getOrgSettings } from "@/services/org-settings";
 
 type Props = {};
 
 const AddScrumUpdateDialogLoader = async (props: Props) => {
   const { orgId: orgHashId } = getParams() as { orgId: string };
 
-  const {
-    data: { user },
-    error: getCurrentUserError,
-  } = await getCurrentUser();
+  const { data: user, error: getCurrentUserError } = await getCurrentUser();
 
   if (getCurrentUserError || !user) {
     return null;
@@ -70,12 +65,12 @@ const AddScrumUpdateDialogLoader = async (props: Props) => {
     todayResult,
     tomorrowResult,
   ] = await Promise.all([
-    getDailyScrumUpdateFormWithQuestions(selectedDailyScrumUpdateFormId),
-    getDailyScrumUpdateEntriesCount(
+    getDailyScrumUpdateForm(selectedDailyScrumUpdateFormId),
+    getDailyScrumUpdateEntriesCountOfCurrentUser(
       selectedDailyScrumUpdateFormId,
       todayInISODate
     ),
-    getDailyScrumUpdateEntriesCount(
+    getDailyScrumUpdateEntriesCountOfCurrentUser(
       selectedDailyScrumUpdateFormId,
       tomorrowInISODate
     ),

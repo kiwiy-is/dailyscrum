@@ -1,6 +1,6 @@
 import { getParams } from "next-impl-getters/get-params";
 import OrganizationSelection from "./organization-selection";
-import { listOrgsWhereCurrentUserIsMember } from "@/lib/services";
+import { listOrgsOfCurrentUser } from "@/services/orgs";
 
 type Props = {
   children?: React.ReactNode;
@@ -9,9 +9,9 @@ type Props = {
 const OrganizationSelectionLoader: React.FC<Props> = async (props) => {
   const { orgId } = getParams() as { orgId: string };
 
-  const { data: orgs, error } = await listOrgsWhereCurrentUserIsMember();
+  const { data: orgs, error } = await listOrgsOfCurrentUser();
 
-  if (!orgs || error) {
+  if (!orgs || error || orgs.length === 0) {
     return null;
   }
 

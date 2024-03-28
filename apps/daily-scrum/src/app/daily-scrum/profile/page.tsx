@@ -1,8 +1,10 @@
-import { getCurrentUser } from "@/lib/services";
+import { getCurrentUser } from "@/services/users";
 import { createAuthClient } from "@/lib/supabase/auth-client";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { Button } from "ui/button";
+
+export const dynamic = "force-dynamic";
 
 const signOut = async () => {
   "use server";
@@ -12,9 +14,7 @@ const signOut = async () => {
 };
 
 export default async function Page() {
-  const {
-    data: { user },
-  } = await getCurrentUser();
+  const { data: user } = await getCurrentUser();
 
   return (
     <div>

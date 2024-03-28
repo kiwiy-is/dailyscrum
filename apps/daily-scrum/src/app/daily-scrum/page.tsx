@@ -1,17 +1,12 @@
 import { redirect } from "next/navigation";
-import {
-  createOrgWhereCurrentUserIsMember,
-  getCurrentUser,
-  initializeOrg,
-  listOrgsWhereCurrentUserIsMember,
-} from "@/lib/services";
-import { getCurrentUserProfile } from "../queries";
+import { createOrg, listOrgsOfCurrentUser } from "@/services/orgs";
+import { getCurrentUser } from "@/services/users";
+import { getCurrentUserProfile } from "@/services/profiles";
 
-export default async function Home() {
-  console.log("home start...");
-  const {
-    data: { user },
-  } = await getCurrentUser();
+export const dynamic = "force-dynamic";
+
+export default async function Page() {
+  const { data: user } = await getCurrentUser();
 
   if (!user) {
     redirect("/daily-scrum/sign-in");
@@ -24,7 +19,7 @@ export default async function Home() {
     redirect("/daily-scrum/sign-up/complete");
   }
 
-  const { data: orgs, error } = await listOrgsWhereCurrentUserIsMember();
+  const { data: orgs, error } = await listOrgsOfCurrentUser();
 
   if (!orgs || error) {
     return null;
@@ -40,20 +35,13 @@ export default async function Home() {
     return redirect(`/daily-scrum/orgs/${org.id}`);
   }
 
-  const { data: org, error: createOrgError } =
-    await createOrgWhereCurrentUserIsMember({
-      name: "My organization",
-    });
+  const { data: org, error: createOrgError } = await createOrg({
+    name: "My organization",
+  });
 
-  if (!org && createOrgError) {
+  if (createOrgError) {
     return null;
   }
 
-  const { error: initializeOrgError } = await initializeOrg(org.id);
-
-  if (initializeOrgError) {
-    return null;
-  }
-
-  return redirect(`/daily-scrum/orgs/${org.id}`);
+  return redirect(`/daily-scrum/orgs/${org.hash_id}`);
 }
