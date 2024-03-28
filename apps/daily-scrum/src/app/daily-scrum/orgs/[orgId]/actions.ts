@@ -1,40 +1,21 @@
 "use server";
 
-import {
-  createDailyScrumUpdateAnswers,
-  createDailyScrumUpdateEntry,
-  createOrgWhereCurrentUserIsMember,
-  initializeOrg,
-} from "@/lib/services";
 import { createAuthClient } from "@/lib/supabase/auth-client";
-import { DateTime } from "luxon";
+import { createOrg } from "@/services/orgs";
 import { cookies } from "next/headers";
-
+import { getParams } from "next-impl-getters/get-params";
 import { redirect } from "next/navigation";
+import { DateTime } from "luxon";
+import { createDailyScrumUpdateEntry } from "@/services/daily-scrum-update-entries";
+import { createDailyScrumUpdateAnswers } from "@/services/daily-scrum-update-answers";
 
 export async function createNewOrganization(name: string) {
-  let org;
+  const { data: org, error } = await createOrg({ name });
 
-  try {
-    const { data, error: createOrgError } =
-      await createOrgWhereCurrentUserIsMember({
-        name,
-      });
-
-    if (createOrgError) {
-      throw new Error(createOrgError.message);
-    }
-
-    org = data;
-
-    const { error: initializeOrgError } = await initializeOrg(org.id);
-
-    if (initializeOrgError) {
-      throw new Error(initializeOrgError.message);
-    }
-  } catch (error) {
-    console.error(error);
-    throw new Error("An unexpected error occurred. Please try again later.");
+  if (error) {
+    return {
+      error,
+    };
   }
 
   redirect(`/daily-scrum/orgs/${org.hash_id}`);
@@ -47,42 +28,51 @@ export async function addUpdate(
     [x: number]: string;
   } & { date: Date }
 ) {
-  try {
-    const { date, ...dynamicFormValues } = formValues;
+  const { orgId: orgHashId } = getParams() as { orgId: string };
 
-    const dateString = DateTime.fromJSDate(date).toISODate();
+  const { date, ...dynamicFormValues } = formValues;
 
-    if (!dateString) {
-      throw new Error("Invalid date");
-    }
+  const dateString = DateTime.fromJSDate(date).toISODate();
 
-    const { data: entry, error: insertDailyScrumUpdateEntryError } =
-      await createDailyScrumUpdateEntry({
-        daily_scrum_update_form_id: formId,
-        date: dateString,
-        time_zone: timeZone,
-      });
-
-    if (insertDailyScrumUpdateEntryError) {
-      throw new Error(insertDailyScrumUpdateEntryError.message);
-    }
-
-    const { error: createDailyScrumUpdateAnswersError } =
-      await createDailyScrumUpdateAnswers(
-        entry.id,
-        Object.entries(dynamicFormValues).map(([key, value]) => ({
-          daily_scrum_update_question_id: parseInt(key, 10),
-          answer: value,
-        }))
-      );
-
-    if (createDailyScrumUpdateAnswersError) {
-      throw new Error(createDailyScrumUpdateAnswersError.message);
-    }
-  } catch (error) {
-    console.error(error);
-    throw new Error("An unexpected error occurred. Please try again later.");
+  if (!dateString) {
+    return {
+      error: {
+        message: "Invalid date",
+      },
+    };
   }
+
+  const { data: entry, error: insertDailyScrumUpdateEntryError } =
+    await createDailyScrumUpdateEntry(orgHashId, {
+      daily_scrum_update_form_id: formId,
+      date: dateString,
+      time_zone: timeZone,
+    });
+
+  if (insertDailyScrumUpdateEntryError) {
+    return {
+      error: insertDailyScrumUpdateEntryError,
+    };
+  }
+
+  const { error: createDailyScrumUpdateAnswersError } =
+    await createDailyScrumUpdateAnswers(
+      entry.id,
+      Object.entries(dynamicFormValues).map(([key, value]) => ({
+        daily_scrum_update_question_id: parseInt(key, 10),
+        answer: value,
+      }))
+    );
+
+  if (createDailyScrumUpdateAnswersError) {
+    return {
+      error: createDailyScrumUpdateAnswersError,
+    };
+  }
+
+  return {
+    error: null,
+  };
 }
 
 export async function signOut() {

@@ -1,11 +1,12 @@
-import { getOrgByHashId, getOrgSettings } from "@/lib/services";
 import { DateTime } from "luxon";
 import { getParams } from "next-impl-getters/get-params";
 import { getSearchParams } from "next-impl-getters/get-search-params";
 
 import React from "react";
 import DailyScrumUpdateList from "./daily-scrum-update-list";
-import { listDailyScrumUpdateEntries } from "./queries";
+import { getOrgByHashId } from "@/services/orgs";
+import { listDailyScrumUpdateEntries } from "@/services/daily-scrum-update-entries";
+import { getOrgSettings } from "@/services/org-settings";
 
 type Props = {};
 

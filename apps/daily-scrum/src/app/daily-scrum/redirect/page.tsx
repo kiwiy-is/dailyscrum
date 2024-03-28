@@ -1,6 +1,8 @@
 import React from "react";
 import Redirector from "./redirector";
 
+export const dynamic = "force-dynamic";
+
 // NOTE: A double rendering after redirect form server action workaround: https://github.com/vercel/next.js/issues/57257#issuecomment-1959516538
 const Page = ({
   params,

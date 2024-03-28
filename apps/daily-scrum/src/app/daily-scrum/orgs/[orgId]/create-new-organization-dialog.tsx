@@ -66,8 +66,9 @@ const CreateNewOrganizationDialog = (props: Props) => {
   const handleSubmit = useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {
       form.handleSubmit((values) => {
-        startTransition(() => {
-          createNewOrganization(values.name);
+        startTransition(async () => {
+          // TODO: handle error
+          const { error } = await createNewOrganization(values.name);
         });
       })(event);
     },
