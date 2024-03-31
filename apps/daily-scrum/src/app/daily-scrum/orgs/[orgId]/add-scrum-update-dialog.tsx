@@ -92,7 +92,7 @@ const DateField: React.FC<{
               <Button
                 variant={"outline"}
                 size="sm"
-                className="w-[240px] font-normal"
+                className="w-[240px] font-normal h-10"
               >
                 {formattedDate}
                 <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />

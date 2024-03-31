@@ -56,7 +56,7 @@ function OrganizationSelection({ orgs, selectedOrg }: Props) {
           aria-expanded={open}
           aria-label="Select an organization"
           size="sm"
-          className={cn("w-full justify-between")}
+          className={cn("w-full justify-between", "h-10")}
         >
           {selectedOrg.name}
           <ChevronsUpDownIcon
