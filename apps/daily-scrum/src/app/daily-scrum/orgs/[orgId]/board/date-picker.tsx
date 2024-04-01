@@ -77,10 +77,10 @@ const DatePicker = ({ timeZone }: Props) => {
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm" className="gap-x-2 text-xs h-8">
-          <CalendarIcon width={14} height={14} strokeWidth={2} />
+        <Button variant="outline" size="sm" className="gap-x-2 text-sm h-9">
+          <CalendarIcon width={16} height={16} strokeWidth={2} />
 
-          <span>{date.toLocaleString(DateTime.DATE_FULL)}</span>
+          <span>{date.toLocaleString(DateTime.DATE_MED)}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="center">

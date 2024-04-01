@@ -21,7 +21,7 @@ const AddUpdateButton = (props: Props) => {
     <Button
       variant="default"
       size="sm"
-      className="justify-start gap-x-2 text-xs h-8"
+      className="justify-start gap-x-2 text-sm h-9"
       onClick={handleClick}
     >
       <PlusIcon width={16} height={16} strokeWidth={2} />

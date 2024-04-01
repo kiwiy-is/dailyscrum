@@ -35,6 +35,7 @@ export default async function Page() {
     return redirect(`/daily-scrum/orgs/${org.id}`);
   }
 
+  // TODO: Seems like the organization is created multiple times. Maybe wrap it with a server action and call it here? Try and test it.
   const { data: org, error: createOrgError } = await createOrg({
     name: "My organization",
   });

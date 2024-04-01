@@ -30,8 +30,11 @@ const MyUpdatesLink = (props: Props) => {
             </Button>
           </div>
         </TooltipTrigger>
-        <TooltipContent side="right">
-          <p>The page is under development. Please check back later.</p>
+        <TooltipContent side="top" align="start">
+          <p>
+            The page is under development. <br />
+            Please check back later.
+          </p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
