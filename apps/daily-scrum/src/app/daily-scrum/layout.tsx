@@ -8,7 +8,7 @@ import { Toaster } from "ui/shadcn-ui/toaster";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Dailyscrum | Kiwiy is",
+  title: "Dailyscrum | Kiwiy",
   description: "",
 };
 

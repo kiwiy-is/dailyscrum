@@ -9,7 +9,7 @@ export default async function Page() {
   const { data: user } = await getCurrentUser();
 
   if (!user) {
-    redirect("/daily-scrum/sign-in");
+    redirect("/daily-scrum/sign-up");
   }
 
   const { data: profile, error: getProfileError } =

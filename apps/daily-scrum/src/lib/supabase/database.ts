@@ -123,45 +123,74 @@ export type Database = {
         Row: {
           brief_question: string;
           created_at: string;
+          daily_scrum_update_form_id: number;
           description: string | null;
           id: number;
           is_required: boolean;
           max_length: number | null;
           order: number;
-          daily_scrum_update_form_id: number;
           placeholder: string | null;
           question: string;
         };
         Insert: {
           brief_question: string;
           created_at?: string;
+          daily_scrum_update_form_id: number;
           description?: string | null;
           id?: number;
           is_required: boolean;
           max_length?: number | null;
           order: number;
-          daily_scrum_update_form_id: number;
           placeholder?: string | null;
           question: string;
         };
         Update: {
           brief_question?: string;
           created_at?: string;
+          daily_scrum_update_form_id?: number;
           description?: string | null;
           id?: number;
           is_required?: boolean;
           max_length?: number | null;
           order?: number;
-          daily_scrum_update_form_id?: number;
           placeholder?: string | null;
           question?: string;
         };
         Relationships: [
           {
-            foreignKeyName: "public_daily_scrum_update_questions_org_daily_scrum_update_form";
+            foreignKeyName: "public_daily_scrum_update_questions_daily_scrum_update_form_id_";
             columns: ["daily_scrum_update_form_id"];
             isOneToOne: false;
             referencedRelation: "daily_scrum_update_forms";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      invitations: {
+        Row: {
+          code: string;
+          created_at: string;
+          id: number;
+          org_id: number;
+        };
+        Insert: {
+          code?: string;
+          created_at?: string;
+          id?: number;
+          org_id: number;
+        };
+        Update: {
+          code?: string;
+          created_at?: string;
+          id?: number;
+          org_id?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "public_invitations_org_id_fkey";
+            columns: ["org_id"];
+            isOneToOne: false;
+            referencedRelation: "orgs";
             referencedColumns: ["id"];
           }
         ];
@@ -309,9 +338,11 @@ export type Database = {
   };
 };
 
+type PublicSchema = Database[Extract<keyof Database, "public">];
+
 export type Tables<
   PublicTableNameOrOptions extends
-    | keyof (Database["public"]["Tables"] & Database["public"]["Views"])
+    | keyof (PublicSchema["Tables"] & PublicSchema["Views"])
     | { schema: keyof Database },
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
     ? keyof (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
@@ -324,10 +355,10 @@ export type Tables<
     }
     ? R
     : never
-  : PublicTableNameOrOptions extends keyof (Database["public"]["Tables"] &
-      Database["public"]["Views"])
-  ? (Database["public"]["Tables"] &
-      Database["public"]["Views"])[PublicTableNameOrOptions] extends {
+  : PublicTableNameOrOptions extends keyof (PublicSchema["Tables"] &
+      PublicSchema["Views"])
+  ? (PublicSchema["Tables"] &
+      PublicSchema["Views"])[PublicTableNameOrOptions] extends {
       Row: infer R;
     }
     ? R
@@ -336,7 +367,7 @@ export type Tables<
 
 export type TablesInsert<
   PublicTableNameOrOptions extends
-    | keyof Database["public"]["Tables"]
+    | keyof PublicSchema["Tables"]
     | { schema: keyof Database },
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
     ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
@@ -347,8 +378,8 @@ export type TablesInsert<
     }
     ? I
     : never
-  : PublicTableNameOrOptions extends keyof Database["public"]["Tables"]
-  ? Database["public"]["Tables"][PublicTableNameOrOptions] extends {
+  : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
+  ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
       Insert: infer I;
     }
     ? I
@@ -357,7 +388,7 @@ export type TablesInsert<
 
 export type TablesUpdate<
   PublicTableNameOrOptions extends
-    | keyof Database["public"]["Tables"]
+    | keyof PublicSchema["Tables"]
     | { schema: keyof Database },
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
     ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
@@ -368,8 +399,8 @@ export type TablesUpdate<
     }
     ? U
     : never
-  : PublicTableNameOrOptions extends keyof Database["public"]["Tables"]
-  ? Database["public"]["Tables"][PublicTableNameOrOptions] extends {
+  : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
+  ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
       Update: infer U;
     }
     ? U
@@ -378,13 +409,13 @@ export type TablesUpdate<
 
 export type Enums<
   PublicEnumNameOrOptions extends
-    | keyof Database["public"]["Enums"]
+    | keyof PublicSchema["Enums"]
     | { schema: keyof Database },
   EnumName extends PublicEnumNameOrOptions extends { schema: keyof Database }
     ? keyof Database[PublicEnumNameOrOptions["schema"]]["Enums"]
     : never = never
 > = PublicEnumNameOrOptions extends { schema: keyof Database }
   ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
-  : PublicEnumNameOrOptions extends keyof Database["public"]["Enums"]
-  ? Database["public"]["Enums"][PublicEnumNameOrOptions]
+  : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
+  ? PublicSchema["Enums"][PublicEnumNameOrOptions]
   : never;

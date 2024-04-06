@@ -4,12 +4,13 @@ import {
   createClient as supabaseJsCreateClient,
   type SupabaseClient,
 } from "@supabase/supabase-js";
+import { Database } from "./database";
 
 // Restrict the client to not allow access to the auth property.
 // If you need to access the auth property, use createAuthClient instead.
 type SupabaseClientRestricted<T> = Omit<SupabaseClient<T>, "auth">;
 
-export function createClient<T>(): SupabaseClientRestricted<T> {
+export function createClient<T = Database>(): SupabaseClientRestricted<T> {
   const client = supabaseJsCreateClient<T>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,

@@ -42,6 +42,12 @@ export const listOrgsOfCurrentUser = cache(async () => {
   return listOrgs(user.id);
 });
 
+export const getOrg = memoizeAndPersist(async (id: number) => {
+  const client = createClient<Database>();
+
+  return client.from("orgs").select("*").eq("id", id).single();
+}, "getOrg");
+
 export const getOrgByHashId = memoizeAndPersist(async (hashId: string) => {
   const client = createClient<Database>();
 
