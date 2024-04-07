@@ -1,4 +1,3 @@
-import { createClient } from "@/lib/supabase/client";
 import { getOrgByHashId } from "@/services/orgs";
 import { getCurrentUser } from "@/services/users";
 import Link from "next/link";
@@ -15,6 +14,8 @@ import {
 import { buttonVariants } from "ui/button";
 import { cn } from "ui";
 import JoinButton from "./join-button";
+import { getInvitationByCode } from "@/services/invitations";
+import { getMember } from "@/services/members";
 
 type Props = {
   params: { orgId: string };
@@ -26,8 +27,6 @@ type Props = {
 const Page = async ({ params, searchParams }: Props) => {
   const { orgId: orgHashId } = params;
   const codeParamValue = searchParams.code;
-
-  const client = createClient();
 
   const { data: org } = await getOrgByHashId(orgHashId);
 
@@ -54,11 +53,8 @@ const Page = async ({ params, searchParams }: Props) => {
     );
   }
 
-  const { data: invitation, error: getInvitationError } = await client
-    .from("invitations")
-    .select()
-    .eq("code", codeParamValue)
-    .single();
+  const { data: invitation, error: getInvitationError } =
+    await getInvitationByCode(codeParamValue);
 
   if (!invitation || getInvitationError) {
     return (
@@ -123,14 +119,7 @@ const Page = async ({ params, searchParams }: Props) => {
     );
   }
 
-  const { data: member } = await client
-    .from("members")
-    .select()
-    .match({
-      org_id: org.id,
-      user_id: user.id,
-    })
-    .single();
+  const { data: member } = await getMember(org.id, user.id);
 
   if (member) {
     return (

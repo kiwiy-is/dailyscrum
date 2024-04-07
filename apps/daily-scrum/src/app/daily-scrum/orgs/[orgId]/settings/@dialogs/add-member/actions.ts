@@ -1,27 +1,20 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/client";
-import { Database } from "@/lib/supabase/database";
+import {
+  deleteInvitation,
+  createInvitation as createInvitationService,
+} from "@/services/invitations";
 
 export async function createInvitation(orgId: number) {
-  const client = createClient<Database>();
-
-  return await client
-    .from("invitations")
-    .insert({
-      org_id: orgId,
-    })
-    .select()
-    .single();
+  return await createInvitationService({ org_id: orgId });
 }
 
 export async function generateNewInvitationLink(orgId: number) {
-  const client = createClient<Database>();
+  const response = await deleteInvitation(orgId);
 
-  const deleteResponse = await client
-    .from("invitations")
-    .delete()
-    .eq("org_id", orgId);
+  if (response.error) {
+    return response;
+  }
 
   return await createInvitation(orgId);
 }
