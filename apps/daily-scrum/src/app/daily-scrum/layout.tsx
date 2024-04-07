@@ -12,12 +12,11 @@ export const metadata: Metadata = {
   description: "",
 };
 
-export default function Layout({
+export default async function Layout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // TODO: consider performing redirect("/daily-scrum/sign-up/complete"); here instead of at /daily-scrum page
   return (
     <html lang="en">
       <body className={cn(inter.className, "antialiased")}>

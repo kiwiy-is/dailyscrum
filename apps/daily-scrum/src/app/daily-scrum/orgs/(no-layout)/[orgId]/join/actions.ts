@@ -1,17 +1,15 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/client";
+import { createMember } from "@/services/members";
 import { getOrg } from "@/services/orgs";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function join(orgId: number, userId: string) {
-  const client = createClient();
-
-  const response = await client.from("members").insert({
+  const response = await createMember({
     user_id: userId,
     org_id: orgId,
   });
-  // TODO: revalidateTag(`listOrgs(${userId})`);
 
   if (response.error) {
     return response;
@@ -25,5 +23,6 @@ export async function join(orgId: number, userId: string) {
     };
   }
 
+  revalidatePath(`/daily-scrum/orgs/${org.hash_id}`);
   redirect(`/daily-scrum/orgs/${org.hash_id}`);
 }

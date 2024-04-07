@@ -22,7 +22,6 @@ export async function generateNewInvitationLink(orgId: number) {
     .from("invitations")
     .delete()
     .eq("org_id", orgId);
-  console.log(deleteResponse);
 
   return await createInvitation(orgId);
 }
