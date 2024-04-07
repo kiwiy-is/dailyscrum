@@ -10,7 +10,16 @@ import {
 import SignUpForm from "./sign-up-form";
 import Link from "next/link";
 
-export default function Page() {
+export default function Page({
+  searchParams,
+}: {
+  searchParams: { ["return-path"]: string | undefined };
+}) {
+  const returnPathParamValue = searchParams["return-path"];
+  const returnPath = returnPathParamValue
+    ? decodeURIComponent(returnPathParamValue)
+    : undefined;
+
   return (
     <div className="h-screen flex flex-col justify-center items-center space-y-8">
       <KiwiyIsSymbol />
@@ -20,13 +29,17 @@ export default function Page() {
           <CardDescription>Create a new account.</CardDescription>
         </CardHeader>
         <CardContent>
-          <SignUpForm />
+          <SignUpForm returnPath={returnPath} />
         </CardContent>
         <CardFooter className=" justify-center">
           <p className="text-sm text-muted-foreground">
             Don't have an account?
             <Link
-              href="/sign-in"
+              href={`/daily-scrum/sign-in${
+                returnPathParamValue
+                  ? `?return-path=${returnPathParamValue}`
+                  : ""
+              }`}
               className="underline underline-offset-4 hover:text-foreground ml-1"
             >
               Sign in

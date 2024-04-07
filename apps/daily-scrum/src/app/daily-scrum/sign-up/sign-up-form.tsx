@@ -23,7 +23,11 @@ const formSchema = z.object({
   email: z.string().email(),
 });
 
-const SignUpForm = () => {
+type Props = {
+  returnPath: string | undefined;
+};
+
+const SignUpForm = ({ returnPath }: Props) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -35,7 +39,7 @@ const SignUpForm = () => {
 
   const handleSubmit = form.handleSubmit((values) => {
     startTransition(async () => {
-      const { error } = await signUp(values.email);
+      const { error } = await signUp(values.email, returnPath);
       form.setError("email", { message: error.message });
     });
   });

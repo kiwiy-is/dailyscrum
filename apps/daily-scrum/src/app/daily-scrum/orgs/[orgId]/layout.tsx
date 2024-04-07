@@ -23,9 +23,9 @@ export default async function Layout({
       <div className="grid grid-rows-[auto,1fr] grid-cols-[auto,1fr] min-h-screen h-screen">
         <aside className="border-r col-span-1 row-span-2">
           <div className="w-[224px] h-full flex flex-col flex-1 px-4 pt-6 pb-4 space-y-6">
-            <div className="flex items-center gap-2 h-8">
-              <KiwiyIsSymbol width={28} height={28} />
-              <span className="text-base font-bold">dailyscrum</span>
+            <div className="flex items-center gap-1.5 h-8">
+              <KiwiyIsSymbol width={24} height={24} />
+              <span className="text-base font-bold">Daily Scrum</span>
             </div>
 
             <div className="">

@@ -4,7 +4,7 @@ import { createAuthClient } from "@/lib/supabase/auth-client";
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 
-export async function signUp(email: string) {
+export async function signUp(email: string, returnPath?: string) {
   const headerList = headers();
 
   const origin = headerList.get("origin");
@@ -14,7 +14,9 @@ export async function signUp(email: string) {
   const { error } = await authClient.auth.signInWithOtp({
     email,
     options: {
-      emailRedirectTo: `${origin}/daily-scrum/auth/confirm`,
+      emailRedirectTo: `${origin}/daily-scrum/auth/confirm${
+        returnPath ? `?return-path=${encodeURIComponent(returnPath)}` : ""
+      }`,
     },
   });
 

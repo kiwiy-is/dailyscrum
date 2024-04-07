@@ -3,12 +3,12 @@
 import { redirect } from "next/navigation";
 import { createProfile, getCurrentUserProfile } from "@/services/profiles";
 
-export async function completeSignUp(name: string) {
+export async function completeSignUp(name: string, returnPath?: string) {
   const { data: profile, error: getProfileError } =
     await getCurrentUserProfile();
 
   if (profile) {
-    redirect("/daily-scrum/redirect?to=/daily-scrum");
+    redirect(returnPath ? returnPath : "/daily-scrum");
   }
 
   const { data: newProfile, error: insertNewProfileError } =
@@ -16,9 +16,17 @@ export async function completeSignUp(name: string) {
       name,
     });
 
-  if (insertNewProfileError || !newProfile) {
+  if (insertNewProfileError) {
     return { error: insertNewProfileError };
   }
 
-  redirect("/daily-scrum/redirect?to=/daily-scrum");
+  if (!newProfile) {
+    return {
+      error: {
+        message: "Error creating profile",
+      },
+    };
+  }
+
+  redirect(returnPath ? returnPath : "/daily-scrum");
 }

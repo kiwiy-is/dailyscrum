@@ -8,7 +8,7 @@ import { Toaster } from "ui/shadcn-ui/toaster";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Dailyscrum | Kiwiy",
+  title: "Daily Scrum | Kiwiy",
   description: "",
 };
 
@@ -17,6 +17,7 @@ export default function Layout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // TODO: consider performing redirect("/daily-scrum/sign-up/complete"); here instead of at /daily-scrum page
   return (
     <html lang="en">
       <body className={cn(inter.className, "antialiased")}>

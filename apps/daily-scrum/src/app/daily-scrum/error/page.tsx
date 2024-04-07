@@ -15,7 +15,7 @@ const Page = (props: Props) => {
       <KiwiyIsSymbol />
       <Card className="w-[440px]">
         <CardHeader>
-          <CardTitle>Apologies, but something went wrong.</CardTitle>
+          <CardTitle>Apologies, but something went wrong</CardTitle>
         </CardHeader>
         <CardContent>
           <CardDescription>
