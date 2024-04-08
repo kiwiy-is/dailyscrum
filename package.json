@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "prettify": "prettier --write .",
-    "deploy:daily-scrum": "flyctl deploy --config ./apps/daily-scrum/fly.toml --dockerfile ./apps/daily-scrum/Dockerfile",
+    "deploy:dailyscrum": "flyctl deploy --config ./apps/dailyscrum/fly.toml --dockerfile ./apps/dailyscrum/Dockerfile",
     "deploy:website": "flyctl deploy --config ./apps/website/fly.toml --dockerfile ./apps/website/Dockerfile"
   },
   "keywords": [],
