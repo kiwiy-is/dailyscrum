@@ -8,7 +8,15 @@ import {
 } from "ui/shadcn-ui/card";
 import CompleteSignUpForm from "./complete-sign-up-form";
 
-export default function Page() {
+export default function Page({
+  searchParams,
+}: {
+  searchParams: { ["return-path"]: string | undefined };
+}) {
+  const returnPathParamValue = searchParams["return-path"];
+  const returnPath = returnPathParamValue
+    ? decodeURIComponent(returnPathParamValue)
+    : undefined;
   return (
     <div className="h-screen flex flex-col justify-center items-center space-y-8">
       <KiwiyIsSymbol />
@@ -20,7 +28,7 @@ export default function Page() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <CompleteSignUpForm />
+          <CompleteSignUpForm returnPath={returnPath} />
         </CardContent>
       </Card>
     </div>

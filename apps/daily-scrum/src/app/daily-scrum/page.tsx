@@ -6,10 +6,11 @@ import { getCurrentUserProfile } from "@/services/profiles";
 export const dynamic = "force-dynamic";
 
 export default async function Page() {
+  // TODO: consider performing these on middleware
   const { data: user } = await getCurrentUser();
 
   if (!user) {
-    redirect("/daily-scrum/sign-in");
+    redirect("/daily-scrum/sign-up");
   }
 
   const { data: profile, error: getProfileError } =

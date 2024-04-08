@@ -23,7 +23,11 @@ const formSchema = z.object({
   name: z.string().min(1),
 });
 
-const CompleteSignUpForm = () => {
+type Props = {
+  returnPath: string | undefined;
+};
+
+const CompleteSignUpForm = ({ returnPath }: Props) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -35,7 +39,10 @@ const CompleteSignUpForm = () => {
 
   const handleSubmit = form.handleSubmit((values) => {
     startTransition(async () => {
-      const { error } = await completeSignUp(values.name);
+      const { error } = await completeSignUp(values.name, returnPath);
+      if (!error) {
+        return;
+      }
       form.setError("name", { message: error.message });
     });
   });

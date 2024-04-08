@@ -8,11 +8,11 @@ import { Toaster } from "ui/shadcn-ui/toaster";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Dailyscrum | Kiwiy is",
+  title: "Daily Scrum | Kiwiy",
   description: "",
 };
 
-export default function Layout({
+export default async function Layout({
   children,
 }: Readonly<{
   children: React.ReactNode;
