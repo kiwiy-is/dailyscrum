@@ -1,6 +1,6 @@
-import OrgNameSettingsCard from "./org-name-settings-card";
+import WorkspaceNameSettingsCard from "./workspace-name-settings-card";
 import MembersSettingsCard from "./members-settings-card";
-import DeleteOrgSettingsCard from "./delete-org-settings-card";
+import DeleteWorkspaceSettingsCard from "./delete-workspace-settings-card";
 import StandardTimeZoneSettingsCard from "./standard-time-zone-settings-card";
 import PageHeader from "@/components/page-header";
 
@@ -13,11 +13,11 @@ export default async function Page({}: {
     <div className="space-y-8 max-w-4xl">
       <PageHeader
         title="Settings"
-        description="Manage your organization settings."
+        description="Manage your workspace settings."
       />
 
       <div className="flex flex-col space-y-4">
-        <OrgNameSettingsCard />
+        <WorkspaceNameSettingsCard />
       </div>
 
       <div className="flex flex-col space-y-4">
@@ -29,7 +29,7 @@ export default async function Page({}: {
       </div>
 
       <div className="flex flex-col space-y-4">
-        <DeleteOrgSettingsCard />
+        <DeleteWorkspaceSettingsCard />
       </div>
     </div>
   );

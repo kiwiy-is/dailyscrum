@@ -8,7 +8,7 @@ import { cn } from "ui";
 type Props = {};
 
 // TODO: pass in data
-// TODO: restrict updatd to org owner and admin
+// TODO: restrict updatd to workspace owner and admin
 const MembersSettingsCard = (props: Props) => {
   const params = getParams() as { workspaceHashId: string };
   return (

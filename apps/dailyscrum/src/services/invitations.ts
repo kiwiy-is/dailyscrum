@@ -7,10 +7,17 @@ export const getInvitationByCode = memoizeAndPersist(async (code: string) => {
   return client.from("invitations").select().eq("code", code).single();
 }, "getInvitationByCode");
 
-export const getInvitationByOrgId = memoizeAndPersist(async (orgId: number) => {
-  const client = createClient();
-  return client.from("invitations").select().eq("org_id", orgId).single();
-}, "getInvitationByOrgId");
+export const getInvitationByWorkspaceId = memoizeAndPersist(
+  async (workspaceId: number) => {
+    const client = createClient();
+    return client
+      .from("invitations")
+      .select()
+      .eq("workspace_id", workspaceId)
+      .single();
+  },
+  "getInvitationByWorkspaceId"
+);
 
 export const createInvitation = async (
   invitationValues: Database["public"]["Tables"]["invitations"]["Insert"]
@@ -29,12 +36,12 @@ export const createInvitation = async (
   return response;
 };
 
-export const deleteInvitation = async (orgId: number) => {
+export const deleteInvitation = async (workspaceId: number) => {
   const client = createClient();
   const response = await client
     .from("invitations")
     .delete()
-    .eq("org_id", orgId);
+    .eq("workspace_id", workspaceId);
 
   if (response.error) {
     return response;

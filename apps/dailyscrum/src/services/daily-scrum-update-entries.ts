@@ -2,28 +2,27 @@ import { cache } from "react";
 import { getCurrentUser } from "./users";
 import { createClient } from "@/lib/supabase/client";
 import { Database } from "@/lib/supabase/database";
-import { getOrgByHashId } from "./orgs";
-import { listDailyScrumUpdateFormIdsOfOrg } from "./daily-scrum-update-forms";
+import { getWorkspaceByHashId } from "./workspaces";
+import { listDailyScrumUpdateFormIdsOfWorkspace } from "./daily-scrum-update-forms";
 import { revalidateTag } from "next/cache";
 import { memoizeAndPersist } from "@/lib/cache";
 
 /**
- * Retrieves and lists daily scrum update entries based on the organization hash ID and date.
+ * Retrieves and lists daily scrum update entries based on the workspace hash ID and date.
  *
- * @param {string} workspaceHashId - The hash ID of the organization
+ * @param {string} workspaceHashId - The hash ID of the workspace
  * @param {string} date - The ISO formatted date string. e.g. 2024-03-17
  */
 export const listDailyScrumUpdateEntries = memoizeAndPersist(
   async (workspaceHashId: string, date: string) => {
     console.log(`listDailyScrumUpdateEntries(${workspaceHashId}, ${date})`);
-    const { data: org, error: getOrgError } = await getOrgByHashId(
-      workspaceHashId
-    );
+    const { data: workspace, error: getWorkspaceError } =
+      await getWorkspaceByHashId(workspaceHashId);
 
-    if (getOrgError || !org) {
+    if (getWorkspaceError || !workspace) {
       return {
         data: null,
-        error: getOrgError,
+        error: getWorkspaceError,
       };
     }
 
@@ -32,7 +31,7 @@ export const listDailyScrumUpdateEntries = memoizeAndPersist(
     const {
       data: dailyScrumUpdateForms,
       error: getDailyScrumUpdateFormsError,
-    } = await listDailyScrumUpdateFormIdsOfOrg(org.id);
+    } = await listDailyScrumUpdateFormIdsOfWorkspace(workspace.id);
 
     if (getDailyScrumUpdateFormsError || !dailyScrumUpdateForms) {
       return {

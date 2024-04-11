@@ -21,9 +21,9 @@ const formSchema = z.object({
 });
 
 // TODO: pass in data
-// TODO: restrict update to org owner and admin & explain when it's disabled
+// TODO: restrict update to workspace owner and admin & explain when it's disabled
 
-const OrgNameSettingsForm = (props: Props) => {
+const WorkspaceNameSettingsForm = (props: Props) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -63,4 +63,4 @@ const OrgNameSettingsForm = (props: Props) => {
   );
 };
 
-export default OrgNameSettingsForm;
+export default WorkspaceNameSettingsForm;

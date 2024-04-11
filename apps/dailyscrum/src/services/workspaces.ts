@@ -2,15 +2,15 @@ import { cache } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Database } from "@/lib/supabase/database";
 import { getCurrentUser } from "./users";
-import { revalidateTag, unstable_cache } from "next/cache";
+import { revalidateTag } from "next/cache";
 import { memoizeAndPersist } from "@/lib/cache";
 
-const listOrgs = memoizeAndPersist(async (userId: string) => {
+const listWorkspaces = memoizeAndPersist(async (userId: string) => {
   const client = createClient<Database>();
 
   // TODO: don't alias hash_id as id
   return await client
-    .from("orgs")
+    .from("workspaces")
     .select(
       `
         id: hash_id,
@@ -21,9 +21,9 @@ const listOrgs = memoizeAndPersist(async (userId: string) => {
       `
     )
     .eq("members.user_id", userId);
-}, "listOrgs");
+}, "listWorkspaces");
 
-export const listOrgsOfCurrentUser = cache(async () => {
+export const listWorkspacesOfCurrentUser = cache(async () => {
   const { data: user, error: getCurrentUserError } = await getCurrentUser();
 
   if (getCurrentUserError) {
@@ -40,28 +40,31 @@ export const listOrgsOfCurrentUser = cache(async () => {
     };
   }
 
-  return listOrgs(user.id);
+  return listWorkspaces(user.id);
 });
 
-export const getOrg = memoizeAndPersist(async (id: number) => {
+export const getWorkspace = memoizeAndPersist(async (id: number) => {
   const client = createClient<Database>();
 
-  return client.from("orgs").select("*").eq("id", id).single();
-}, "getOrg");
+  return client.from("workspaces").select("*").eq("id", id).single();
+}, "getWorkspace");
 
-export const getOrgByHashId = memoizeAndPersist(async (hashId: string) => {
-  const client = createClient<Database>();
+export const getWorkspaceByHashId = memoizeAndPersist(
+  async (hashId: string) => {
+    const client = createClient<Database>();
 
-  return client.from("orgs").select("*").eq("hash_id", hashId).single();
-}, "getOrgByHashId");
+    return client.from("workspaces").select("*").eq("hash_id", hashId).single();
+  },
+  "getWorkspaceByHashId"
+);
 
 /**
- * Creates a new organization with the provided organization values.
- * The new organiztiion is a member of the current user. Also, seeds the initial data for the organization.
+ * Creates a new workspace with the provided workspace values.
+ * The new workspace is a member of the current user. Also, seeds the initial data for the workspace.
  */
-export const createOrg = async (
-  orgValues: Required<
-    Pick<Database["public"]["Tables"]["orgs"]["Insert"], "name">
+export const createWorkspace = async (
+  workspaceValues: Required<
+    Pick<Database["public"]["Tables"]["workspaces"]["Insert"], "name">
   >
 ) => {
   const { data: user, error: getCurrentUserError } = await getCurrentUser();
@@ -82,28 +85,28 @@ export const createOrg = async (
 
   const client = createClient<Database>();
 
-  const { data: orgs, error: insertOrgError } = await client
-    .from("orgs")
-    .insert(orgValues)
+  const { data: workspaces, error: insertWorkspaceError } = await client
+    .from("workspaces")
+    .insert(workspaceValues)
     .select();
 
-  if (insertOrgError) {
-    return { data: null, error: insertOrgError };
+  if (insertWorkspaceError) {
+    return { data: null, error: insertWorkspaceError };
   }
 
-  const [org] = orgs;
+  const [workspace] = workspaces;
 
-  if (!org) {
+  if (!workspace) {
     return {
       data: null,
       error: {
-        message: "Organization not found",
+        message: "Workspace not found",
       },
     };
   }
 
   const { error: insertMemberError } = await client.from("members").insert({
-    org_id: org.id,
+    workspace_id: workspace.id,
     user_id: user.id,
   });
 
@@ -111,56 +114,54 @@ export const createOrg = async (
     return { data: null, error: insertMemberError };
   }
   const {
-    data: orgDailyScrumUpdateForms,
-    error: insertOrgDailyScrumUpdateFormError,
+    data: workspaceDailyScrumUpdateForms,
+    error: insertWorkspaceDailyScrumUpdateFormError,
   } = await client
     .from("daily_scrum_update_forms")
     .insert({
-      org_id: org.id,
+      workspace_id: workspace.id,
       description:
         "Answer questions to keep your team updated and work through any challenges together.",
     })
     .select();
 
-  if (insertOrgDailyScrumUpdateFormError) {
-    return { data: null, error: insertOrgDailyScrumUpdateFormError };
+  if (insertWorkspaceDailyScrumUpdateFormError) {
+    return { data: null, error: insertWorkspaceDailyScrumUpdateFormError };
   }
 
-  const orgDailyScrumUpdateForm = orgDailyScrumUpdateForms[0];
+  const workspaceDailyScrumUpdateForm = workspaceDailyScrumUpdateForms[0];
 
-  if (!orgDailyScrumUpdateForm) {
+  if (!workspaceDailyScrumUpdateForm) {
     return {
       data: null,
-      error: { message: "Org Daily Scrum Update Form not found" },
+      error: { message: "Workspace Daily Scrum Update Form not found" },
     };
   }
 
-  const { error: insertOrgSettingsError } = await client
-    .from("org_settings")
+  const { error: insertWorkspaceSettingsError } = await client
+    .from("workspace_settings")
     .insert([
       {
-        org_id: org.id,
+        workspace_id: workspace.id,
         attribute_key: "time_zone",
         attribute_value: "America/New_York", // TODO: Get user timezone
       },
       {
-        org_id: org.id,
+        workspace_id: workspace.id,
         attribute_key: "selected_daily_scrum_update_form_id",
-        attribute_value: String(orgDailyScrumUpdateForm.id),
+        attribute_value: String(workspaceDailyScrumUpdateForm.id),
       },
     ]);
 
-  if (insertOrgSettingsError) {
-    return { data: null, error: insertOrgSettingsError };
+  if (insertWorkspaceSettingsError) {
+    return { data: null, error: insertWorkspaceSettingsError };
   }
 
-  // revalidateTag(`getOrgSettings(${org.id})`);
-
-  const { error: insertOrgDailyScrumUpdateQuestionsError } = await client
+  const { error: insertWorkspaceDailyScrumUpdateQuestionsError } = await client
     .from("daily_scrum_update_questions")
     .insert([
       {
-        daily_scrum_update_form_id: orgDailyScrumUpdateForm.id,
+        daily_scrum_update_form_id: workspaceDailyScrumUpdateForm.id,
         question: "What did I accomplish yesterday?",
         brief_question: "Yesterday's Progress",
         placeholder: "Your accomplishments from yesterday",
@@ -171,7 +172,7 @@ export const createOrg = async (
         order: 0,
       },
       {
-        daily_scrum_update_form_id: orgDailyScrumUpdateForm.id,
+        daily_scrum_update_form_id: workspaceDailyScrumUpdateForm.id,
         question: "What will I work on today?",
         brief_question: "Today's Plan",
         placeholder: "Today's tasks and goals",
@@ -181,7 +182,7 @@ export const createOrg = async (
         order: 1,
       },
       {
-        daily_scrum_update_form_id: orgDailyScrumUpdateForm.id,
+        daily_scrum_update_form_id: workspaceDailyScrumUpdateForm.id,
         question: "Do you have any blockers or impediments?",
         brief_question: "Obstacles",
         placeholder: "Current blockers or challenges",
@@ -193,14 +194,14 @@ export const createOrg = async (
       },
     ]);
 
-  if (insertOrgDailyScrumUpdateQuestionsError) {
-    return { data: null, error: insertOrgDailyScrumUpdateQuestionsError };
+  if (insertWorkspaceDailyScrumUpdateQuestionsError) {
+    return { data: null, error: insertWorkspaceDailyScrumUpdateQuestionsError };
   }
 
-  revalidateTag(`listOrgs(${user.id})`);
+  revalidateTag(`listWorkspaces(${user.id})`);
 
   return {
-    data: org,
+    data: workspace,
     error: null,
   };
 };

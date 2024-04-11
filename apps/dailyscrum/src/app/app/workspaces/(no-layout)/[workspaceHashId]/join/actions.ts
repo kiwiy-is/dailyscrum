@@ -1,28 +1,30 @@
 "use server";
 
 import { createMember } from "@/services/members";
-import { getOrg } from "@/services/orgs";
+import { getWorkspace } from "@/services/workspaces";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function join(workspaceId: number, userId: string) {
   const response = await createMember({
     user_id: userId,
-    org_id: workspaceId,
+    workspace_id: workspaceId,
   });
 
   if (response.error) {
     return response;
   }
 
-  const { data: org, error: getOrgError } = await getOrg(workspaceId);
+  const { data: workspace, error: getWorkspaceError } = await getWorkspace(
+    workspaceId
+  );
 
-  if (getOrgError) {
+  if (getWorkspaceError) {
     return {
-      error: getOrgError,
+      error: getWorkspaceError,
     };
   }
 
-  revalidatePath(`/app/workspaces/${org.hash_id}`);
-  redirect(`/app/workspaces/${org.hash_id}`);
+  revalidatePath(`/app/workspaces/${workspace.hash_id}`);
+  redirect(`/app/workspaces/${workspace.hash_id}`);
 }

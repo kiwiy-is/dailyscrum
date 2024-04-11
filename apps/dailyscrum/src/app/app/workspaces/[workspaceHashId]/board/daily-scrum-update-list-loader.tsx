@@ -4,9 +4,9 @@ import { getSearchParams } from "next-impl-getters/get-search-params";
 
 import React from "react";
 import DailyScrumUpdateList from "./daily-scrum-update-list";
-import { getOrgByHashId } from "@/services/orgs";
+import { getWorkspaceByHashId } from "@/services/workspaces";
 import { listDailyScrumUpdateEntries } from "@/services/daily-scrum-update-entries";
-import { getOrgSettings } from "@/services/org-settings";
+import { getWorkspaceSettings } from "@/services/workspace-settings";
 
 type Props = {};
 
@@ -14,17 +14,15 @@ const DailyScrumUpdateListLoader = async (props: Props) => {
   const { workspaceHashId } = getParams() as { workspaceHashId: string };
   const searchParams = getSearchParams();
 
-  const { data: org, error: getOrgError } = await getOrgByHashId(
-    workspaceHashId
-  );
+  const { data: workspace, error: getWorkspaceError } =
+    await getWorkspaceByHashId(workspaceHashId);
 
-  if (getOrgError || !org) {
+  if (getWorkspaceError || !workspace) {
     return null;
   }
 
-  const { data: settings, error: getSettingsError } = await getOrgSettings(
-    org.id
-  );
+  const { data: settings, error: getSettingsError } =
+    await getWorkspaceSettings(workspace.id);
 
   if (getSettingsError || !settings) {
     return null;

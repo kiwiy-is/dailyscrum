@@ -1,6 +1,6 @@
-import OrganizationSelectionLoader from "./organization-selection-loader";
+import WorkspaceSelectionLoader from "./workspace-selection-loader";
 import React from "react";
-import CreateNewOrganizationDialog from "./create-new-organization-dialog";
+import CreateNewWorkspaceDialog from "./create-new-workspace-dialog";
 import { Button, buttonVariants } from "ui/button";
 import { cn } from "ui";
 import NavLink from "@/components/nav-link";
@@ -29,7 +29,7 @@ export default async function Layout({
             </div>
 
             <div className="">
-              <OrganizationSelectionLoader />
+              <WorkspaceSelectionLoader />
             </div>
 
             <nav className="flex flex-col flex-1 space-y-1">
@@ -80,7 +80,7 @@ export default async function Layout({
           <main className="py-8 px-8">{children}</main>
         </ScrollArea>
       </div>
-      <CreateNewOrganizationDialog />
+      <CreateNewWorkspaceDialog />
       <AddScrumUpdateDialogLoader />
     </>
   );

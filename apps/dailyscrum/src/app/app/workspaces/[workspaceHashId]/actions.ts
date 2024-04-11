@@ -1,7 +1,7 @@
 "use server";
 
 import { createAuthClient } from "@/lib/supabase/auth-client";
-import { createOrg } from "@/services/orgs";
+import { createWorkspace } from "@/services/workspaces";
 import { cookies } from "next/headers";
 import { getParams } from "next-impl-getters/get-params";
 import { redirect } from "next/navigation";
@@ -9,8 +9,8 @@ import { DateTime } from "luxon";
 import { createDailyScrumUpdateEntry } from "@/services/daily-scrum-update-entries";
 import { createDailyScrumUpdateAnswers } from "@/services/daily-scrum-update-answers";
 
-export async function createNewOrganization(name: string) {
-  const { data: org, error } = await createOrg({ name });
+export async function createNewWorkspace(name: string) {
+  const { data: workspace, error } = await createWorkspace({ name });
 
   if (error) {
     return {
@@ -18,7 +18,7 @@ export async function createNewOrganization(name: string) {
     };
   }
 
-  redirect(`/app/workspaces/${org.hash_id}`);
+  redirect(`/app/workspaces/${workspace.hash_id}`);
 }
 
 export async function addUpdate(

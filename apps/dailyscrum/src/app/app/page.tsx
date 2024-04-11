@@ -1,5 +1,8 @@
 import { redirect } from "next/navigation";
-import { createOrg, listOrgsOfCurrentUser } from "@/services/orgs";
+import {
+  createWorkspace,
+  listWorkspacesOfCurrentUser,
+} from "@/services/workspaces";
 import { getCurrentUser } from "@/services/users";
 import { getCurrentUserProfile } from "@/services/profiles";
 
@@ -20,30 +23,31 @@ export default async function Page() {
     redirect("/app/sign-up/complete");
   }
 
-  const { data: orgs, error } = await listOrgsOfCurrentUser();
+  const { data: workspaces, error } = await listWorkspacesOfCurrentUser();
 
-  if (!orgs || error) {
+  if (!workspaces || error) {
     return null;
   }
 
-  if (orgs.length > 0) {
-    const [org] = orgs;
+  if (workspaces.length > 0) {
+    const [workspace] = workspaces;
 
-    if (!org) {
+    if (!workspace) {
       return null;
     }
 
-    return redirect(`/app/workspaces/${org.id}`);
+    return redirect(`/app/workspaces/${workspace.id}`);
   }
 
-  // TODO: Seems like the organization is created multiple times. Maybe wrap it with a server action and call it here? Try and test it.
-  const { data: org, error: createOrgError } = await createOrg({
-    name: "My organization",
-  });
+  // TODO: Seems like the workspace is created multiple times. Maybe wrap it with a server action and call it here? Try and test it.
+  const { data: workspace, error: createWorkspaceError } =
+    await createWorkspace({
+      name: "My workspace",
+    });
 
-  if (createOrgError) {
+  if (createWorkspaceError) {
     return null;
   }
 
-  return redirect(`/app/workspaces/${org.hash_id}`);
+  return redirect(`/app/workspaces/${workspace.hash_id}`);
 }

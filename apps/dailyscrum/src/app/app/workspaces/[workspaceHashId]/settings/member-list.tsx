@@ -145,7 +145,7 @@ export const columns: ColumnDef<User>[] = [
 ];
 
 // TODO: pass in data
-// TODO: restrict updatd to org owner and admin
+// TODO: restrict updatd to workspace owner and admin
 const MemberList = () => {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(

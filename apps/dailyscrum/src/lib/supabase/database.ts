@@ -95,26 +95,26 @@ export type Database = {
           created_at: string;
           description: string;
           id: number;
-          org_id: number;
+          workspace_id: number;
         };
         Insert: {
           created_at?: string;
           description?: string;
           id?: number;
-          org_id: number;
+          workspace_id: number;
         };
         Update: {
           created_at?: string;
           description?: string;
           id?: number;
-          org_id?: number;
+          workspace_id?: number;
         };
         Relationships: [
           {
             foreignKeyName: "public_daily_scrum_update_forms_org_id_fkey";
-            columns: ["org_id"];
+            columns: ["workspace_id"];
             isOneToOne: false;
-            referencedRelation: "orgs";
+            referencedRelation: "workspaces";
             referencedColumns: ["id"];
           }
         ];
@@ -171,26 +171,26 @@ export type Database = {
           code: string;
           created_at: string;
           id: number;
-          org_id: number;
+          workspace_id: number;
         };
         Insert: {
           code?: string;
           created_at?: string;
           id?: number;
-          org_id: number;
+          workspace_id: number;
         };
         Update: {
           code?: string;
           created_at?: string;
           id?: number;
-          org_id?: number;
+          workspace_id?: number;
         };
         Relationships: [
           {
             foreignKeyName: "public_invitations_org_id_fkey";
-            columns: ["org_id"];
+            columns: ["workspace_id"];
             isOneToOne: false;
-            referencedRelation: "orgs";
+            referencedRelation: "workspaces";
             referencedColumns: ["id"];
           }
         ];
@@ -199,30 +199,30 @@ export type Database = {
         Row: {
           created_at: string;
           id: number;
-          org_id: number;
           updated_at: string;
           user_id: string;
+          workspace_id: number;
         };
         Insert: {
           created_at?: string;
           id?: number;
-          org_id: number;
           updated_at?: string;
           user_id?: string;
+          workspace_id: number;
         };
         Update: {
           created_at?: string;
           id?: number;
-          org_id?: number;
           updated_at?: string;
           user_id?: string;
+          workspace_id?: number;
         };
         Relationships: [
           {
             foreignKeyName: "public_members_org_id_fkey";
-            columns: ["org_id"];
+            columns: ["workspace_id"];
             isOneToOne: false;
-            referencedRelation: "orgs";
+            referencedRelation: "workspaces";
             referencedColumns: ["id"];
           },
           {
@@ -233,62 +233,6 @@ export type Database = {
             referencedColumns: ["id"];
           }
         ];
-      };
-      org_settings: {
-        Row: {
-          attribute_key: string;
-          attribute_value: string;
-          created_at: string;
-          id: number;
-          org_id: number;
-        };
-        Insert: {
-          attribute_key?: string;
-          attribute_value?: string;
-          created_at?: string;
-          id?: number;
-          org_id: number;
-        };
-        Update: {
-          attribute_key?: string;
-          attribute_value?: string;
-          created_at?: string;
-          id?: number;
-          org_id?: number;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "public_org_settings_org_id_fkey";
-            columns: ["org_id"];
-            isOneToOne: false;
-            referencedRelation: "orgs";
-            referencedColumns: ["id"];
-          }
-        ];
-      };
-      orgs: {
-        Row: {
-          created_at: string;
-          hash_id: string;
-          id: number;
-          name: string;
-          updated_at: string;
-        };
-        Insert: {
-          created_at?: string;
-          hash_id?: string;
-          id?: number;
-          name?: string;
-          updated_at?: string;
-        };
-        Update: {
-          created_at?: string;
-          hash_id?: string;
-          id?: number;
-          name?: string;
-          updated_at?: string;
-        };
-        Relationships: [];
       };
       profiles: {
         Row: {
@@ -321,6 +265,62 @@ export type Database = {
             referencedColumns: ["id"];
           }
         ];
+      };
+      workspace_settings: {
+        Row: {
+          attribute_key: string;
+          attribute_value: string;
+          created_at: string;
+          id: number;
+          workspace_id: number;
+        };
+        Insert: {
+          attribute_key?: string;
+          attribute_value?: string;
+          created_at?: string;
+          id?: number;
+          workspace_id: number;
+        };
+        Update: {
+          attribute_key?: string;
+          attribute_value?: string;
+          created_at?: string;
+          id?: number;
+          workspace_id?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "public_org_settings_org_id_fkey";
+            columns: ["workspace_id"];
+            isOneToOne: false;
+            referencedRelation: "workspaces";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      workspaces: {
+        Row: {
+          created_at: string;
+          hash_id: string;
+          id: number;
+          name: string;
+          updated_at: string;
+        };
+        Insert: {
+          created_at?: string;
+          hash_id?: string;
+          id?: number;
+          name?: string;
+          updated_at?: string;
+        };
+        Update: {
+          created_at?: string;
+          hash_id?: string;
+          id?: number;
+          name?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
       };
     };
     Views: {

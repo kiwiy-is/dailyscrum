@@ -1,4 +1,4 @@
-import { getOrgByHashId } from "@/services/orgs";
+import { getWorkspaceByHashId } from "@/services/workspaces";
 import { getCurrentUser } from "@/services/users";
 import Link from "next/link";
 import React from "react";
@@ -28,9 +28,9 @@ const Page = async ({ params, searchParams }: Props) => {
   const { workspaceHashId } = params;
   const codeParamValue = searchParams.code;
 
-  const { data: org } = await getOrgByHashId(workspaceHashId);
+  const { data: workspace } = await getWorkspaceByHashId(workspaceHashId);
 
-  if (!org) {
+  if (!workspace) {
     return null;
   }
 
@@ -44,8 +44,8 @@ const Page = async ({ params, searchParams }: Props) => {
           </CardHeader>
           <CardContent>
             <CardDescription>
-              The link might have expired. Please ask organization members for
-              an updated link.
+              The link might have expired. Please ask workspace members for an
+              updated link.
             </CardDescription>
           </CardContent>
         </Card>
@@ -66,8 +66,8 @@ const Page = async ({ params, searchParams }: Props) => {
           </CardHeader>
           <CardContent>
             <CardDescription>
-              The link might have expired. Please ask organization members for
-              an updated link.
+              The link might have expired. Please ask workspace members for an
+              updated link.
             </CardDescription>
           </CardContent>
         </Card>
@@ -78,19 +78,19 @@ const Page = async ({ params, searchParams }: Props) => {
   const { data: user } = await getCurrentUser();
 
   if (!user) {
-    const returnPath = `/app/workspaces/${org.hash_id}/join?code=${codeParamValue}`;
+    const returnPath = `/app/workspaces/${workspace.hash_id}/join?code=${codeParamValue}`;
 
     return (
       <div className="h-screen flex flex-col justify-center items-center space-y-8">
         <KiwiyIsSymbol />
         <Card className="w-[440px]">
           <CardHeader>
-            <CardTitle>Join "{org.name}"</CardTitle>
+            <CardTitle>Join "{workspace.name}"</CardTitle>
           </CardHeader>
           <CardContent>
             <CardDescription>
-              You are invited to "{org.name}". Please sign in to join the
-              organization.
+              You are invited to "{workspace.name}". Please sign in to join the
+              workspace.
             </CardDescription>
           </CardContent>
           <CardFooter>
@@ -119,7 +119,7 @@ const Page = async ({ params, searchParams }: Props) => {
     );
   }
 
-  const { data: member } = await getMember(org.id, user.id);
+  const { data: member } = await getMember(workspace.id, user.id);
 
   if (member) {
     return (
@@ -136,13 +136,15 @@ const Page = async ({ params, searchParams }: Props) => {
       <KiwiyIsSymbol />
       <Card className="w-[440px]">
         <CardHeader>
-          <CardTitle>Join "{org.name}"</CardTitle>
+          <CardTitle>Join "{workspace.name}"</CardTitle>
         </CardHeader>
         <CardContent>
-          <CardDescription>You are invited to "{org.name}".</CardDescription>
+          <CardDescription>
+            You are invited to "{workspace.name}".
+          </CardDescription>
         </CardContent>
         <CardFooter>
-          <JoinButton workspaceId={org.id} userId={user.id} />
+          <JoinButton workspaceId={workspace.id} userId={user.id} />
         </CardFooter>
       </Card>
     </div>

@@ -34,7 +34,7 @@ const formSchema = z.object({
 });
 
 // TODO: pass in data
-// TODO: restrict update to org owner and admin & explain when it's disabled
+// TODO: restrict update to workspace owner and admin & explain when it's disabled
 const StandardTimeZoneSettingsForm = (props: Props) => {
   const [open, setOpen] = useState(false);
 
@@ -141,8 +141,8 @@ const StandardTimeZoneSettingsForm = (props: Props) => {
                   </PopoverContent>
                 </Popover>
                 <FormDescription>
-                  The standard time zone for the organization. All dates and
-                  times of are considered to be in this time zone.
+                  The standard time zone for the workspace. All dates and times
+                  of are considered to be in this time zone.
                 </FormDescription>
                 <FormMessage />
               </FormItem>

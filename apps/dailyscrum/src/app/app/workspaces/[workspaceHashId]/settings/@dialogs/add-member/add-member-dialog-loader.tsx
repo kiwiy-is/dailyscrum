@@ -2,28 +2,27 @@ import React from "react";
 import AddMemberDialog from "./add-member-dialog";
 import { getParams } from "next-impl-getters/get-params";
 import { createInvitation } from "./actions";
-import { getOrgByHashId } from "@/services/orgs";
-import { getInvitationByOrgId } from "@/services/invitations";
+import { getWorkspaceByHashId } from "@/services/workspaces";
+import { getInvitationByWorkspaceId } from "@/services/invitations";
 
 type Props = {};
 
 const AddMemberDialogLoader = async (props: Props) => {
   const { workspaceHashId } = getParams() as { workspaceHashId: string };
 
-  const { data: org, error: getOrgError } = await getOrgByHashId(
-    workspaceHashId
-  );
+  const { data: workspace, error: getWorkspaceError } =
+    await getWorkspaceByHashId(workspaceHashId);
 
-  if (getOrgError || !org) {
+  if (getWorkspaceError || !workspace) {
     return null;
   }
 
   const { data: invitation, error: getInvitationError } =
-    await getInvitationByOrgId(org.id);
+    await getInvitationByWorkspaceId(workspace.id);
 
   let code;
   if (!invitation) {
-    const { data, error } = await createInvitation(org.id);
+    const { data, error } = await createInvitation(workspace.id);
     if (!data) {
       return null;
     }
@@ -32,7 +31,7 @@ const AddMemberDialogLoader = async (props: Props) => {
     code = invitation.code;
   }
 
-  return <AddMemberDialog verificationCode={code} orgId={org.id} />;
+  return <AddMemberDialog verificationCode={code} workspaceId={workspace.id} />;
 };
 
 export default AddMemberDialogLoader;

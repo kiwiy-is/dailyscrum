@@ -34,10 +34,10 @@ import { generateNewInvitationLink } from "./actions";
 
 type Props = {
   verificationCode: string;
-  orgId: number;
+  workspaceId: number;
 };
 
-const AddMemberDialog = ({ verificationCode, orgId }: Props) => {
+const AddMemberDialog = ({ verificationCode, workspaceId }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -165,7 +165,7 @@ const AddMemberDialog = ({ verificationCode, orgId }: Props) => {
               onClick={() =>
                 startTransition(async () => {
                   const { data, error } = await generateNewInvitationLink(
-                    orgId
+                    workspaceId
                   );
                   if (error) {
                     return;

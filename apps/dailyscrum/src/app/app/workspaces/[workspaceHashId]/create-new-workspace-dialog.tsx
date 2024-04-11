@@ -22,7 +22,7 @@ import {
 import { Input } from "ui/shadcn-ui/input";
 import { usePathname, useSearchParams } from "next/navigation";
 import { Button } from "ui/button";
-import { createNewOrganization } from "./actions";
+import { createNewWorkspace } from "./actions";
 
 const formSchema = z.object({
   name: z.string().min(1),
@@ -30,7 +30,7 @@ const formSchema = z.object({
 
 type Props = {};
 
-const CreateNewOrganizationDialog = (props: Props) => {
+const CreateNewWorkspaceDialog = (props: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
 
@@ -39,7 +39,7 @@ const CreateNewOrganizationDialog = (props: Props) => {
   const dialogParamValue = searchParams.get("dialog");
 
   useEffect(() => {
-    setIsOpen(dialogParamValue === "create-new-organization");
+    setIsOpen(dialogParamValue === "create-new-workspace");
   }, [dialogParamValue]);
 
   useEffect(() => {
@@ -68,7 +68,7 @@ const CreateNewOrganizationDialog = (props: Props) => {
       form.handleSubmit((values) => {
         startTransition(async () => {
           // TODO: handle error
-          const { error } = await createNewOrganization(values.name);
+          const { error } = await createNewWorkspace(values.name);
         });
       })(event);
     },
@@ -79,13 +79,13 @@ const CreateNewOrganizationDialog = (props: Props) => {
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create a new organization</DialogTitle>
+          <DialogTitle>Create a new workspace</DialogTitle>
           <DialogDescription>
-            Enter the name of your organization to start sharing and managing
-            daily scrum updates.
+            Enter the name of your workspace to start sharing and managing daily
+            scrum updates.
           </DialogDescription>
         </DialogHeader>
-        <form id="create-new-organization-form" onSubmit={handleSubmit}>
+        <form id="create-new-workspace-form" onSubmit={handleSubmit}>
           <Form {...form}>
             <FormField
               render={({ field }) => {
@@ -93,7 +93,7 @@ const CreateNewOrganizationDialog = (props: Props) => {
                   <FormItem>
                     <FormLabel>Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Organization name" {...field} />
+                      <Input placeholder="Workspace name" {...field} />
                     </FormControl>
                   </FormItem>
                 );
@@ -106,7 +106,7 @@ const CreateNewOrganizationDialog = (props: Props) => {
         <DialogFooter>
           <Button
             type="submit"
-            form="create-new-organization-form"
+            form="create-new-workspace-form"
             size="sm"
             loading={isPending}
           >
@@ -118,4 +118,4 @@ const CreateNewOrganizationDialog = (props: Props) => {
   );
 };
 
-export default CreateNewOrganizationDialog;
+export default CreateNewWorkspaceDialog;

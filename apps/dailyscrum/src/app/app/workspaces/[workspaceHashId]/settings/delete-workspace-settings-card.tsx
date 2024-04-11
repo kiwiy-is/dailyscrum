@@ -10,24 +10,24 @@ import {
 type Props = {};
 
 // TODO: pass in data
-// TODO: restrict update to org owner and admin & explain when it's disabled
-const DeleteOrgSettingsCard = (props: Props) => {
+// TODO: restrict update to workspace owner and admin & explain when it's disabled
+const DeleteWorkspaceSettingsCard = (props: Props) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">Delete organization</CardTitle>
+        <CardTitle className="text-base">Delete workspace</CardTitle>
         <CardDescription>
-          Permanently delete your organization and all of its content from Kiwiy
-          is Dailyscrum.
+          Permanently delete your workspace and all of its content from Kiwiy is
+          Dailyscrum.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <Button variant="destructive" size="sm">
-          Delete organization
+          Delete workspace
         </Button>
       </CardContent>
     </Card>
   );
 };
 
-export default DeleteOrgSettingsCard;
+export default DeleteWorkspaceSettingsCard;

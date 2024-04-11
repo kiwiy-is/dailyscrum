@@ -27,13 +27,13 @@ function persist<T extends any[], R>(
  *
  * e.g.
  * ```
- * const listOrgs = cache((userId: string) =>
+ * const listWorkspaces = cache((userId: string) =>
  *   unstable_cache(
  *    async (userId: string) => {
  *      const client = createClient<Database>();
  *
  *      return await client
- *        .from("orgs")
+ *        .from("workspaces")
  *        .select(
  *          `
  *          id: hash_id,
@@ -47,7 +47,7 @@ function persist<T extends any[], R>(
  *     },
  *     [],
  *     {
- *       tags: [`listOrgs(${userId})`],
+ *       tags: [`listWorkspaces(${userId})`],
  *     }
  *   )(userId)
  * );

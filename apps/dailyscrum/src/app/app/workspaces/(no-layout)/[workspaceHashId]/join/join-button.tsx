@@ -22,7 +22,7 @@ const JoinButton = ({ workspaceId, userId }: Props) => {
       }}
       loading={isPending}
     >
-      Join organization
+      Join workspace
     </Button>
   );
 };

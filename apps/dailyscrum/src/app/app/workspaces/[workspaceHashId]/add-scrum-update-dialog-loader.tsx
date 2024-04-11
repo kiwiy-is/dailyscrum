@@ -3,10 +3,10 @@ import { AddScrumUpdateDialog } from "./add-scrum-update-dialog";
 import { getParams } from "next-impl-getters/get-params";
 import { DateTime } from "luxon";
 import { getCurrentUser } from "@/services/users";
-import { getOrgByHashId } from "@/services/orgs";
+import { getWorkspaceByHashId } from "@/services/workspaces";
 import { getDailyScrumUpdateForm } from "@/services/daily-scrum-update-forms";
 import { getDailyScrumUpdateEntriesCountOfCurrentUser } from "@/services/daily-scrum-update-entries";
-import { getOrgSettings } from "@/services/org-settings";
+import { getWorkspaceSettings } from "@/services/workspace-settings";
 
 type Props = {};
 
@@ -19,17 +19,15 @@ const AddScrumUpdateDialogLoader = async (props: Props) => {
     return null;
   }
 
-  const { data: org, error: getOrgError } = await getOrgByHashId(
-    workspaceHashId
-  );
+  const { data: workspace, error: getWorkspaceError } =
+    await getWorkspaceByHashId(workspaceHashId);
 
-  if (getOrgError || !org) {
+  if (getWorkspaceError || !workspace) {
     return null;
   }
 
-  const { data: settings, error: getSettingsError } = await getOrgSettings(
-    org.id
-  );
+  const { data: settings, error: getSettingsError } =
+    await getWorkspaceSettings(workspace.id);
 
   if (getSettingsError || !settings) {
     return null;

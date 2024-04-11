@@ -16,17 +16,17 @@ import {
 } from "ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "ui/shadcn-ui/popover";
 
-type Org = {
+type Workspace = {
   id: string;
   name: string;
 };
 
 type Props = {
-  orgs: Org[];
-  selectedOrg: Org;
+  workspaces: Workspace[];
+  selectedWorkspace: Workspace;
 };
 
-function OrganizationSelection({ orgs, selectedOrg }: Props) {
+function WorkspaceSelection({ workspaces, selectedWorkspace }: Props) {
   const [open, setOpen] = useState(false);
 
   const router = useRouter();
@@ -34,16 +34,16 @@ function OrganizationSelection({ orgs, selectedOrg }: Props) {
   const searchParams = useSearchParams();
 
   const handleCommandItemSelect = useCallback(
-    (orgId: string) => () => {
+    (workspaceId: string) => () => {
       setOpen(false);
-      router.push(`/app/workspaces/${orgId}/board`);
+      router.push(`/app/workspaces/${workspaceId}/board`);
     },
     []
   );
 
-  const handleCreateOrgSelect = useCallback(() => {
+  const handleCreateWorkspaceSelect = useCallback(() => {
     const params = new URLSearchParams(searchParams);
-    params.set("dialog", "create-new-organization");
+    params.set("dialog", "create-new-workspace");
     window.history.replaceState(null, "", `${pathname}?${params.toString()}`);
   }, []);
 
@@ -54,11 +54,11 @@ function OrganizationSelection({ orgs, selectedOrg }: Props) {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          aria-label="Select an organization"
+          aria-label="Select a workspace"
           size="sm"
           className={cn("w-full justify-between", "h-10")}
         >
-          {selectedOrg.name}
+          {selectedWorkspace.name}
           <ChevronsUpDownIcon
             className="ml-auto h-4 w-4 shrink-0 opacity-50"
             strokeWidth={2}
@@ -68,9 +68,9 @@ function OrganizationSelection({ orgs, selectedOrg }: Props) {
       <PopoverContent className="w-[240px] p-0" align="start">
         <Command
           filter={(value, search) => {
-            const org = orgs[parseInt(value, 10)];
+            const workspace = workspaces[parseInt(value, 10)];
 
-            if (org?.name.includes(search)) {
+            if (workspace?.name.includes(search)) {
               return 1;
             }
             return 0;
@@ -78,20 +78,20 @@ function OrganizationSelection({ orgs, selectedOrg }: Props) {
         >
           <CommandInput placeholder="Search..." />
           <CommandList>
-            <CommandEmpty>No organization found.</CommandEmpty>
+            <CommandEmpty>No workspace found.</CommandEmpty>
             <CommandGroup>
-              {orgs.map((org, index) => (
+              {workspaces.map((workspace, index) => (
                 <CommandItem
-                  key={org.id}
-                  id={org.id}
-                  onSelect={handleCommandItemSelect(org.id)}
+                  key={workspace.id}
+                  id={workspace.id}
+                  onSelect={handleCommandItemSelect(workspace.id)}
                   value={String(index)} // NOTE: the string value is coerced into lower case. Using index instead of id.
                 >
-                  {org.name}
+                  {workspace.name}
                   <CheckIcon
                     className={cn(
                       "ml-auto h-4 w-4",
-                      selectedOrg.id === org.id ? "" : "opacity-0"
+                      selectedWorkspace.id === workspace.id ? "" : "opacity-0"
                     )}
                     strokeWidth={2}
                   />
@@ -102,9 +102,9 @@ function OrganizationSelection({ orgs, selectedOrg }: Props) {
             <CommandSeparator alwaysRender />
 
             <CommandGroup forceMount>
-              <CommandItem onSelect={handleCreateOrgSelect} forceMount>
+              <CommandItem onSelect={handleCreateWorkspaceSelect} forceMount>
                 <PlusCircleIcon className="mr-2 h-4 w-4 " strokeWidth={2} />
-                Create an organization
+                Create a workspace
               </CommandItem>
             </CommandGroup>
           </CommandList>
@@ -114,4 +114,4 @@ function OrganizationSelection({ orgs, selectedOrg }: Props) {
   );
 }
 
-export default OrganizationSelection;
+export default WorkspaceSelection;
