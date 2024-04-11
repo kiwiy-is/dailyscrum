@@ -33,7 +33,7 @@ export default async function Page() {
       return null;
     }
 
-    return redirect(`/app/orgs/${org.id}`);
+    return redirect(`/app/workspaces/${org.id}`);
   }
 
   // TODO: Seems like the organization is created multiple times. Maybe wrap it with a server action and call it here? Try and test it.
@@ -45,5 +45,5 @@ export default async function Page() {
     return null;
   }
 
-  return redirect(`/app/orgs/${org.hash_id}`);
+  return redirect(`/app/workspaces/${org.hash_id}`);
 }

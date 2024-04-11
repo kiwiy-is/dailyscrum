@@ -11,7 +11,7 @@ import { getOrgSettings } from "@/services/org-settings";
 type Props = {};
 
 const AddScrumUpdateDialogLoader = async (props: Props) => {
-  const { orgId: orgHashId } = getParams() as { orgId: string };
+  const { workspaceHashId } = getParams() as { workspaceHashId: string };
 
   const { data: user, error: getCurrentUserError } = await getCurrentUser();
 
@@ -19,7 +19,9 @@ const AddScrumUpdateDialogLoader = async (props: Props) => {
     return null;
   }
 
-  const { data: org, error: getOrgError } = await getOrgByHashId(orgHashId);
+  const { data: org, error: getOrgError } = await getOrgByHashId(
+    workspaceHashId
+  );
 
   if (getOrgError || !org) {
     return null;

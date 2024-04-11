@@ -6,7 +6,7 @@ function persist<T extends any[], R>(
   functionName: string
 ) {
   return (...args: T) => {
-    const key = `${functionName}(${args.join(",")})`;
+    const key = `${functionName}(${args.join(", ")})`; // TODO: is this really a good way to do this?
     return unstable_cache(
       async (...args: any[]) => {
         return callback(...(args as T));
@@ -59,11 +59,14 @@ export function memoizeAndPersist<T extends any[], R>(
   callback: (...args: T) => Promise<R>,
   functionName: string
 ) {
+  // TODO: check other ways to revalidate and apply
   const persistedCallback = persist(callback, functionName);
 
   return (...args: T) => {
-    return cache((...args: any[]) => persistedCallback(...(args as T)))(
-      ...args
-    );
+    // return cache((...args: any[]) => persistedCallback(...(args as T)))(
+    //   ...args
+    // );
+
+    return cache((...args: any[]) => callback(...(args as T)))(...args);
   };
 }

@@ -7,7 +7,7 @@ type Props = {
 };
 
 const OrganizationSelectionLoader: React.FC<Props> = async (props) => {
-  const { orgId } = getParams() as { orgId: string };
+  const { workspaceHashId } = getParams() as { workspaceHashId: string };
 
   const { data: orgs, error } = await listOrgsOfCurrentUser();
 
@@ -15,7 +15,7 @@ const OrganizationSelectionLoader: React.FC<Props> = async (props) => {
     return null;
   }
 
-  const selectedOrg = orgs.find((org) => org.id === orgId) ?? orgs[0];
+  const selectedOrg = orgs.find((org) => org.id === workspaceHashId) ?? orgs[0];
 
   return <OrganizationSelection orgs={orgs} selectedOrg={selectedOrg} />;
 };

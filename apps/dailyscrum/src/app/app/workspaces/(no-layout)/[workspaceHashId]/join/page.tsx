@@ -18,17 +18,17 @@ import { getInvitationByCode } from "@/services/invitations";
 import { getMember } from "@/services/members";
 
 type Props = {
-  params: { orgId: string };
+  params: { workspaceHashId: string };
   searchParams: {
     code: string | undefined;
   };
 };
 
 const Page = async ({ params, searchParams }: Props) => {
-  const { orgId: orgHashId } = params;
+  const { workspaceHashId } = params;
   const codeParamValue = searchParams.code;
 
-  const { data: org } = await getOrgByHashId(orgHashId);
+  const { data: org } = await getOrgByHashId(workspaceHashId);
 
   if (!org) {
     return null;
@@ -78,7 +78,7 @@ const Page = async ({ params, searchParams }: Props) => {
   const { data: user } = await getCurrentUser();
 
   if (!user) {
-    const returnPath = `/app/orgs/${org.hash_id}/join?code=${codeParamValue}`;
+    const returnPath = `/app/workspaces/${org.hash_id}/join?code=${codeParamValue}`;
 
     return (
       <div className="h-screen flex flex-col justify-center items-center space-y-8">
@@ -126,7 +126,7 @@ const Page = async ({ params, searchParams }: Props) => {
       <div>
         <div>You are already a member of this Workspace.</div>
         <br />
-        <Link href={`/app/orgs/${orgHashId}`}>Go to Workspace</Link>
+        <Link href={`/app/workspaces/${workspaceHashId}`}>Go to Workspace</Link>
       </div>
     );
   }
@@ -142,7 +142,7 @@ const Page = async ({ params, searchParams }: Props) => {
           <CardDescription>You are invited to "{org.name}".</CardDescription>
         </CardContent>
         <CardFooter>
-          <JoinButton orgId={org.id} userId={user.id} />
+          <JoinButton workspaceId={org.id} userId={user.id} />
         </CardFooter>
       </Card>
     </div>

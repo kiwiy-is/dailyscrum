@@ -8,9 +8,11 @@ import { getInvitationByOrgId } from "@/services/invitations";
 type Props = {};
 
 const AddMemberDialogLoader = async (props: Props) => {
-  const { orgId: orgHashId } = getParams() as { orgId: string };
+  const { workspaceHashId } = getParams() as { workspaceHashId: string };
 
-  const { data: org, error: getOrgError } = await getOrgByHashId(orgHashId);
+  const { data: org, error: getOrgError } = await getOrgByHashId(
+    workspaceHashId
+  );
 
   if (getOrgError || !org) {
     return null;

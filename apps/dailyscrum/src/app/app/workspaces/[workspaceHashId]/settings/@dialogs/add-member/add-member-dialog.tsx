@@ -44,11 +44,10 @@ const AddMemberDialog = ({ verificationCode, orgId }: Props) => {
 
   const router = useRouter();
 
-  // TODO: change param value to [orgHashId]
-  const params = useParams<{ orgId: string }>();
+  const params = useParams<{ workspaceHashId: string }>();
 
   const [invitationLink, setInvitationLink] = useState(
-    `${window.location.origin}/app/orgs/${params.orgId}/join?code=${verificationCode}`
+    `${window.location.origin}/app/workspaces/${params.workspaceHashId}/join?code=${verificationCode}`
   );
 
   useEffect(() => {
@@ -58,7 +57,7 @@ const AddMemberDialog = ({ verificationCode, orgId }: Props) => {
   const closeDialog = () => {
     setIsOpen(false);
     setTimeout(() => {
-      router.push(`/app/orgs/${params.orgId}/settings`, {
+      router.push(`/app/workspaces/${params.workspaceHashId}/settings`, {
         scroll: false,
       });
     }, 150);
@@ -174,7 +173,7 @@ const AddMemberDialog = ({ verificationCode, orgId }: Props) => {
 
                   const { code } = data;
                   setInvitationLink(
-                    `${window.location.origin}/orgs/${params.orgId}/join?code=${code}`
+                    `${window.location.origin}/workspaces/${params.workspaceHashId}/join?code=${code}`
                   );
 
                   toast({

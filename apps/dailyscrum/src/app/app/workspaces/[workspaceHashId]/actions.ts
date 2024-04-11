@@ -18,7 +18,7 @@ export async function createNewOrganization(name: string) {
     };
   }
 
-  redirect(`/app/orgs/${org.hash_id}`);
+  redirect(`/app/workspaces/${org.hash_id}`);
 }
 
 export async function addUpdate(
@@ -28,7 +28,9 @@ export async function addUpdate(
     [x: number]: string;
   } & { date: Date }
 ) {
-  const { orgId: orgHashId } = getParams() as { orgId: string };
+  const { workspaceHashId } = getParams() as {
+    workspaceHashId: string;
+  };
 
   const { date, ...dynamicFormValues } = formValues;
 
@@ -43,7 +45,7 @@ export async function addUpdate(
   }
 
   const { data: entry, error: insertDailyScrumUpdateEntryError } =
-    await createDailyScrumUpdateEntry(orgHashId, {
+    await createDailyScrumUpdateEntry(workspaceHashId, {
       daily_scrum_update_form_id: formId,
       date: dateString,
       time_zone: timeZone,

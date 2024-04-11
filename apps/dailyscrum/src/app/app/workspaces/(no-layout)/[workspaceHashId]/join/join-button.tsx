@@ -5,11 +5,11 @@ import { join } from "./actions";
 import { useTransition } from "react";
 
 type Props = {
-  orgId: number;
+  workspaceId: number;
   userId: string;
 };
 
-const JoinButton = ({ orgId, userId }: Props) => {
+const JoinButton = ({ workspaceId, userId }: Props) => {
   const [isPending, startTransition] = useTransition();
 
   return (
@@ -17,7 +17,7 @@ const JoinButton = ({ orgId, userId }: Props) => {
       className="flex-1"
       onClick={() => {
         startTransition(() => {
-          join(orgId, userId);
+          join(workspaceId, userId);
         });
       }}
       loading={isPending}

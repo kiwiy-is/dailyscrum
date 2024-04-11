@@ -8,6 +8,7 @@ import { memoizeAndPersist } from "@/lib/cache";
 const listOrgs = memoizeAndPersist(async (userId: string) => {
   const client = createClient<Database>();
 
+  // TODO: don't alias hash_id as id
   return await client
     .from("orgs")
     .select(

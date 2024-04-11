@@ -11,10 +11,12 @@ import { getOrgSettings } from "@/services/org-settings";
 type Props = {};
 
 const DailyScrumUpdateListLoader = async (props: Props) => {
-  const { orgId: orgHashId } = getParams() as { orgId: string };
+  const { workspaceHashId } = getParams() as { workspaceHashId: string };
   const searchParams = getSearchParams();
 
-  const { data: org, error: getOrgError } = await getOrgByHashId(orgHashId);
+  const { data: org, error: getOrgError } = await getOrgByHashId(
+    workspaceHashId
+  );
 
   if (getOrgError || !org) {
     return null;
@@ -50,7 +52,7 @@ const DailyScrumUpdateListLoader = async (props: Props) => {
   const {
     data: dailyScrumUpdateEntries,
     error: getDailyScrumUpdateEntriesError,
-  } = await listDailyScrumUpdateEntries(orgHashId, dateInISO);
+  } = await listDailyScrumUpdateEntries(workspaceHashId, dateInISO);
 
   if (getDailyScrumUpdateEntriesError || !dailyScrumUpdateEntries) {
     return null;

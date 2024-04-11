@@ -10,12 +10,15 @@ import { memoizeAndPersist } from "@/lib/cache";
 /**
  * Retrieves and lists daily scrum update entries based on the organization hash ID and date.
  *
- * @param {string} orgHashId - The hash ID of the organization
+ * @param {string} workspaceHashId - The hash ID of the organization
  * @param {string} date - The ISO formatted date string. e.g. 2024-03-17
  */
 export const listDailyScrumUpdateEntries = memoizeAndPersist(
-  async (orgHashId: string, date: string) => {
-    const { data: org, error: getOrgError } = await getOrgByHashId(orgHashId);
+  async (workspaceHashId: string, date: string) => {
+    console.log(`listDailyScrumUpdateEntries(${workspaceHashId}, ${date})`);
+    const { data: org, error: getOrgError } = await getOrgByHashId(
+      workspaceHashId
+    );
 
     if (getOrgError || !org) {
       return {
@@ -87,7 +90,7 @@ export const getDailyScrumUpdateEntriesCountOfCurrentUser = cache(
 );
 
 export const createDailyScrumUpdateEntry = async (
-  orgHashId: string,
+  workspaceHashId: string,
   entryValues: Required<
     Pick<
       Database["public"]["Tables"]["daily_scrum_update_entries"]["Insert"],
@@ -119,8 +122,9 @@ export const createDailyScrumUpdateEntry = async (
     return response;
   }
 
+  // TODO: move revalidation to the server action.
   revalidateTag(
-    `listDailyScrumUpdateEntries(${orgHashId}, ${entryValues.date})`
+    `listDailyScrumUpdateEntries(${workspaceHashId}, ${entryValues.date})`
   );
   revalidateTag(
     `getDailyScrumUpdateEntriesCount(${user.id}, ${entryValues.daily_scrum_update_form_id}, ${entryValues.date})`

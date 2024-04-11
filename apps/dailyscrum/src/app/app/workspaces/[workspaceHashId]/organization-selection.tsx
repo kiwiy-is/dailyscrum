@@ -36,7 +36,7 @@ function OrganizationSelection({ orgs, selectedOrg }: Props) {
   const handleCommandItemSelect = useCallback(
     (orgId: string) => () => {
       setOpen(false);
-      router.push(`/app/orgs/${orgId}/board`);
+      router.push(`/app/workspaces/${orgId}/board`);
     },
     []
   );

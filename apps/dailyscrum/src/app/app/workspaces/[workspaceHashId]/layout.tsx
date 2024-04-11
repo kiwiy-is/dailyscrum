@@ -16,7 +16,7 @@ export default async function Layout({
   params,
 }: {
   children: React.ReactNode;
-  params: { orgId: string };
+  params: { workspaceHashId: string };
 }) {
   return (
     <>
@@ -34,7 +34,7 @@ export default async function Layout({
 
             <nav className="flex flex-col flex-1 space-y-1">
               <NavLink
-                href={`/app/orgs/${params.orgId}/board`}
+                href={`/app/workspaces/${params.workspaceHashId}/board`}
                 activeClassName="bg-accent"
                 className={cn(
                   buttonVariants({
@@ -51,7 +51,7 @@ export default async function Layout({
               <MyUpdatesLink />
 
               <NavLink
-                href={`/app/orgs/${params.orgId}/settings`}
+                href={`/app/workspaces/${params.workspaceHashId}/settings`}
                 activeClassName="bg-accent"
                 className={cn(
                   buttonVariants({

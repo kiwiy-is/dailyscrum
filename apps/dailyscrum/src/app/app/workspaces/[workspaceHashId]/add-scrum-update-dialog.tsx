@@ -237,11 +237,11 @@ export const AddScrumUpdateDialog: React.FC<AddScrumUpdateDialogProps> = ({
     resolver: zodResolver(dynamicFormSchema),
   });
 
-  const closeDialog = useCallback(() => {
+  const closeDialog = () => {
     const params = new URLSearchParams(searchParams);
     params.delete("dialog");
     window.history.replaceState(null, "", `${pathname}?${params.toString()}`);
-  }, []);
+  };
 
   const handleOpenChange = useCallback((open: boolean) => {
     if (!open) {

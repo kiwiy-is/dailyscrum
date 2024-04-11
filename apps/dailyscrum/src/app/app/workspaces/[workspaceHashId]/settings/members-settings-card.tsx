@@ -10,7 +10,7 @@ type Props = {};
 // TODO: pass in data
 // TODO: restrict updatd to org owner and admin
 const MembersSettingsCard = (props: Props) => {
-  const params = getParams() as { orgId: string };
+  const params = getParams() as { workspaceHashId: string };
   return (
     <Card>
       <CardHeader>
@@ -25,7 +25,7 @@ const MembersSettingsCard = (props: Props) => {
               }),
               "ml-auto"
             )}
-            href={`/app/orgs/${params.orgId}/settings/add-member`}
+            href={`/app/workspaces/${params.workspaceHashId}/settings/add-member`}
             scroll={false}
           >
             Add member

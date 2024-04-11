@@ -6,7 +6,9 @@ import PageHeader from "@/components/page-header";
 
 export const dynamic = "force-dynamic";
 
-export default async function Page({}: { params: { orgId: string } }) {
+export default async function Page({}: {
+  params: { workspaceHashId: string };
+}) {
   return (
     <div className="space-y-8 max-w-4xl">
       <PageHeader

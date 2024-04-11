@@ -5,17 +5,17 @@ import { getOrg } from "@/services/orgs";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-export async function join(orgId: number, userId: string) {
+export async function join(workspaceId: number, userId: string) {
   const response = await createMember({
     user_id: userId,
-    org_id: orgId,
+    org_id: workspaceId,
   });
 
   if (response.error) {
     return response;
   }
 
-  const { data: org, error: getOrgError } = await getOrg(orgId);
+  const { data: org, error: getOrgError } = await getOrg(workspaceId);
 
   if (getOrgError) {
     return {
@@ -23,6 +23,6 @@ export async function join(orgId: number, userId: string) {
     };
   }
 
-  revalidatePath(`/app/orgs/${org.hash_id}`);
-  redirect(`/app/orgs/${org.hash_id}`);
+  revalidatePath(`/app/workspaces/${org.hash_id}`);
+  redirect(`/app/workspaces/${org.hash_id}`);
 }

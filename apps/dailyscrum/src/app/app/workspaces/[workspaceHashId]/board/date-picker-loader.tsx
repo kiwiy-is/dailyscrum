@@ -7,9 +7,11 @@ import { getOrgSettings } from "@/services/org-settings";
 type Props = {};
 
 const DatePickerLoader = async (props: Props) => {
-  const { orgId: orgHashId } = getParams() as { orgId: string };
+  const { workspaceHashId } = getParams() as { workspaceHashId: string };
 
-  const { data: org, error: getOrgError } = await getOrgByHashId(orgHashId);
+  const { data: org, error: getOrgError } = await getOrgByHashId(
+    workspaceHashId
+  );
 
   if (getOrgError || !org) {
     return null;
