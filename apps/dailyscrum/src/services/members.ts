@@ -3,13 +3,13 @@ import { createClient } from "@/lib/supabase/client";
 import { Database } from "@/lib/supabase/database";
 
 export const getMember = memoizeAndPersist(
-  async (orgId: number, userId: string) => {
+  async (workspaceId: number, userId: string) => {
     const client = createClient();
     return client
       .from("members")
       .select()
       .match({
-        org_id: orgId,
+        workspace_id: workspaceId,
         user_id: userId,
       })
       .single();

@@ -3,20 +3,20 @@ import { Database } from "@/lib/supabase/database";
 import { memoizeAndPersist } from "@/lib/cache";
 
 /**
- * Retrieves and lists daily scrum update form ids for a specific organization.
+ * Retrieves and lists daily scrum update form ids for a specific workspace.
  *
- * @param {number} orgId - The ID of the organization to retrieve form ids for.
+ * @param {number} workspaceId - The ID of the workspace to retrieve form ids for.
  */
-export const listDailyScrumUpdateFormIdsOfOrg = memoizeAndPersist(
-  async (orgId: number) => {
+export const listDailyScrumUpdateFormIdsOfWorkspace = memoizeAndPersist(
+  async (workspaceId: number) => {
     const client = createClient<Database>();
 
     return client
       .from("daily_scrum_update_forms")
       .select("id")
-      .eq("org_id", orgId);
+      .eq("workspace_id", workspaceId);
   },
-  "listDailyScrumUpdateFormIdsOfOrg"
+  "listDailyScrumUpdateFormIdsOfWorkspace"
 );
 
 export const getDailyScrumUpdateForm = memoizeAndPersist(

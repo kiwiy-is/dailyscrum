@@ -6,7 +6,7 @@ function persist<T extends any[], R>(
   functionName: string
 ) {
   return (...args: T) => {
-    const key = `${functionName}(${args.join(",")})`;
+    const key = `${functionName}(${args.join(", ")})`; // TODO: is this really a good way to do this?
     return unstable_cache(
       async (...args: any[]) => {
         return callback(...(args as T));
@@ -27,13 +27,13 @@ function persist<T extends any[], R>(
  *
  * e.g.
  * ```
- * const listOrgs = cache((userId: string) =>
+ * const listWorkspaces = cache((userId: string) =>
  *   unstable_cache(
  *    async (userId: string) => {
  *      const client = createClient<Database>();
  *
  *      return await client
- *        .from("orgs")
+ *        .from("workspaces")
  *        .select(
  *          `
  *          id: hash_id,
@@ -47,7 +47,7 @@ function persist<T extends any[], R>(
  *     },
  *     [],
  *     {
- *       tags: [`listOrgs(${userId})`],
+ *       tags: [`listWorkspaces(${userId})`],
  *     }
  *   )(userId)
  * );
@@ -59,11 +59,14 @@ export function memoizeAndPersist<T extends any[], R>(
   callback: (...args: T) => Promise<R>,
   functionName: string
 ) {
+  // TODO: check other ways to revalidate and apply
   const persistedCallback = persist(callback, functionName);
 
   return (...args: T) => {
-    return cache((...args: any[]) => persistedCallback(...(args as T)))(
-      ...args
-    );
+    // return cache((...args: any[]) => persistedCallback(...(args as T)))(
+    //   ...args
+    // );
+
+    return cache((...args: any[]) => callback(...(args as T)))(...args);
   };
 }
