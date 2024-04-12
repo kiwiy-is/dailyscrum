@@ -2,10 +2,9 @@ import { cache } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Database } from "@/lib/supabase/database";
 import { getCurrentUser } from "./users";
-import { revalidateTag } from "next/cache";
-import { memoizeAndPersist } from "@/lib/cache";
+import { memoize } from "@/lib/cache";
 
-const listWorkspaces = memoizeAndPersist(async (userId: string) => {
+const listWorkspaces = memoize(async (userId: string) => {
   const client = createClient<Database>();
 
   // TODO: don't alias hash_id as id
@@ -21,7 +20,7 @@ const listWorkspaces = memoizeAndPersist(async (userId: string) => {
       `
     )
     .eq("members.user_id", userId);
-}, "listWorkspaces");
+});
 
 export const listWorkspacesOfCurrentUser = cache(async () => {
   const { data: user, error: getCurrentUserError } = await getCurrentUser();
@@ -43,20 +42,17 @@ export const listWorkspacesOfCurrentUser = cache(async () => {
   return listWorkspaces(user.id);
 });
 
-export const getWorkspace = memoizeAndPersist(async (id: number) => {
+export const getWorkspace = memoize(async (id: number) => {
   const client = createClient<Database>();
 
   return client.from("workspaces").select("*").eq("id", id).single();
-}, "getWorkspace");
+});
 
-export const getWorkspaceByHashId = memoizeAndPersist(
-  async (hashId: string) => {
-    const client = createClient<Database>();
+export const getWorkspaceByHashId = memoize(async (hashId: string) => {
+  const client = createClient<Database>();
 
-    return client.from("workspaces").select("*").eq("hash_id", hashId).single();
-  },
-  "getWorkspaceByHashId"
-);
+  return client.from("workspaces").select("*").eq("hash_id", hashId).single();
+});
 
 /**
  * Creates a new workspace with the provided workspace values.
@@ -197,8 +193,6 @@ export const createWorkspace = async (
   if (insertWorkspaceDailyScrumUpdateQuestionsError) {
     return { data: null, error: insertWorkspaceDailyScrumUpdateQuestionsError };
   }
-
-  revalidateTag(`listWorkspaces(${user.id})`);
 
   return {
     data: workspace,

@@ -2,8 +2,7 @@ import { getCurrentUser } from "@/services/users";
 import { createClient } from "@/lib/supabase/client";
 import { Database } from "@/lib/supabase/database";
 import { cache } from "react";
-import { memoizeAndPersist } from "@/lib/cache";
-import { revalidateTag } from "next/cache";
+import { memoize } from "@/lib/cache";
 
 export const getCurrentUserProfile = cache(async () => {
   const { data: user, error: getCurrentUserError } = await getCurrentUser();
@@ -27,11 +26,11 @@ export const getCurrentUserProfile = cache(async () => {
   return getProfile(user.id);
 });
 
-const getProfile = memoizeAndPersist(async (userId: string) => {
+const getProfile = memoize(async (userId: string) => {
   const client = createClient<Database>();
 
   return client.from("profiles").select().eq("id", userId).single();
-}, "getProfile");
+});
 
 export const createProfile = async (
   profileValues: Required<
@@ -70,8 +69,6 @@ export const createProfile = async (
   if (response.error) {
     return response;
   }
-
-  revalidateTag(`getProfile(${user.id})`);
 
   return response;
 };

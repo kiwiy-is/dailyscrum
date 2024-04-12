@@ -2,7 +2,6 @@
 
 import { createMember } from "@/services/members";
 import { getWorkspace } from "@/services/workspaces";
-import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function join(workspaceId: number, userId: string) {
@@ -25,6 +24,5 @@ export async function join(workspaceId: number, userId: string) {
     };
   }
 
-  revalidatePath(`/app/workspaces/${workspace.hash_id}`);
   redirect(`/app/workspaces/${workspace.hash_id}`);
 }

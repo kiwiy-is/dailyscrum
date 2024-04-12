@@ -1,13 +1,13 @@
-import { memoizeAndPersist } from "@/lib/cache";
+import { memoize } from "@/lib/cache";
 import { createClient } from "@/lib/supabase/client";
 import { Database } from "@/lib/supabase/database";
 
-export const getInvitationByCode = memoizeAndPersist(async (code: string) => {
+export const getInvitationByCode = memoize(async (code: string) => {
   const client = createClient();
   return client.from("invitations").select().eq("code", code).single();
-}, "getInvitationByCode");
+});
 
-export const getInvitationByWorkspaceId = memoizeAndPersist(
+export const getInvitationByWorkspaceId = memoize(
   async (workspaceId: number) => {
     const client = createClient();
     return client
@@ -15,8 +15,7 @@ export const getInvitationByWorkspaceId = memoizeAndPersist(
       .select()
       .eq("workspace_id", workspaceId)
       .single();
-  },
-  "getInvitationByWorkspaceId"
+  }
 );
 
 export const createInvitation = async (
