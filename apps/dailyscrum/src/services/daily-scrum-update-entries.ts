@@ -4,8 +4,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Database } from "@/lib/supabase/database";
 import { getWorkspaceByHashId } from "./workspaces";
 import { listDailyScrumUpdateFormIdsOfWorkspace } from "./daily-scrum-update-forms";
-import { revalidateTag } from "next/cache";
-import { memoizeAndPersist } from "@/lib/cache";
+import { memoize } from "@/lib/cache";
 
 /**
  * Retrieves and lists daily scrum update entries based on the workspace hash ID and date.
@@ -13,7 +12,7 @@ import { memoizeAndPersist } from "@/lib/cache";
  * @param {string} workspaceHashId - The hash ID of the workspace
  * @param {string} date - The ISO formatted date string. e.g. 2024-03-17
  */
-export const listDailyScrumUpdateEntries = memoizeAndPersist(
+export const listDailyScrumUpdateEntries = memoize(
   async (workspaceHashId: string, date: string) => {
     console.log(`listDailyScrumUpdateEntries(${workspaceHashId}, ${date})`);
     const { data: workspace, error: getWorkspaceError } =
@@ -53,11 +52,10 @@ export const listDailyScrumUpdateEntries = memoizeAndPersist(
           (dailyScrumUpdateForm) => dailyScrumUpdateForm.id
         )
       );
-  },
-  "listDailyScrumUpdateEntries"
+  }
 );
 
-const getDailyScrumUpdateEntriesCount = memoizeAndPersist(
+const getDailyScrumUpdateEntriesCount = memoize(
   async (userId: string, formId: number, date: string) => {
     const client = createClient<Database>();
 
@@ -68,8 +66,7 @@ const getDailyScrumUpdateEntriesCount = memoizeAndPersist(
       .gte("date", date)
       .lte("date", date)
       .eq("submitted_user_id", userId);
-  },
-  "getDailyScrumUpdateEntriesCount"
+  }
 );
 
 export const getDailyScrumUpdateEntriesCountOfCurrentUser = cache(
@@ -120,14 +117,6 @@ export const createDailyScrumUpdateEntry = async (
   if (response.error) {
     return response;
   }
-
-  // TODO: move revalidation to the server action.
-  revalidateTag(
-    `listDailyScrumUpdateEntries(${workspaceHashId}, ${entryValues.date})`
-  );
-  revalidateTag(
-    `getDailyScrumUpdateEntriesCount(${user.id}, ${entryValues.daily_scrum_update_form_id}, ${entryValues.date})`
-  );
 
   return response;
 };

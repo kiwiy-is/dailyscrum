@@ -21,6 +21,7 @@ export async function createNewWorkspace(name: string) {
   redirect(`/app/workspaces/${workspace.hash_id}`);
 }
 
+// TODO: Move this to /board page actions
 export async function addUpdate(
   formId: number,
   timeZone: string,

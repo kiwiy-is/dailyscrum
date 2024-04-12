@@ -1,8 +1,8 @@
-import { memoizeAndPersist } from "@/lib/cache";
+import { memoize } from "@/lib/cache";
 import { createClient } from "@/lib/supabase/client";
 import { Database } from "@/lib/supabase/database";
 
-export const getMember = memoizeAndPersist(
+export const getMember = memoize(
   async (workspaceId: number, userId: string) => {
     const client = createClient();
     return client
@@ -13,8 +13,7 @@ export const getMember = memoizeAndPersist(
         user_id: userId,
       })
       .single();
-  },
-  "getMember"
+  }
 );
 
 export const createMember = async (

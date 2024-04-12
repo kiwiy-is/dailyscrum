@@ -70,3 +70,9 @@ export function memoizeAndPersist<T extends any[], R>(
     return cache((...args: any[]) => callback(...(args as T)))(...args);
   };
 }
+
+export function memoize<T extends any[], R>(
+  callback: (...args: T) => Promise<R>
+) {
+  return cache((...args: T) => callback(...args));
+}
