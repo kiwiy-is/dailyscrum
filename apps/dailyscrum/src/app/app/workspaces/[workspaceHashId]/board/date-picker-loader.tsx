@@ -1,14 +1,13 @@
 import React from "react";
 import DatePicker from "./date-picker";
-import { getParams } from "next-impl-getters/get-params";
 import { getWorkspaceByHashId } from "@/services/workspaces";
 import { getWorkspaceSettings } from "@/services/workspace-settings";
 
-type Props = {};
+type Props = {
+  workspaceHashId: string;
+};
 
-const DatePickerLoader = async (props: Props) => {
-  const { workspaceHashId } = getParams() as { workspaceHashId: string };
-
+const DatePickerLoader = async ({ workspaceHashId }: Props) => {
   const { data: workspace, error: getWorkspaceError } =
     await getWorkspaceByHashId(workspaceHashId);
 

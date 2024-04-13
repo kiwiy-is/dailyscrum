@@ -5,10 +5,19 @@ import AddUpdateButton from "./add-update-button";
 import DatePickerLoader from "./date-picker-loader";
 import DailyScrumUpdateListLoader from "./daily-scrum-update-list-loader";
 import PageHeader from "@/components/page-header";
+import { Suspense } from "react";
+import DailyScrumUpdateListSkeleton from "./daily-scrum-update-list-skeleton";
 
 export const dynamic = "force-dynamic"; // NOTE: One of the components in this page is using 'next-impl-getters/get-search-params' to get search params
 
-export default async function Page() {
+export default async function Page({
+  params: { workspaceHashId },
+  searchParams,
+}: {
+  params: { workspaceHashId: string };
+  searchParams: { date: string; dialog: string };
+}) {
+  const listSuspenseKey = new URLSearchParams(searchParams).toString();
   return (
     <div className="flex flex-col space-y-8 max-w-screen-2xl">
       <PageHeader
@@ -31,7 +40,7 @@ export default async function Page() {
 
       <div className="flex flex-col space-y-4">
         <div className="flex gap-x-2">
-          <DatePickerLoader />
+          <DatePickerLoader workspaceHashId={workspaceHashId} />
 
           <Button
             variant="outline"
@@ -43,7 +52,12 @@ export default async function Page() {
             <span>Settings</span>
           </Button>
         </div>
-        <DailyScrumUpdateListLoader />
+        <Suspense
+          key={listSuspenseKey}
+          fallback={<DailyScrumUpdateListSkeleton />}
+        >
+          <DailyScrumUpdateListLoader />
+        </Suspense>
       </div>
     </div>
   );

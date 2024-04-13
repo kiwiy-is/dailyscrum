@@ -55,6 +55,7 @@ const CreateNewWorkspaceDialog = (props: Props) => {
     },
   });
 
+  // TODO: remove usecallback
   const handleOpenChange = useCallback((open: boolean) => {
     if (!open) {
       const params = new URLSearchParams(searchParams);

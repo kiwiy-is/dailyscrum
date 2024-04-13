@@ -2,7 +2,6 @@
 
 import { PlusIcon } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
-import React, { useCallback } from "react";
 import { Button } from "ui/button";
 
 type Props = {};
@@ -11,11 +10,11 @@ const AddUpdateButton = (props: Props) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const handleClick = useCallback(() => {
+  const handleClick = () => {
     const params = new URLSearchParams(searchParams);
     params.set("dialog", "add-scrum-update");
     window.history.replaceState(null, "", `${pathname}?${params.toString()}`);
-  }, []);
+  };
 
   return (
     <Button
