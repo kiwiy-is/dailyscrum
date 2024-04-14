@@ -151,11 +151,7 @@ export const AddScrumUpdateDialog: React.FC<AddScrumUpdateDialogProps> = ({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const queryString = searchParams.toString();
   const dialogParamValue = searchParams.get("dialog");
-
-  // searchParams.toString();
-  console.log("searchParams.toString();", searchParams.toString());
 
   const isOpen = dialogParamValue === "add-scrum-update";
 

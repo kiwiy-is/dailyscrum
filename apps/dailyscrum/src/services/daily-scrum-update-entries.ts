@@ -14,7 +14,6 @@ import { memoize } from "@/lib/cache";
  */
 export const listDailyScrumUpdateEntries = memoize(
   async (workspaceHashId: string, date: string) => {
-    console.log(`listDailyScrumUpdateEntries(${workspaceHashId}, ${date})`);
     const { data: workspace, error: getWorkspaceError } =
       await getWorkspaceByHashId(workspaceHashId);
 
