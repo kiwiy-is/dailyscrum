@@ -29,7 +29,7 @@ import type { ControllerRenderProps } from "react-hook-form";
 import { useForm } from "react-hook-form";
 import { CalendarIcon, CheckCircleIcon } from "lucide-react";
 import { DateTime } from "luxon";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { addUpdate } from "./actions";
 import { useToast } from "ui/shadcn-ui/use-toast";
 
@@ -148,6 +148,7 @@ export const AddScrumUpdateDialog: React.FC<AddScrumUpdateDialogProps> = ({
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
 
+  const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const dialogParamValue = searchParams.get("dialog");
@@ -243,66 +244,68 @@ export const AddScrumUpdateDialog: React.FC<AddScrumUpdateDialogProps> = ({
     window.history.replaceState(null, "", `${pathname}?${params.toString()}`);
   };
 
-  const handleOpenChange = useCallback((open: boolean) => {
+  const handleOpenChange = (open: boolean) => {
     if (!open) {
       closeDialog();
     }
-  }, []);
+  };
 
-  const handleSubmit = useCallback(
-    (event: React.FormEvent<HTMLFormElement>) => {
-      event.preventDefault();
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
 
-      let resolveForm: (value: FormValues) => void;
-      let resolveDynamicForm: (value: DynamicFormValues) => void;
+    let resolveForm: (value: FormValues) => void;
+    let resolveDynamicForm: (value: DynamicFormValues) => void;
 
-      const formPromise = new Promise<FormValues>((resolve) => {
-        resolveForm = resolve;
-      });
+    const formPromise = new Promise<FormValues>((resolve) => {
+      resolveForm = resolve;
+    });
 
-      const dynamicFormPromise = new Promise<DynamicFormValues>((resolve) => {
-        resolveDynamicForm = resolve;
-      });
+    const dynamicFormPromise = new Promise<DynamicFormValues>((resolve) => {
+      resolveDynamicForm = resolve;
+    });
 
-      form.handleSubmit((values) => {
-        resolveForm(values);
-      })(event);
+    form.handleSubmit((values) => {
+      resolveForm(values);
+    })(event);
 
-      dynamicForm.handleSubmit((values) => {
-        resolveDynamicForm(values);
-      })(event);
+    dynamicForm.handleSubmit((values) => {
+      resolveDynamicForm(values);
+    })(event);
 
-      Promise.all([dynamicFormPromise, formPromise]).then(
-        ([dynamicFormValues, formValues]) => {
-          startTransition(async () => {
-            const mergedValues = {
-              ...formValues,
-              ...dynamicFormValues,
-            } as unknown as FormValues & DynamicFormValues;
+    Promise.all([dynamicFormPromise, formPromise]).then(
+      ([dynamicFormValues, formValues]) => {
+        startTransition(async () => {
+          const mergedValues = {
+            ...formValues,
+            ...dynamicFormValues,
+          } as unknown as FormValues & DynamicFormValues;
 
-            // TODO: handle error
-            const { error } = await addUpdate(
-              dailyScrumUpdateFormId,
-              timeZone,
-              mergedValues
-            );
+          // TODO: handle error
+          const { error } = await addUpdate(
+            dailyScrumUpdateFormId,
+            timeZone,
+            mergedValues
+          );
 
-            closeDialog();
-            toast({
-              description: (
-                <div className="flex items-center gap-x-2">
-                  <CheckCircleIcon size={16} />
-                  <span>Successfully added a daily scrum update.</span>
-                </div>
-              ),
-            });
-            return;
+          // NOTE: closing dialog by removing dialog param and change the date to a target date of new daily scrum update
+          const params = new URLSearchParams(searchParams);
+          params.delete("dialog");
+          params.set("date", DateTime.fromJSDate(formValues.date).toISODate()!);
+          router.replace(`${pathname}?${params.toString()}`);
+
+          toast({
+            description: (
+              <div className="flex items-center gap-x-2">
+                <CheckCircleIcon size={16} />
+                <span>Successfully added a daily scrum update.</span>
+              </div>
+            ),
           });
-        }
-      );
-    },
-    [dynamicForm, form]
-  );
+          return;
+        });
+      }
+    );
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
