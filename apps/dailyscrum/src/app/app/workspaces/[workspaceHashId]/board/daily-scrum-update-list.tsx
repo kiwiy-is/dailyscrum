@@ -104,7 +104,9 @@ type Props = {
 const DailyScrumUpdateList = ({ updates }: Props) => {
   return (
     <Masonry
-      className="min-[784px]:max-w-[496px] min-[1040px]:max-w-[752px] min-[1296px]:max-w-[1008px] min-[1552px]:max-w-[1264px] min-[1808px]:max-w-[1520px]"
+      // className="min-[784px]:max-w-[496px] min-[1040px]:max-w-[752px] min-[1296px]:max-w-[1008px] min-[1552px]:max-w-[1264px] min-[1808px]:max-w-[1520px]" // 240px
+      // className="min-[864px]:max-w-[576px] min-[1160px]:max-w-[872px] min-[1456px]:max-w-[1168px] min-[1752px]:max-w-[1464px] min-[2048px]:max-w-[1760px]" // 280px
+      className="max-w-[320px] min-[944px]:max-w-[656px] min-[1280px]:max-w-[992px] min-[1616px]:max-w-[1328px] min-[1952px]:max-w-[1664px] min-[2288px]:max-w-[2000px]" // 320px
       items={updates}
       render={({ id, userName, qaPairs }) => (
         <DailyScrumUpdateCard key={id} userName={userName} qaPairs={qaPairs} />
@@ -112,13 +114,15 @@ const DailyScrumUpdateList = ({ updates }: Props) => {
       config={{
         gap: [16, 16, 16, 16, 16, 16],
         columns: [1, 2, 3, 4, 5, 6],
-        media: [784, 1040, 1296, 1552, 1808, 99999],
+        // media: [784, 1040, 1296, 1552, 1808, 99999],
+        // media: [864, 1160, 1456, 1752, 2048, 99999],
+        media: [944, 1280, 1616, 1952, 2288, 99999],
       }}
     />
   );
 };
 
-// // NOTE: A calculator for masonry grid properties. Use it to calculate.
+// // // NOTE: A calculator for masonry grid properties. Use it to calculate.
 // function calculateGridProperties(width = 240) {
 //   const GAP = 16;
 //   const SIDEBAR_WIDTH = 224;
@@ -126,7 +130,7 @@ const DailyScrumUpdateList = ({ updates }: Props) => {
 //   const media = [];
 //   let className = "";
 //   for (let columnIndex = 0; columnIndex <= 6; columnIndex++) {
-//     const columnWidth = columnIndex * width + columnIndex * GAP;
+//     const columnWidth = (columnIndex + 1) * width + columnIndex * GAP;
 
 //     if (columnIndex === 0) {
 //       className += `max-w-[${columnWidth}px]`;
@@ -135,7 +139,7 @@ const DailyScrumUpdateList = ({ updates }: Props) => {
 
 //     const minWidth = SIDEBAR_WIDTH + CONTENT_AREA_PADDING + columnWidth;
 //     media.push(minWidth);
-//     className += ` min-w-[${minWidth}px]:max-w-[${columnWidth}px]`;
+//     className += ` min-[${minWidth}px]:max-w-[${columnWidth}px]`;
 //   }
 
 //   return { media, className };

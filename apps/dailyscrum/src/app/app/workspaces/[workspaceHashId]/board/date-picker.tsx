@@ -1,9 +1,8 @@
 "use client";
 
-import { CalendarIcon, ChevronDownIcon } from "lucide-react";
 import { DateTime } from "luxon";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import { cn } from "ui";
 import { Button, buttonVariants } from "ui/button";
 import {
@@ -13,6 +12,8 @@ import {
   DropdownMenuSeparator,
 } from "ui/dropdown-menu";
 import { Calendar } from "ui/shadcn-ui/calendar";
+import DatePickerTriggerButton from "./date-picker-trigger-button";
+import { useDateFromSearchParams } from "./use-date-from-search-params";
 
 type Props = {
   timeZone: string;
@@ -26,22 +27,17 @@ const DatePicker = ({ timeZone }: Props) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const dateQuery = searchParams.get("date");
-
   const today = DateTime.local().setZone(timeZone).startOf("day");
   const tomorrow = today.plus({ days: 1 });
 
-  const date =
-    dateQuery && DateTime.fromISO(dateQuery).isValid
-      ? DateTime.fromISO(dateQuery)
-      : today;
+  const date = useDateFromSearchParams(timeZone);
 
   const handleTodayButtonClick = () => {
     const todayInISO = today.toISODate();
     if (todayInISO) {
       const params = new URLSearchParams(searchParams);
       params.set("date", todayInISO);
-      router.push(`${pathname}?${params.toString()}`);
+      router.replace(`${pathname}?${params.toString()}`);
     }
     setIsOpen(false);
   };
@@ -60,7 +56,7 @@ const DatePicker = ({ timeZone }: Props) => {
     if (isoDate) {
       const params = new URLSearchParams(searchParams);
       params.set("date", isoDate);
-      router.push(`${pathname}?${params.toString()}`);
+      router.replace(`${pathname}?${params.toString()}`);
     }
 
     setIsOpen(false);
@@ -77,13 +73,10 @@ const DatePicker = ({ timeZone }: Props) => {
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm" className="gap-x-2 text-sm h-9">
-          <CalendarIcon width={16} height={16} strokeWidth={2} />
-
-          <span>{date.toLocaleString(DateTime.DATE_MED)}</span>
-        </Button>
+        <DatePickerTriggerButton timeZone={timeZone} />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="center">
+        {/* TODO: The calender should show the month of the selected date */}
         <Calendar
           mode="single"
           selected={date.toJSDate()}

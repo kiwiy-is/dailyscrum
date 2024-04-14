@@ -6,9 +6,9 @@ type Props = {};
 const DailyScrumUpdateListSkeleton = (props: Props) => {
   return (
     <>
-      <div className="min-[784px]:max-w-[496px] min-[1040px]:max-w-[752px] min-[1296px]:max-w-[1008px] min-[1552px]:max-w-[1264px] min-[1808px]:max-w-[1520px] grid items-start gap-4 grid-cols-4">
+      <div className="flex flex-wrap gap-4 min-[784px]:max-w-[496px] min-[1040px]:max-w-[752px] min-[1296px]:max-w-[1008px] min-[1552px]:max-w-[1264px] min-[1808px]:max-w-[1520px] ">
         {[...Array(4)].map((_, index) => (
-          <div className="grid gap-y-4 grid-cols-1">
+          <div key={index} className="grid gap-y-4 grid-cols-1 w-[320px]">
             <div className="border rounded-lg shadow-sm relative">
               <div className="p-6">
                 <div className="flex flex-col gap-y-6">
