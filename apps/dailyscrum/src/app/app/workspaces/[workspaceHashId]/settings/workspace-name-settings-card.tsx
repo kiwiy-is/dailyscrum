@@ -1,16 +1,18 @@
 import { Card, CardContent, CardHeader, CardTitle } from "ui/shadcn-ui/card";
-import WorkspaceNameSettingsForm from "./workspace-name-settings-form";
+import WorkspaceNameSettingsFormLoader from "./workspace-name-settings-form-loader";
 
-type Props = {};
+type Props = {
+  workspaceHashId: string;
+};
 
-const WorkspaceNameSettingsCard = (props: Props) => {
+const WorkspaceNameSettingsCard = ({ workspaceHashId }: Props) => {
   return (
     <Card>
       <CardHeader>
         <CardTitle className="text-base">Workspace name</CardTitle>
       </CardHeader>
       <CardContent>
-        <WorkspaceNameSettingsForm />
+        <WorkspaceNameSettingsFormLoader workspaceHashId={workspaceHashId} />
       </CardContent>
     </Card>
   );

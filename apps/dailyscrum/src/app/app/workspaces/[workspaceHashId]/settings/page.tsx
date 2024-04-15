@@ -19,7 +19,7 @@ export default async function Page({
       />
 
       <div className="flex flex-col space-y-4">
-        <WorkspaceNameSettingsCard />
+        <WorkspaceNameSettingsCard workspaceHashId={params.workspaceHashId} />
       </div>
 
       <div className="flex flex-col space-y-4">

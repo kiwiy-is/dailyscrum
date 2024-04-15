@@ -199,3 +199,17 @@ export const createWorkspace = async (
     error: null,
   };
 };
+
+export const updateWorkspace = async (
+  workspaceId: number,
+  updateValues: Database["public"]["Tables"]["workspaces"]["Update"]
+) => {
+  const client = createClient();
+
+  return client
+    .from("workspaces")
+    .update(updateValues)
+    .eq("id", workspaceId)
+    .select()
+    .single();
+};
