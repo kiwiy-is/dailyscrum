@@ -41,7 +41,7 @@ export const listDailyScrumUpdateEntries = memoize(
     return client
       .from("daily_scrum_update_entries")
       .select(
-        "*, daily_scrum_update_answers(*, daily_scrum_update_question:daily_scrum_update_questions(*))"
+        "*, profile:profiles(*), daily_scrum_update_answers(*, daily_scrum_update_question:daily_scrum_update_questions(*))"
       )
       .eq("date", date)
       .eq(

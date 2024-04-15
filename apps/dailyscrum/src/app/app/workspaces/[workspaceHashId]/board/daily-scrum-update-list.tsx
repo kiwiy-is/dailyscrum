@@ -1,6 +1,7 @@
 "use client";
 
-import { MoreHorizontalIcon } from "lucide-react";
+import { MoreHorizontalIcon, PlusIcon } from "lucide-react";
+import { usePathname, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 import { cn } from "ui";
 import { Button } from "ui/button";
@@ -99,30 +100,90 @@ type Update = {
 
 type Props = {
   updates: Update[];
+  showAddUpdateCard: boolean;
+  showNoUpdatesFoundForArchivedDates: boolean;
 };
 
-const DailyScrumUpdateList = ({ updates }: Props) => {
+const DailyScrumUpdateList = ({
+  updates,
+  showAddUpdateCard,
+  showNoUpdatesFoundForArchivedDates,
+}: Props) => {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const handleAddUpdateCardClick = () => {
+    const params = new URLSearchParams(searchParams);
+    params.set("dialog", "add-scrum-update");
+    window.history.replaceState(null, "", `${pathname}?${params.toString()}`);
+  };
+
+  if (showNoUpdatesFoundForArchivedDates) {
+    return (
+      <div className="flex flex-col items-center  justify-center gap-y-2 h-[208px]">
+        <div className="text-md font-semibold">No updates found</div>
+        <div className="text-sm ">
+          There were no updates added for the date.
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <Masonry
-      // className="min-[784px]:max-w-[496px] min-[1040px]:max-w-[752px] min-[1296px]:max-w-[1008px] min-[1552px]:max-w-[1264px] min-[1808px]:max-w-[1520px]" // 240px
-      // className="min-[864px]:max-w-[576px] min-[1160px]:max-w-[872px] min-[1456px]:max-w-[1168px] min-[1752px]:max-w-[1464px] min-[2048px]:max-w-[1760px]" // 280px
-      className="max-w-[320px] min-[944px]:max-w-[656px] min-[1280px]:max-w-[992px] min-[1616px]:max-w-[1328px] min-[1952px]:max-w-[1664px] min-[2288px]:max-w-[2000px]" // 320px
-      items={updates}
-      render={({ id, userName, qaPairs }) => (
-        <DailyScrumUpdateCard key={id} userName={userName} qaPairs={qaPairs} />
+    <div className="space-y-8">
+      <Masonry
+        className="max-w-[296px] min-[896px]:max-w-[608px] min-[1208px]:max-w-[920px] min-[1520px]:max-w-[1232px] min-[1832px]:max-w-[1544px] min-[2144px]:max-w-[1856px]" // 296px
+        config={{
+          gap: [16, 16, 16, 16, 16, 16],
+          columns: [1, 2, 3, 4, 5, 6],
+          media: [896, 1208, 1520, 1832, 2144, 99999],
+        }}
+        items={[
+          ...updates,
+          ...(showAddUpdateCard ? ["show-add-update-card"] : []),
+        ]}
+        render={(props) => {
+          if (typeof props === "string") {
+            return (
+              <Button
+                variant="outline"
+                size="sm"
+                className="justify-center gap-x-2 text-sm h-[208px] rounded-lg"
+                onClick={handleAddUpdateCardClick}
+              >
+                <PlusIcon width={16} height={16} strokeWidth={2} />
+                <span className="font-medium ">Add update</span>
+              </Button>
+            );
+          }
+
+          const { id, userName, qaPairs } = props;
+          return (
+            <DailyScrumUpdateCard
+              key={id}
+              userName={userName}
+              qaPairs={qaPairs}
+            />
+          );
+        }}
+      />
+      {updates.length === 0 && (
+        <div className="flex flex-col justify-center items-center gap-y-4">
+          <div className="text-center space-y-2">
+            <div className="text-md font-semibold">
+              Please share your update
+            </div>
+            <div className="text-sm ">
+              Be the first to share yours and inspire others to follow!
+            </div>
+          </div>
+        </div>
       )}
-      config={{
-        gap: [16, 16, 16, 16, 16, 16],
-        columns: [1, 2, 3, 4, 5, 6],
-        // media: [784, 1040, 1296, 1552, 1808, 99999],
-        // media: [864, 1160, 1456, 1752, 2048, 99999],
-        media: [944, 1280, 1616, 1952, 2288, 99999],
-      }}
-    />
+    </div>
   );
 };
 
-// // // NOTE: A calculator for masonry grid properties. Use it to calculate.
+// NOTE: A calculator for masonry grid properties. Use it to calculate.
 // function calculateGridProperties(width = 240) {
 //   const GAP = 16;
 //   const SIDEBAR_WIDTH = 224;

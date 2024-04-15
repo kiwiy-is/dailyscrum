@@ -85,7 +85,7 @@ export type Database = {
             foreignKeyName: "public_daily_scrum_update_entries_submitted_user_id_fkey";
             columns: ["submitted_user_id"];
             isOneToOne: false;
-            referencedRelation: "users";
+            referencedRelation: "profiles";
             referencedColumns: ["id"];
           }
         ];
@@ -207,7 +207,7 @@ export type Database = {
           created_at?: string;
           id?: number;
           updated_at?: string;
-          user_id?: string;
+          user_id: string;
           workspace_id: number;
         };
         Update: {
