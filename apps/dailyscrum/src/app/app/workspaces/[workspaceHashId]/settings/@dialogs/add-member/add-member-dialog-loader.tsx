@@ -1,15 +1,14 @@
 import React from "react";
 import AddMemberDialog from "./add-member-dialog";
-import { getParams } from "next-impl-getters/get-params";
 import { createInvitation } from "./actions";
 import { getWorkspaceByHashId } from "@/services/workspaces";
 import { getInvitationByWorkspaceId } from "@/services/invitations";
 
-type Props = {};
+type Props = {
+  workspaceHashId: string;
+};
 
-const AddMemberDialogLoader = async (props: Props) => {
-  const { workspaceHashId } = getParams() as { workspaceHashId: string };
-
+const AddMemberDialogLoader = async ({ workspaceHashId }: Props) => {
   const { data: workspace, error: getWorkspaceError } =
     await getWorkspaceByHashId(workspaceHashId);
 

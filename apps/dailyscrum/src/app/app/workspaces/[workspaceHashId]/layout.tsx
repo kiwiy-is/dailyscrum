@@ -28,8 +28,10 @@ export default async function Layout({
               <span className="text-base font-bold">Daily Scrum</span>
             </div>
 
-            <div className="">
-              <WorkspaceSelectionLoader />
+            <div>
+              <WorkspaceSelectionLoader
+                workspaceHashId={params.workspaceHashId}
+              />
             </div>
 
             <nav className="flex flex-col flex-1 space-y-1">
@@ -81,7 +83,7 @@ export default async function Layout({
         </ScrollArea>
       </div>
       <CreateNewWorkspaceDialog />
-      <AddScrumUpdateDialogLoader />
+      <AddScrumUpdateDialogLoader workspaceHashId={params.workspaceHashId} />
     </>
   );
 }

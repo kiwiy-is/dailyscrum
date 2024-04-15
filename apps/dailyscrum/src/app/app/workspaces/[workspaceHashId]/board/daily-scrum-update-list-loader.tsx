@@ -1,7 +1,4 @@
 import { DateTime } from "luxon";
-import { getParams } from "next-impl-getters/get-params";
-import { getSearchParams } from "next-impl-getters/get-search-params";
-
 import React from "react";
 import DailyScrumUpdateList from "./daily-scrum-update-list";
 import { getWorkspaceByHashId } from "@/services/workspaces";
@@ -9,12 +6,15 @@ import { listDailyScrumUpdateEntries } from "@/services/daily-scrum-update-entri
 import { getWorkspaceSettings } from "@/services/workspace-settings";
 import { getCurrentUser } from "@/services/users";
 
-type Props = {};
+type Props = {
+  workspaceHashId: string;
+  dateQuery: string | undefined;
+};
 
-const DailyScrumUpdateListLoader = async (props: Props) => {
-  const { workspaceHashId } = getParams() as { workspaceHashId: string };
-  const searchParams = getSearchParams();
-
+const DailyScrumUpdateListLoader = async ({
+  workspaceHashId,
+  dateQuery,
+}: Props) => {
   const { data: workspace, error: getWorkspaceError } =
     await getWorkspaceByHashId(workspaceHashId);
 
@@ -32,8 +32,6 @@ const DailyScrumUpdateListLoader = async (props: Props) => {
   const timeZone = settings.find(
     (setting) => setting.attribute_key === "time_zone"
   )?.attribute_value;
-
-  const dateQuery = searchParams.get("date");
 
   const today = DateTime.local().setZone(timeZone).startOf("day");
   const tomorrow = today.plus({ days: 1 });

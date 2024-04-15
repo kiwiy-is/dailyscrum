@@ -6,7 +6,9 @@ import PageHeader from "@/components/page-header";
 
 export const dynamic = "force-dynamic";
 
-export default async function Page({}: {
+export default async function Page({
+  params,
+}: {
   params: { workspaceHashId: string };
 }) {
   return (
@@ -25,7 +27,7 @@ export default async function Page({}: {
       </div>
 
       <div className="flex flex-col space-y-4">
-        <MembersSettingsCard />
+        <MembersSettingsCard workspaceHashId={params.workspaceHashId} />
       </div>
 
       <div className="flex flex-col space-y-4">

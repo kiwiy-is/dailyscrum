@@ -3,7 +3,6 @@
 import { createAuthClient } from "@/lib/supabase/auth-client";
 import { createWorkspace } from "@/services/workspaces";
 import { cookies } from "next/headers";
-import { getParams } from "next-impl-getters/get-params";
 import { redirect } from "next/navigation";
 import { DateTime } from "luxon";
 import { createDailyScrumUpdateEntry } from "@/services/daily-scrum-update-entries";
@@ -23,16 +22,13 @@ export async function createNewWorkspace(name: string) {
 
 // TODO: Move this to /board page actions
 export async function addUpdate(
+  workspaceHashId: string,
   formId: number,
   timeZone: string,
   formValues: {
     [x: number]: string;
   } & { date: Date }
 ) {
-  const { workspaceHashId } = getParams() as {
-    workspaceHashId: string;
-  };
-
   const { date, ...dynamicFormValues } = formValues;
 
   const dateString = DateTime.fromJSDate(date).toISODate();

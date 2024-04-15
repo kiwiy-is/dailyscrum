@@ -2,15 +2,15 @@ import { buttonVariants } from "ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "ui/shadcn-ui/card";
 import MemberList from "./member-list";
 import Link from "next/link";
-import { getParams } from "next-impl-getters/get-params";
 import { cn } from "ui";
 
-type Props = {};
+type Props = {
+  workspaceHashId: string;
+};
 
 // TODO: pass in data
 // TODO: restrict updatd to workspace owner and admin
-const MembersSettingsCard = (props: Props) => {
-  const params = getParams() as { workspaceHashId: string };
+const MembersSettingsCard = ({ workspaceHashId }: Props) => {
   return (
     <Card>
       <CardHeader>
@@ -25,7 +25,7 @@ const MembersSettingsCard = (props: Props) => {
               }),
               "ml-auto"
             )}
-            href={`/app/workspaces/${params.workspaceHashId}/settings/add-member`}
+            href={`/app/workspaces/${workspaceHashId}/settings/add-member`}
             scroll={false}
           >
             Add member
