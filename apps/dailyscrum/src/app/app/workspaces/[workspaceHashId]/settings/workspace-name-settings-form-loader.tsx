@@ -1,6 +1,4 @@
-import { createClient } from "@/lib/supabase/client";
 import WorkspaceNameSettingsForm from "./workspace-name-settings-form";
-import { getWorkspaceSettings } from "@/services/workspace-settings";
 import { getWorkspaceByHashId } from "@/services/workspaces";
 
 type Props = {

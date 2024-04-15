@@ -23,7 +23,9 @@ export default async function Page({
       </div>
 
       <div className="flex flex-col space-y-4">
-        <StandardTimeZoneSettingsCard />
+        <StandardTimeZoneSettingsCard
+          workspaceHashId={params.workspaceHashId}
+        />
       </div>
 
       <div className="flex flex-col space-y-4">

@@ -1,5 +1,6 @@
 "use server";
 
+import { updateWorkspaceTimeZone } from "@/services/workspace-settings";
 import { updateWorkspace } from "@/services/workspaces";
 
 export async function updateWorkspaceName(workspaceId: number, name: string) {
@@ -15,4 +16,11 @@ export async function updateWorkspaceName(workspaceId: number, name: string) {
   }
 
   return response;
+}
+
+export async function updateStandardTimeZone(
+  workspaceId: number,
+  timeZone: string
+) {
+  return updateWorkspaceTimeZone(workspaceId, timeZone);
 }

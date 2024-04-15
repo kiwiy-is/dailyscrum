@@ -34,6 +34,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <ShadcnButton.Button
         ref={ref}
         className={cn(
+          "transition-opacity",
           size === "icon-sm" && "h-9 w-9",
           size === "xs" && "h-7 rounded-md px-2.5 text-xs",
           className

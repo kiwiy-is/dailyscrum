@@ -1,16 +1,18 @@
 import { Card, CardContent, CardHeader, CardTitle } from "ui/shadcn-ui/card";
-import StandardTimeZoneSettingsForm from "./standard-time-zone-settings-form";
+import StandardTimeZoneSettingsFormLoader from "./standard-time-zone-settings-form-loader";
 
-type Props = {};
+type Props = {
+  workspaceHashId: string;
+};
 
-const StandardTimeZoneSettingsCard = (props: Props) => {
+const StandardTimeZoneSettingsCard = ({ workspaceHashId }: Props) => {
   return (
     <Card>
       <CardHeader>
         <CardTitle className="text-base">Standard time zone</CardTitle>
       </CardHeader>
       <CardContent>
-        <StandardTimeZoneSettingsForm />
+        <StandardTimeZoneSettingsFormLoader workspaceHashId={workspaceHashId} />
       </CardContent>
     </Card>
   );
