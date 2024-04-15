@@ -1,10 +1,14 @@
 import React from "react";
 import AddMemberDialogLoader from "./add-member-dialog-loader";
 
-type Props = {};
+type Props = {
+  params: {
+    workspaceHashId: string;
+  };
+};
 
-const Page = (props: Props) => {
-  return <AddMemberDialogLoader />;
+const Page = ({ params }: Props) => {
+  return <AddMemberDialogLoader workspaceHashId={params.workspaceHashId} />;
 };
 
 export default Page;

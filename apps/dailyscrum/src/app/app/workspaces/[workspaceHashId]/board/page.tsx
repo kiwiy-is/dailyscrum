@@ -9,20 +9,21 @@ import { Suspense } from "react";
 import DailyScrumUpdateListSkeleton from "./daily-scrum-update-list-skeleton";
 import DatePickerTriggerButton from "./date-picker-trigger-button";
 
-export const dynamic = "force-dynamic"; // NOTE: One of the components in this page is using 'next-impl-getters/get-search-params' to get search params
-
 export default async function Page({
   params: { workspaceHashId },
   searchParams,
 }: {
   params: { workspaceHashId: string };
-  searchParams: { date: string; dialog: string };
+  searchParams: { date?: string; dialog?: string };
 }) {
   const datePickerSuspenseKey = new URLSearchParams({
-    date: searchParams.date,
+    ...(searchParams.date && { date: searchParams.date }),
   }).toString();
 
   const listSuspenseKey = new URLSearchParams(searchParams).toString();
+
+  const dateQuery = searchParams.date;
+
   return (
     <div className="flex flex-col space-y-8 max-w-screen-2xl">
       <PageHeader
@@ -66,7 +67,10 @@ export default async function Page({
           key={listSuspenseKey}
           fallback={<DailyScrumUpdateListSkeleton />}
         >
-          <DailyScrumUpdateListLoader />
+          <DailyScrumUpdateListLoader
+            workspaceHashId={workspaceHashId}
+            dateQuery={dateQuery}
+          />
         </Suspense>
       </div>
     </div>

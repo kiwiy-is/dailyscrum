@@ -29,7 +29,12 @@ import type { ControllerRenderProps } from "react-hook-form";
 import { useForm } from "react-hook-form";
 import { CalendarIcon, CheckCircleIcon } from "lucide-react";
 import { DateTime } from "luxon";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import {
+  useParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 import { addUpdate } from "./actions";
 import { useToast } from "ui/shadcn-ui/use-toast";
 
@@ -150,6 +155,7 @@ export const AddScrumUpdateDialog: React.FC<AddScrumUpdateDialogProps> = ({
 
   const router = useRouter();
   const pathname = usePathname();
+  const params = useParams<{ workspaceHashId: string }>();
   const searchParams = useSearchParams();
   const dialogParamValue = searchParams.get("dialog");
 
@@ -312,16 +318,20 @@ export const AddScrumUpdateDialog: React.FC<AddScrumUpdateDialogProps> = ({
 
           // TODO: handle error
           const { error } = await addUpdate(
+            params.workspaceHashId,
             dailyScrumUpdateFormId,
             timeZone,
             mergedValues
           );
 
           // NOTE: closing dialog by removing dialog param and change the date to a target date of new daily scrum update
-          const params = new URLSearchParams(searchParams);
-          params.delete("dialog");
-          params.set("date", DateTime.fromJSDate(formValues.date).toISODate()!);
-          router.replace(`${pathname}?${params.toString()}`);
+          const mutableSearchParams = new URLSearchParams(searchParams);
+          mutableSearchParams.delete("dialog");
+          mutableSearchParams.set(
+            "date",
+            DateTime.fromJSDate(formValues.date).toISODate()!
+          );
+          router.replace(`${pathname}?${mutableSearchParams.toString()}`);
 
           toast({
             description: (

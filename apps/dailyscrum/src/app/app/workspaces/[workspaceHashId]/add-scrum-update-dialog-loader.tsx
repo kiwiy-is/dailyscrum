@@ -1,6 +1,5 @@
 import React from "react";
 import { AddScrumUpdateDialog } from "./add-scrum-update-dialog";
-import { getParams } from "next-impl-getters/get-params";
 import { DateTime } from "luxon";
 import { getCurrentUser } from "@/services/users";
 import { getWorkspaceByHashId } from "@/services/workspaces";
@@ -8,11 +7,11 @@ import { getDailyScrumUpdateForm } from "@/services/daily-scrum-update-forms";
 import { getDailyScrumUpdateEntriesCountOfCurrentUser } from "@/services/daily-scrum-update-entries";
 import { getWorkspaceSettings } from "@/services/workspace-settings";
 
-type Props = {};
+type Props = {
+  workspaceHashId: string;
+};
 
-const AddScrumUpdateDialogLoader = async (props: Props) => {
-  const { workspaceHashId } = getParams() as { workspaceHashId: string };
-
+const AddScrumUpdateDialogLoader = async ({ workspaceHashId }: Props) => {
   const { data: user, error: getCurrentUserError } = await getCurrentUser();
 
   if (getCurrentUserError || !user) {
