@@ -1,5 +1,6 @@
 import * as command from "@/components/shadcn-ui/command";
 import { cn } from "@/lib/utils";
+import React from "react";
 
 export * from "@/components/shadcn-ui/command";
 
@@ -14,9 +15,11 @@ export const CommandInput = (
   );
 };
 
-export const CommandItem = (
-  props: React.ComponentProps<typeof command.CommandItem>
-) => {
+export const CommandItem = React.forwardRef<
+  React.ElementRef<typeof command.CommandItem>,
+  React.ComponentProps<typeof command.CommandItem>
+>((props, ref) => {
   const className = cn("text-sm cursor-pointer", props.className);
-  return <command.CommandItem {...props} className={className} />;
-};
+  return <command.CommandItem ref={ref} {...props} className={className} />;
+});
+CommandItem.displayName = command.CommandItem.displayName;

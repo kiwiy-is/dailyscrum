@@ -10,3 +10,19 @@ export const getWorkspaceSettings = memoize(async (workspaceId: number) => {
     .select("*")
     .eq("workspace_id", workspaceId);
 });
+
+export const updateWorkspaceTimeZone = async (
+  workspaceId: number,
+  timeZone: string
+) => {
+  const client = createClient();
+  return client
+    .from("workspace_settings")
+    .update({ attribute_value: timeZone })
+    .match({
+      attribute_key: "time_zone",
+      workspace_id: workspaceId,
+    })
+    .select()
+    .single();
+};

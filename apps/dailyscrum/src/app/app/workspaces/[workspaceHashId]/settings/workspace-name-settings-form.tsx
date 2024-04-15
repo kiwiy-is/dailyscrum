@@ -86,7 +86,7 @@ const WorkspaceNameSettingsForm = ({ workspaceId, name }: Props) => {
           loading={isPending}
           disabled={!form.formState.isDirty}
         >
-          Save
+          Update
         </Button>
       </form>
     </Form>
