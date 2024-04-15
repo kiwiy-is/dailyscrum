@@ -4,7 +4,7 @@ import { CalendarIcon } from "lucide-react";
 import { DateTime } from "luxon";
 import React from "react";
 import { Button, ButtonProps } from "ui/button";
-import { useDateFromSearchParams } from "./use-date-from-search-params";
+import { useSearchParams } from "next/navigation";
 
 type Props = {
   timeZone?: string;
@@ -13,7 +13,15 @@ type Props = {
 
 const DatePickerTriggerButton = React.forwardRef<HTMLButtonElement, Props>(
   ({ timeZone, ...props }, ref) => {
-    const date = useDateFromSearchParams(timeZone);
+    const searchParams = useSearchParams();
+    const dateQuery = searchParams.get("date");
+    const today = timeZone
+      ? DateTime.local().setZone(timeZone).startOf("day")
+      : null;
+    const date =
+      dateQuery && DateTime.fromISO(dateQuery).isValid
+        ? DateTime.fromISO(dateQuery)
+        : today;
 
     return (
       <Button
@@ -25,7 +33,11 @@ const DatePickerTriggerButton = React.forwardRef<HTMLButtonElement, Props>(
       >
         <CalendarIcon width={16} height={16} strokeWidth={2} />
 
-        <span>{date.toLocaleString(DateTime.DATE_MED)}</span>
+        {date ? (
+          <span>{date.toLocaleString(DateTime.DATE_MED)}</span>
+        ) : (
+          <div className="w-[86px]" />
+        )}
       </Button>
     );
   }

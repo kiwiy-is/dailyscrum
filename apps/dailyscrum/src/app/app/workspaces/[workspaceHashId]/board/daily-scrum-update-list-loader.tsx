@@ -7,6 +7,7 @@ import DailyScrumUpdateList from "./daily-scrum-update-list";
 import { getWorkspaceByHashId } from "@/services/workspaces";
 import { listDailyScrumUpdateEntries } from "@/services/daily-scrum-update-entries";
 import { getWorkspaceSettings } from "@/services/workspace-settings";
+import { getCurrentUser } from "@/services/users";
 
 type Props = {};
 
@@ -35,6 +36,7 @@ const DailyScrumUpdateListLoader = async (props: Props) => {
   const dateQuery = searchParams.get("date");
 
   const today = DateTime.local().setZone(timeZone).startOf("day");
+  const tomorrow = today.plus({ days: 1 });
 
   const date =
     dateQuery && DateTime.fromISO(dateQuery).isValid
@@ -56,11 +58,31 @@ const DailyScrumUpdateListLoader = async (props: Props) => {
     return null;
   }
 
+  const isDateArchived = !(
+    date.hasSame(today, "day") || date.hasSame(tomorrow, "day")
+  );
+
+  const { data: user, error: getCurrentUserError } = await getCurrentUser();
+
+  const showAddUpdateCard =
+    !isDateArchived &&
+    !dailyScrumUpdateEntries.some((dailyScrumUpdateEntry) => {
+      return dailyScrumUpdateEntry.profile?.id === user?.id;
+    });
+
+  const showNoUpdatesFoundForArchivedDates =
+    isDateArchived && dailyScrumUpdateEntries.length === 0;
+
   const dailyScrumUpdates = dailyScrumUpdateEntries.map(
-    ({ daily_scrum_update_answers, daily_scrum_update_form_id, ...entry }) => {
+    ({
+      profile,
+      daily_scrum_update_answers,
+      daily_scrum_update_form_id,
+      ...entry
+    }) => {
       return {
         id: entry.id,
-        userName: "John Doe", // TODO: pass in real user profile name
+        userName: profile?.name ?? "",
         qaPairs: daily_scrum_update_answers
           .toSorted((a, b) => {
             return (
@@ -85,7 +107,13 @@ const DailyScrumUpdateListLoader = async (props: Props) => {
     }
   );
 
-  return <DailyScrumUpdateList updates={dailyScrumUpdates} />;
+  return (
+    <DailyScrumUpdateList
+      showAddUpdateCard={showAddUpdateCard}
+      showNoUpdatesFoundForArchivedDates={showNoUpdatesFoundForArchivedDates}
+      updates={dailyScrumUpdates}
+    />
+  );
 };
 
 export default DailyScrumUpdateListLoader;

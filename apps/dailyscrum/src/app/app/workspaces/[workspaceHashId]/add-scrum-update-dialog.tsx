@@ -217,12 +217,42 @@ export const AddScrumUpdateDialog: React.FC<AddScrumUpdateDialogProps> = ({
     );
   }, [questions]);
 
+  const dateQuery = searchParams.get("date");
+
+  const date =
+    dateQuery && DateTime.fromISO(dateQuery).isValid
+      ? DateTime.fromISO(dateQuery)
+      : today;
+
+  const isDateArchived = !(
+    date.hasSame(today, "day") || date.hasSame(tomorrow, "day")
+  );
+
   const form = useForm<zod.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      date: today.toJSDate(),
+      date: isDateArchived ? today.toJSDate() : date.toJSDate(),
     },
   });
+
+  useEffect(() => {
+    // TODO: There is a code duplicate. Refactor it.
+    const today = DateTime.local().setZone(timeZone).startOf("day");
+    const tomorrow = today.plus({ days: 1 });
+    const date =
+      dateQuery && DateTime.fromISO(dateQuery).isValid
+        ? DateTime.fromISO(dateQuery)
+        : today;
+
+    const isDateArchived = !(
+      date.hasSame(today, "day") || date.hasSame(tomorrow, "day")
+    );
+
+    // TODO: form.setValue didn't trigger rendering. Find out why.
+    form.reset({
+      date: isDateArchived ? today.toJSDate() : date.toJSDate(),
+    });
+  }, [dateQuery, timeZone, form]);
 
   useEffect(() => {
     form.trigger("date");
