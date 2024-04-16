@@ -146,6 +146,7 @@ const DailyScrumUpdateList = ({
           if (typeof props === "string") {
             return (
               <Button
+                key={props}
                 variant="outline"
                 size="sm"
                 className="justify-center gap-x-2 text-sm h-[208px] rounded-lg"

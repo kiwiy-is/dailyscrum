@@ -41,11 +41,11 @@ function WorkspaceSelection({ workspaces, selectedWorkspace }: Props) {
     []
   );
 
-  const handleCreateWorkspaceSelect = useCallback(() => {
+  const handleCreateWorkspaceSelect = () => {
     const params = new URLSearchParams(searchParams);
     params.set("dialog", "create-new-workspace");
     window.history.replaceState(null, "", `${pathname}?${params.toString()}`);
-  }, []);
+  };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>

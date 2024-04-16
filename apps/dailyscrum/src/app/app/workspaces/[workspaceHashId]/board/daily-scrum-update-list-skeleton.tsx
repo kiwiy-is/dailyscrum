@@ -16,9 +16,9 @@ const DailyScrumUpdateListSkeleton = (props: Props) => {
                     <h3>
                       <Skeleton className="w-[64px] max-w-full h-[24px]" />
                     </h3>
-                    <p>
+                    <div>
                       <Skeleton className="w-[112px] max-w-full h-[16px]" />
-                    </p>
+                    </div>
                   </div>
                   <div className="flex flex-col space-y-1.5">
                     <h4>
