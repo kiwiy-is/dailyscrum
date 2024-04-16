@@ -56,13 +56,13 @@ const CreateNewWorkspaceDialog = (props: Props) => {
   });
 
   // TODO: remove usecallback
-  const handleOpenChange = useCallback((open: boolean) => {
+  const handleOpenChange = (open: boolean) => {
     if (!open) {
       const params = new URLSearchParams(searchParams);
       params.delete("dialog");
       window.history.replaceState(null, "", `${pathname}?${params.toString()}`);
     }
-  }, []);
+  };
 
   const handleSubmit = useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {

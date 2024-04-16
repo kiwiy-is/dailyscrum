@@ -12,9 +12,9 @@ const Loading = (props: Props) => {
             <div className="flex items-center h-[32px]">
               <Skeleton className="w-[64px] max-w-full h-[28px]" />
             </div>
-            <p>
+            <div>
               <Skeleton className="w-[248px] max-w-full h-[20px]" />
-            </p>
+            </div>
           </div>
         </div>
         {[...Array(3)].map((_, index) => (
