@@ -2,6 +2,14 @@ import { memoize } from "@/lib/cache";
 import { createClient } from "@/lib/supabase/client";
 import { Database } from "@/lib/supabase/database";
 
+export const listMembers = memoize(async (workspaceId: number) => {
+  const client = createClient();
+  return client
+    .from("members")
+    .select("*, user:users(email, profile:profiles(name))")
+    .eq("workspace_id", workspaceId);
+});
+
 export const getMember = memoize(
   async (workspaceId: number, userId: string) => {
     const client = createClient();

@@ -39,47 +39,14 @@ import {
   SelectItem,
 } from "ui/shadcn-ui/select";
 
-const data: User[] = [
-  {
-    id: "m5gr84i9",
-    email: "ken99@yahoo.com",
-    name: "Ken Smith",
-    role: "owner",
-  },
-  {
-    id: "3u1reuv4",
-    email: "Abe45@gmail.com",
-    name: "Abe Gwen",
-    role: "admin",
-  },
-  {
-    id: "derv1ws0",
-    email: "Monserrat44@gmail.com",
-    name: "Monserrat Xavier",
-    role: "member",
-  },
-  {
-    id: "5kma53ae",
-    email: "Silas22@gmail.com",
-    name: "Silas Zheng",
-    role: "member",
-  },
-  {
-    id: "bhqecj4p",
-    email: "carmella@hotmail.com",
-    name: "Carmella Christie",
-    role: "member",
-  },
-];
-
-export type User = {
-  id: string;
+export type Member = {
+  id: number;
   email: string;
   name: string;
   role: "owner" | "admin" | "member";
 };
 
-export const columns: ColumnDef<User>[] = [
+export const columns: ColumnDef<Member>[] = [
   {
     accessorKey: "name",
     header: "Name",
@@ -144,9 +111,12 @@ export const columns: ColumnDef<User>[] = [
   },
 ];
 
-// TODO: pass in data
+type Props = {
+  members: Member[];
+};
+
 // TODO: restrict updatd to workspace owner and admin
-const MemberList = () => {
+const MemberList = ({ members }: Props) => {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -156,7 +126,7 @@ const MemberList = () => {
   const [rowSelection, setRowSelection] = React.useState({});
 
   const table = useReactTable({
-    data,
+    data: members,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -219,7 +189,7 @@ const MemberList = () => {
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  No results
                 </TableCell>
               </TableRow>
             )}
