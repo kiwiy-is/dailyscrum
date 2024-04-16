@@ -27,6 +27,7 @@ const MembersSettingsCard = ({ workspaceHashId }: Props) => {
             )}
             href={`/app/workspaces/${workspaceHashId}/settings/add-member`}
             scroll={false}
+            prefetch={true}
           >
             Add member
           </Link>

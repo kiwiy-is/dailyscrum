@@ -1,5 +1,7 @@
-import React from "react";
-import AddMemberDialogLoader from "./add-member-dialog-loader";
+import React, { Suspense } from "react";
+import InvitationLinkSectionLoader from "./invitation-link-section-loader";
+import AddMemberDialog from "./add-member-dialog";
+import InvitationLinkSectionSkeleton from "./invitation-link-section-skeleton";
 
 type Props = {
   params: {
@@ -8,7 +10,17 @@ type Props = {
 };
 
 const Page = ({ params }: Props) => {
-  return <AddMemberDialogLoader workspaceHashId={params.workspaceHashId} />;
+  return (
+    <AddMemberDialog
+      invitationLinkSection={
+        <Suspense fallback={<InvitationLinkSectionSkeleton />}>
+          <InvitationLinkSectionLoader
+            workspaceHashId={params.workspaceHashId}
+          />
+        </Suspense>
+      }
+    />
+  );
 };
 
 export default Page;
