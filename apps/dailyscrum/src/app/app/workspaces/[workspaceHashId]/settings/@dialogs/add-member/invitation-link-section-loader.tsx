@@ -1,5 +1,5 @@
 import React from "react";
-import AddMemberDialog from "./add-member-dialog";
+import InvitationLinkSection from "./invitation-link-section";
 import { createInvitation } from "./actions";
 import { getWorkspaceByHashId } from "@/services/workspaces";
 import { getInvitationByWorkspaceId } from "@/services/invitations";
@@ -8,7 +8,7 @@ type Props = {
   workspaceHashId: string;
 };
 
-const AddMemberDialogLoader = async ({ workspaceHashId }: Props) => {
+const InvitationLinkSectionLoader = async ({ workspaceHashId }: Props) => {
   const { data: workspace, error: getWorkspaceError } =
     await getWorkspaceByHashId(workspaceHashId);
 
@@ -30,7 +30,9 @@ const AddMemberDialogLoader = async ({ workspaceHashId }: Props) => {
     code = invitation.code;
   }
 
-  return <AddMemberDialog verificationCode={code} workspaceId={workspace.id} />;
+  return (
+    <InvitationLinkSection verificationCode={code} workspaceId={workspace.id} />
+  );
 };
 
-export default AddMemberDialogLoader;
+export default InvitationLinkSectionLoader;
