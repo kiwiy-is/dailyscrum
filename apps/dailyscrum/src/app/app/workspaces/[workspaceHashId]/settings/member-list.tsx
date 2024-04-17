@@ -2,8 +2,11 @@
 
 import * as React from "react";
 import {
+  Cell,
+  CellContext,
   ColumnDef,
   ColumnFiltersState,
+  Row,
   SortingState,
   VisibilityState,
   flexRender,
@@ -38,6 +41,190 @@ import {
   SelectGroup,
   SelectItem,
 } from "ui/shadcn-ui/select";
+import { useEffect, useState, useTransition } from "react";
+import { removeMember, updateRole, updateStandardTimeZone } from "./actions";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+} from "ui/shadcn-ui/alert-dialog";
+import { useRouter } from "next/navigation";
+
+const RoleCell = ({
+  row,
+  cell,
+}: {
+  row: Row<Member>;
+  cell: Cell<Member, unknown>;
+}) => {
+  const router = useRouter();
+  const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
+
+  const [isTransitioning, startTransition] = useTransition();
+
+  const [selectedRole, setSelectedRole] = useState<string>(
+    row.getValue(cell.column.id)
+  );
+
+  useEffect(() => {
+    if (!isTransitioning) {
+      setIsConfirmDialogOpen(false);
+    }
+  }, [isTransitioning]);
+
+  return (
+    <>
+      {/* // TODO: Apply role change rules */}
+      <Select
+        value={row.getValue(cell.column.id)}
+        onValueChange={(value) => {
+          setSelectedRole(value);
+          setIsConfirmDialogOpen(true);
+        }}
+      >
+        <SelectTrigger className="h-10 w-[140px]">
+          <SelectValue placeholder="Select a role" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectItem value="owner">Owner</SelectItem>
+            <SelectItem value="admin">Admin</SelectItem>
+            <SelectItem value="member">Member</SelectItem>
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+      <AlertDialog
+        open={isConfirmDialogOpen}
+        onOpenChange={(open) => {
+          if (!open) {
+            setSelectedRole(row.getValue(cell.column.id));
+          }
+          setIsConfirmDialogOpen(open);
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Update member role</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to update the role of{" "}
+              <span className="text-foreground font-medium">
+                {row.original.name}
+              </span>{" "}
+              from{" "}
+              <span className="text-foreground font-medium capitalize">
+                {row.original.role}
+              </span>{" "}
+              to{" "}
+              <span className="text-foreground font-medium capitalize">
+                {selectedRole}
+              </span>
+              ?
+              <br />
+              <br />
+              By changing the role of this member their permissions will change.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <Button
+              loading={isTransitioning}
+              onClick={async () => {
+                startTransition(async () => {
+                  await updateRole(
+                    row.original.id,
+                    selectedRole as "owner" | "admin" | "member"
+                  );
+
+                  router.refresh();
+                });
+              }}
+            >
+              Update
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
+  );
+};
+
+const ActionsCell = ({ row }: { row: Row<Member> }) => {
+  const member = row.original;
+
+  const router = useRouter();
+  const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
+  const [isTransitioning, startTransition] = useTransition();
+
+  useEffect(() => {
+    if (!isTransitioning) {
+      setIsConfirmDialogOpen(false);
+    }
+  }, [isTransitioning]);
+
+  return (
+    <>
+      {/* // TODO: apply remove rules */}
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <span className="sr-only">Open menu</span>
+            <MoreHorizontal className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem
+            onClick={() => {
+              setIsConfirmDialogOpen(true);
+            }}
+          >
+            Remove member
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <AlertDialog
+        open={isConfirmDialogOpen}
+        onOpenChange={setIsConfirmDialogOpen}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remove member from workspace</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to remove{" "}
+              <span className="text-foreground font-medium capitalize">
+                {row.original.name}
+              </span>{" "}
+              from workspace? This is permanent.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <Button
+              variant="destructive"
+              loading={isTransitioning}
+              onClick={async () => {
+                startTransition(async () => {
+                  // await updateRole(
+                  //   row.original.id,
+                  //   selectedRole as "owner" | "admin" | "member"
+                  // );
+                  // router.refresh();
+                  await removeMember(member.id);
+                  router.refresh();
+                });
+              }}
+            >
+              Remove
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
+  );
+};
 
 export type Member = {
   id: number;
@@ -52,7 +239,6 @@ export const columns: ColumnDef<Member>[] = [
     header: "Name",
     cell: ({ row }) => <div>{row.getValue("name")}</div>,
   },
-
   {
     accessorKey: "email",
     header: "Email",
@@ -62,52 +248,13 @@ export const columns: ColumnDef<Member>[] = [
     accessorKey: "role",
     header: "Role",
     cell: ({ row, cell }) => {
-      return (
-        <Select
-          value={row.getValue("role")}
-          onValueChange={(value) => {
-            alert("change to " + value);
-          }}
-        >
-          <SelectTrigger className="h-10 w-[140px]">
-            <SelectValue placeholder="Select a role" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectItem value="owner">Owner</SelectItem>
-              <SelectItem value="admin">Admin</SelectItem>
-              <SelectItem value="member">Member</SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-      );
+      return <RoleCell row={row} cell={cell} />;
     },
   },
-
   {
     id: "actions",
     enableHiding: false,
-    cell: ({ row }) => {
-      const payment = row.original;
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
-            >
-              Remove member
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
+    cell: ({ row }) => <ActionsCell row={row} />,
   },
 ];
 

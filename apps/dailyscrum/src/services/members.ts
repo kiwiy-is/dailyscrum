@@ -7,7 +7,8 @@ export const listMembers = memoize(async (workspaceId: number) => {
   return client
     .from("members")
     .select("*, user:users(email, profile:profiles(name))")
-    .eq("workspace_id", workspaceId);
+    .eq("workspace_id", workspaceId)
+    .order("created_at", { ascending: true });
 });
 
 export const getMember = memoize(
@@ -36,4 +37,22 @@ export const createMember = async (
   }
 
   return response;
+};
+
+export const updateMember = async (
+  memberId: number,
+  memberValues: Omit<Database["public"]["Tables"]["members"]["Update"], "id">
+) => {
+  const client = createClient();
+  return await client
+    .from("members")
+    .update(memberValues)
+    .eq("id", memberId)
+    .select()
+    .single();
+};
+
+export const deleteMember = async (memberId: number) => {
+  const client = createClient();
+  return await client.from("members").delete().eq("id", memberId).select();
 };
