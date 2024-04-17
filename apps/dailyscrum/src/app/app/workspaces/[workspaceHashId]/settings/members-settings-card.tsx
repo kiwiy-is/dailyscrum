@@ -1,14 +1,13 @@
 import { buttonVariants } from "ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "ui/shadcn-ui/card";
-import MemberList from "./member-list";
 import Link from "next/link";
 import { cn } from "ui";
+import MemberListLoader from "./member-list-loader";
 
 type Props = {
   workspaceHashId: string;
 };
 
-// TODO: pass in data
 // TODO: restrict updatd to workspace owner and admin
 const MembersSettingsCard = ({ workspaceHashId }: Props) => {
   return (
@@ -34,7 +33,7 @@ const MembersSettingsCard = ({ workspaceHashId }: Props) => {
         </div>
       </CardHeader>
       <CardContent>
-        <MemberList />
+        <MemberListLoader workspaceHashId={workspaceHashId} />
       </CardContent>
     </Card>
   );

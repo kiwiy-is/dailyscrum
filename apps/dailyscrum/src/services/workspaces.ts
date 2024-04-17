@@ -202,13 +202,16 @@ export const createWorkspace = async (
 
 export const updateWorkspace = async (
   workspaceId: number,
-  updateValues: Database["public"]["Tables"]["workspaces"]["Update"]
+  workspaceValues: Omit<
+    Database["public"]["Tables"]["workspaces"]["Update"],
+    "id"
+  >
 ) => {
   const client = createClient();
 
   return client
     .from("workspaces")
-    .update(updateValues)
+    .update(workspaceValues)
     .eq("id", workspaceId)
     .select()
     .single();
