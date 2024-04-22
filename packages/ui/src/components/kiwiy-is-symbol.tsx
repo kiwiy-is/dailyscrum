@@ -1,5 +1,6 @@
 import React from "react";
 
+// TODO: rename to KiwiySymbol
 export const KiwiyIsSymbol = React.forwardRef<
   SVGSVGElement,
   React.SVGProps<SVGSVGElement>
