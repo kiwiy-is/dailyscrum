@@ -96,7 +96,6 @@ const DateField: React.FC<{
             <FormControl>
               <Button
                 variant={"outline"}
-                size="sm"
                 className="w-[240px] font-normal h-10"
               >
                 {formattedDate}
@@ -402,7 +401,7 @@ export const AddScrumUpdateDialog: React.FC<AddScrumUpdateDialogProps> = ({
         <DialogFooter>
           <Button
             type="submit"
-            size="sm"
+            // size="sm"
             form="scrum-update-form"
             loading={isPending}
           >

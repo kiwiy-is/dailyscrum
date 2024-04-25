@@ -18,7 +18,7 @@ const UserMenu = async (props: Props) => {
   return (
     <UserDropdown
       trigger={
-        <Button variant="ghost" className="justify-start gap-x-2" size="sm">
+        <Button variant="ghost" className="justify-start gap-x-2">
           <div>
             <UserRoundIcon width={16} height={16} strokeWidth={2} />
           </div>

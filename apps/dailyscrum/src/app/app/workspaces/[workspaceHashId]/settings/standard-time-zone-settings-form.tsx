@@ -185,7 +185,6 @@ const StandardTimeZoneSettingsForm = ({ workspaceId, timeZone }: Props) => {
 
           <Button
             type="button"
-            size="sm"
             loading={false}
             disabled={!form.formState.isDirty}
             onClick={(event) => {

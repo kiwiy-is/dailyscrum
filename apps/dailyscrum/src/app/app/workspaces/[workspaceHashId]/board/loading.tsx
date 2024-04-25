@@ -9,7 +9,7 @@ const Loading = (props: Props) => {
     <div className="flex flex-col space-y-8 max-w-screen-2xl">
       <div className="flex justify-between items-start">
         <div className="space-y-0.5">
-          <div className="flex items-center h-[32px]">
+          <div className="flex items-center h-[36px]">
             <Skeleton className="w-[58px] max-w-full h-[28px]" />
           </div>
         </div>

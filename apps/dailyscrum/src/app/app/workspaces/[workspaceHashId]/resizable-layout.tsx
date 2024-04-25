@@ -43,19 +43,23 @@ const saveLayoutToCookie = (layout: number[]): void => {
 };
 
 type Props = {
-  sidebar: React.ReactNode;
-  content: React.ReactNode;
+  sidebarPanelContent: React.ReactNode;
+  contentPanelContent: React.ReactNode;
   defaultLayout?: number[];
 };
 
-const ResizableLayout = ({ defaultLayout, sidebar, content }: Props) => {
+const ResizableLayout = ({
+  defaultLayout,
+  sidebarPanelContent,
+  contentPanelContent,
+}: Props) => {
   const panelGroupRef = useRef<ImperativePanelGroupHandle>(null);
 
   const sidebarPanelRef = useRef<ImperativePanelHandle>(null);
 
   const sidebarPanelDefaultWidth = defaultLayout
     ? defaultLayout[0]
-    : (SIDEBAR_PANEL_MEDIAN_SIZE / window.innerWidth) * 100;
+    : (SIDEBAR_PANEL_MIN_SIZE / window.innerWidth) * 100;
   const contentPanelDefaultWidth = 100 - sidebarPanelDefaultWidth;
 
   const updateLayoutAndSaveToCookie = (layout: number[]) => {
@@ -85,25 +89,24 @@ const ResizableLayout = ({ defaultLayout, sidebar, content }: Props) => {
   };
 
   return (
-    <>
-      <ResizablePanelGroup
-        ref={panelGroupRef}
-        direction="horizontal"
-        id={PANEL_GROUP_ID}
-        onLayout={handleLayout}
+    <ResizablePanelGroup
+      ref={panelGroupRef}
+      direction="horizontal"
+      id={PANEL_GROUP_ID}
+      onLayout={handleLayout}
+    >
+      <ResizablePanel
+        id="sidebar-panel"
+        ref={sidebarPanelRef}
+        defaultSize={sidebarPanelDefaultWidth}
       >
-        <ResizablePanel
-          ref={sidebarPanelRef}
-          defaultSize={sidebarPanelDefaultWidth}
-        >
-          {sidebar}
-        </ResizablePanel>
-        <ResizableHandle />
-        <ResizablePanel defaultSize={contentPanelDefaultWidth}>
-          {content}
-        </ResizablePanel>
-      </ResizablePanelGroup>
-    </>
+        {sidebarPanelContent}
+      </ResizablePanel>
+      <ResizableHandle />
+      <ResizablePanel defaultSize={contentPanelDefaultWidth}>
+        {contentPanelContent}
+      </ResizablePanel>
+    </ResizablePanelGroup>
   );
 };
 

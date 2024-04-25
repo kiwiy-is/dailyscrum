@@ -22,9 +22,7 @@ const DeleteWorkspaceSettingsCard = (props: Props) => {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <Button variant="destructive" size="sm">
-          Delete workspace
-        </Button>
+        <Button variant="destructive">Delete workspace</Button>
       </CardContent>
     </Card>
   );
