@@ -21,7 +21,6 @@ const MyUpdatesLink = (props: Props) => {
           <div>
             <Button
               variant="ghost"
-              size="sm"
               className={cn("justify-start", "gap-x-2")}
               disabled
             >

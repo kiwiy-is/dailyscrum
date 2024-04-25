@@ -108,7 +108,6 @@ const CreateNewWorkspaceDialog = (props: Props) => {
           <Button
             type="submit"
             form="create-new-workspace-form"
-            size="sm"
             loading={isPending}
           >
             Create

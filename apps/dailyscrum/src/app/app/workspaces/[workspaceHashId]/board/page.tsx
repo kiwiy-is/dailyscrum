@@ -33,8 +33,7 @@ export default async function Page({
             <AddUpdateButton />
             <Button
               variant="outline"
-              size="sm"
-              className="justify-start gap-x-2 text-sm h-9"
+              className="justify-start gap-x-2 text-sm"
               disabled
             >
               <PresentationIcon width={16} height={16} strokeWidth={2} />
@@ -53,12 +52,7 @@ export default async function Page({
             <DatePickerLoader workspaceHashId={workspaceHashId} />
           </Suspense>
 
-          <Button
-            variant="outline"
-            size="sm"
-            className="gap-x-2 text-sm h-9"
-            disabled
-          >
+          <Button variant="outline" className="gap-x-2 text-sm" disabled>
             <Settings2Icon width={16} height={16} strokeWidth={2} />
             <span>Settings</span>
           </Button>

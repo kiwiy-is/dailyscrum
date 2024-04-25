@@ -20,7 +20,6 @@ const MembersSettingsCard = ({ workspaceHashId }: Props) => {
             className={cn(
               buttonVariants({
                 variant: "default",
-                size: "sm",
               }),
               "ml-auto"
             )}

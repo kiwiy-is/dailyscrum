@@ -1,18 +1,13 @@
-import WorkspaceSelectionLoader from "./workspace-selection-loader";
 import React from "react";
 import CreateNewWorkspaceDialog from "./create-new-workspace-dialog";
-import { Button, buttonVariants } from "ui/button";
-import { cn } from "ui";
-import NavLink from "@/components/nav-link";
-import MyUpdatesLink from "./my-updates-link";
-import { LayoutDashboardIcon, Settings2Icon } from "lucide-react";
-import { KiwiyIsSymbol } from "ui/kiwiy-is-symbol";
-import UserMenu from "./user-menu";
 import AddScrumUpdateDialogLoader from "./add-scrum-update-dialog-loader";
-import { ScrollArea } from "ui/shadcn-ui/scroll-area";
 import ResizableLayout from "./resizable-layout";
 import { cookies } from "next/headers";
 import { RESIZABLE_LAYOUT_COOKIE_KEY } from "./constants";
+
+import SidebarSheetOpener from "./sidebar-sheet-opener";
+import Sidebar from "./sidebar";
+import KiwiyDailyScrumLogo from "./kiwiy-daily-scrum-logo";
 
 export default async function Layout({
   children,
@@ -27,81 +22,42 @@ export default async function Layout({
     ? JSON.parse(layoutCookieValue.value)
     : undefined;
 
+  // TODO: viewport style is not overriding. Had to put ! on every style. Fix it.
   return (
     <>
-      <ResizableLayout
-        defaultLayout={defaultLayout}
-        sidebar={
-          <aside className="col-span-1 row-span-2">
-            <div className="h-full flex flex-col flex-1 px-4 pt-6 pb-4 space-y-6">
-              <div className="flex items-center gap-1.5 h-8">
-                <KiwiyIsSymbol width={24} height={24} />
-                <span className="text-base font-bold">Daily Scrum</span>
-              </div>
-
-              <div>
-                <WorkspaceSelectionLoader
-                  workspaceHashId={params.workspaceHashId}
-                />
-              </div>
-
-              <nav className="flex flex-col flex-1 space-y-1">
-                <NavLink
-                  href={`/app/workspaces/${params.workspaceHashId}/board`}
-                  activeClassName="bg-accent"
-                  className={cn(
-                    buttonVariants({
-                      variant: "ghost",
-                      size: "sm",
-                    }),
-                    "justify-start gap-x-2"
-                  )}
-                >
-                  <LayoutDashboardIcon width={16} height={16} strokeWidth={2} />
-                  <span>Board</span>
-                </NavLink>
-
-                <MyUpdatesLink />
-
-                <NavLink
-                  href={`/app/workspaces/${params.workspaceHashId}/settings`}
-                  activeClassName="bg-accent"
-                  className={cn(
-                    buttonVariants({
-                      variant: "ghost",
-                      size: "sm",
-                    }),
-                    "justify-start gap-x-2"
-                  )}
-                >
-                  <Settings2Icon width={16} height={16} strokeWidth={2} />
-                  <span>Settings</span>
-                </NavLink>
-              </nav>
-
-              <UserMenu />
+      {/* From md: 768px ~ */}
+      <div className="hidden md:!block">
+        <ResizableLayout
+          defaultLayout={defaultLayout}
+          sidebarPanelContent={
+            <Sidebar workspaceHashId={params.workspaceHashId} />
+          }
+          contentPanelContent={
+            <div className="h-screen min-h-screen overflow-auto relative">
+              {/* TODO: Is scroll area really necessary? Check on MS windows */}
+              {/* <ScrollArea>
+               </ScrollArea> */}
+              <main className="py-6 px-8">{children}</main>
             </div>
-          </aside>
-        }
-        content={
-          <div className="h-screen grid grid-rows-[auto,1fr]">
-            <header className=" border-b">
-              <div className="h-[40px] px-4 flex justify-end items-center ">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="text-xs h-7 px-2.5"
-                >
-                  Feedback
-                </Button>
-              </div>
-            </header>
-            <ScrollArea>
-              <main className="py-8 px-8">{children}</main>
-            </ScrollArea>
+          }
+        />
+      </div>
+
+      {/* Until md: 0px ~ 767px */}
+      <div className="block md:!hidden">
+        <header className="fixed left-0 right-0 top-0 border-b bg-white z-10">
+          <div className="h-[56px] flex items-center justify-between px-4">
+            <KiwiyDailyScrumLogo workspaceHashId={params.workspaceHashId} />
+            <SidebarSheetOpener
+              sheetContent={
+                <Sidebar workspaceHashId={params.workspaceHashId} />
+              }
+            />
           </div>
-        }
-      />
+        </header>
+        <main className="py-6 px-4 mt-[56px]">{children}</main>
+      </div>
+
       <CreateNewWorkspaceDialog />
       <AddScrumUpdateDialogLoader workspaceHashId={params.workspaceHashId} />
     </>

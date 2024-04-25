@@ -27,8 +27,7 @@ const DatePickerTriggerButton = React.forwardRef<HTMLButtonElement, Props>(
       <Button
         ref={ref}
         variant="outline"
-        size="sm"
-        className="gap-x-2 text-sm h-9"
+        className="gap-x-2 text-sm"
         {...props}
       >
         <CalendarIcon width={16} height={16} strokeWidth={2} />

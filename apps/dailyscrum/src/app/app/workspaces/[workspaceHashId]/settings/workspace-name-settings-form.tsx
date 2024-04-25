@@ -82,7 +82,6 @@ const WorkspaceNameSettingsForm = ({ workspaceId, name }: Props) => {
 
         <Button
           type="submit"
-          size="sm"
           loading={isPending}
           disabled={!form.formState.isDirty}
         >

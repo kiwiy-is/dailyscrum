@@ -52,7 +52,6 @@ function WorkspaceSelection({ workspaces, selectedWorkspace }: Props) {
       <PopoverTrigger asChild>
         <Button
           variant="outline"
-          role="combobox"
           aria-expanded={open}
           aria-label="Select a workspace"
           size="sm"
