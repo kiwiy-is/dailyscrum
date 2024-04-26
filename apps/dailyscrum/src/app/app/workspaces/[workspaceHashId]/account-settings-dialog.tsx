@@ -40,6 +40,7 @@ type Props = {
 
 const AccountSettingsDialog = ({ name, email }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
+  // TODO: Separate each setting into components
   const [isNameFormPending, startNameFormTransition] = useTransition();
   const [isEmailFormPending, startEmailFormTransition] = useTransition();
 
