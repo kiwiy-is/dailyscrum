@@ -3,17 +3,17 @@ import React from "react";
 import { Button } from "ui/button";
 import UserDropdown from "./user-dropdown";
 import { getCurrentUser } from "@/services/users";
+import { getCurrentUserProfile } from "@/services/profiles";
 
 type Props = {};
 
 const UserMenu = async (props: Props) => {
-  const { data: user, error } = await getCurrentUser();
+  const { data: profile, error: getProfileError } =
+    await getCurrentUserProfile();
 
-  if (error || !user) {
+  if (getProfileError || !profile) {
     return null;
   }
-
-  const { email } = user;
 
   return (
     <UserDropdown
@@ -22,10 +22,10 @@ const UserMenu = async (props: Props) => {
           <div>
             <UserRoundIcon width={16} height={16} strokeWidth={2} />
           </div>
-          <span className="truncate">{email}</span>
+          <span className="truncate">{profile.name}</span>
         </Button>
       }
-      label={email}
+      label={profile.name}
     />
   );
 };

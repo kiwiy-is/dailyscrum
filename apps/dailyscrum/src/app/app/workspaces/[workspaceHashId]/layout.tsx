@@ -8,6 +8,7 @@ import { RESIZABLE_LAYOUT_COOKIE_KEY } from "./constants";
 import SidebarSheetOpener from "./sidebar-sheet-opener";
 import Sidebar from "./sidebar";
 import KiwiyDailyScrumLogo from "./kiwiy-daily-scrum-logo";
+import AccountSettingsDialogLoader from "./account-settings-dialog-loader";
 
 export default async function Layout({
   children,
@@ -60,6 +61,7 @@ export default async function Layout({
 
       <CreateNewWorkspaceDialog />
       <AddScrumUpdateDialogLoader workspaceHashId={params.workspaceHashId} />
+      <AccountSettingsDialogLoader />
     </>
   );
 }

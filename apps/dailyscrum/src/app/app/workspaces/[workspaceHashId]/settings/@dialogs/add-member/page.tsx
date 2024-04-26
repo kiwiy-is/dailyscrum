@@ -9,6 +9,7 @@ type Props = {
   };
 };
 
+// TODO: manage the modal with query string instead of pathname
 const Page = ({ params }: Props) => {
   return (
     <AddMemberDialog

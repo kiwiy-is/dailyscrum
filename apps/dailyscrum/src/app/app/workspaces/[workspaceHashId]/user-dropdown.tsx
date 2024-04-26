@@ -16,6 +16,7 @@ import {
   DropdownMenuItem,
 } from "ui/dropdown-menu";
 import { signOut } from "./actions";
+import { useQueryState } from "nuqs";
 
 type Props = {
   trigger?: React.ReactNode;
@@ -23,6 +24,8 @@ type Props = {
 };
 
 const UserDropdown = ({ trigger, label, ...props }: Props) => {
+  const [dialog, setDialog] = useQueryState("dialog");
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
@@ -30,14 +33,18 @@ const UserDropdown = ({ trigger, label, ...props }: Props) => {
         <DropdownMenuLabel className="truncate">{label}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => {
+              setDialog("account-settings");
+            }}
+          >
             <SettingsIcon
               className="mr-2"
               width={16}
               height={16}
               strokeWidth={2}
             />
-            <span>Account</span>
+            <span>Account settings</span>
           </DropdownMenuItem>
           <DropdownMenuItem>
             <PaletteIcon

@@ -1,7 +1,7 @@
 "use client";
 
 import { MenuIcon } from "lucide-react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { Button } from "ui/button";
 import { SheetContent, Sheet } from "ui/shadcn-ui/sheet";
@@ -14,10 +14,17 @@ const SidebarSheetOpener = ({ sheetContent }: Props) => {
   const [open, setOpen] = useState(false);
 
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const queryString = searchParams.toString();
 
   useEffect(() => {
     setOpen(false);
   }, [pathname]);
+
+  useEffect(() => {
+    setOpen(false);
+  }, [queryString]);
 
   return (
     <>

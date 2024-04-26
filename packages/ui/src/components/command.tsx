@@ -19,7 +19,7 @@ export const CommandItem = React.forwardRef<
   React.ElementRef<typeof command.CommandItem>,
   React.ComponentProps<typeof command.CommandItem>
 >((props, ref) => {
-  const className = cn("text-sm cursor-pointer", props.className);
+  const className = cn("text-sm cursor-pointer", "py-2 px-3", props.className);
   return <command.CommandItem ref={ref} {...props} className={className} />;
 });
 CommandItem.displayName = command.CommandItem.displayName;
