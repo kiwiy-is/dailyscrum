@@ -71,7 +71,6 @@ const WorkspaceNameSettingsForm = ({ workspaceId, name }: Props) => {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Name</FormLabel>
               <FormControl>
                 <Input placeholder="Sun Microsystems" {...field} />
               </FormControl>

@@ -15,7 +15,7 @@ export default async function Page({
     <div className="space-y-8 max-w-4xl">
       <PageHeader
         title="Settings"
-        description="Manage your workspace settings."
+        description="Manage your workspace settings"
       />
 
       <div className="flex flex-col space-y-4">

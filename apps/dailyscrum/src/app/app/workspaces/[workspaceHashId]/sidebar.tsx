@@ -14,7 +14,7 @@ type Props = {
 
 const Sidebar = ({ workspaceHashId }: Props) => {
   return (
-    <aside className="h-full bg-slate-50/50">
+    <aside className="h-full">
       <div className="h-full flex flex-col flex-1 px-4 pt-6 pb-4">
         <div className="items-center h-9 ml-4 hidden md:!flex">
           <KiwiyDailyScrumLogo workspaceHashId={workspaceHashId} />

@@ -72,3 +72,24 @@ export const createProfile = async (
 
   return response;
 };
+
+export const updateProfile = async (
+  profileValues: Omit<Database["public"]["Tables"]["profiles"]["Update"], "id">
+) => {
+  const { data: user, error: getCurrentUserError } = await getCurrentUser();
+
+  if (getCurrentUserError || !user) {
+    return {
+      data: null,
+      error: getCurrentUserError,
+    };
+  }
+
+  const client = createClient<Database>();
+  return client
+    .from("profiles")
+    .update(profileValues)
+    .eq("id", user.id)
+    .select()
+    .single();
+};

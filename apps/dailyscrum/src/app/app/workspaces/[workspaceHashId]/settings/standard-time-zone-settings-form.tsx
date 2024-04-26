@@ -106,7 +106,6 @@ const StandardTimeZoneSettingsForm = ({ workspaceId, timeZone }: Props) => {
             render={({ field }) => {
               return (
                 <FormItem className="flex flex-col">
-                  <FormLabel>Time zone</FormLabel>
                   <Popover open={open} onOpenChange={setOpen}>
                     <PopoverTrigger asChild>
                       <FormControl>
@@ -173,10 +172,7 @@ const StandardTimeZoneSettingsForm = ({ workspaceId, timeZone }: Props) => {
                       </Command>
                     </PopoverContent>
                   </Popover>
-                  <FormDescription>
-                    The standard time zone for the workspace. All dates and
-                    times of are considered to be in this time zone.
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               );
