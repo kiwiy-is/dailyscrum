@@ -94,16 +94,21 @@ const ResizableLayout = ({
       direction="horizontal"
       id={PANEL_GROUP_ID}
       onLayout={handleLayout}
+      className="md:!h-screen"
     >
       <ResizablePanel
         id="sidebar-panel"
         ref={sidebarPanelRef}
         defaultSize={sidebarPanelDefaultWidth}
+        className="hidden md:!block"
       >
         {sidebarPanelContent}
       </ResizablePanel>
-      <ResizableHandle />
-      <ResizablePanel defaultSize={contentPanelDefaultWidth}>
+      <ResizableHandle className="hidden md:!block" />
+      <ResizablePanel
+        defaultSize={contentPanelDefaultWidth}
+        className="md:!overflow-y-auto"
+      >
         {contentPanelContent}
       </ResizablePanel>
     </ResizablePanelGroup>

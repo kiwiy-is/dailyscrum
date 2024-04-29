@@ -92,6 +92,7 @@ const AddScrumUpdateDialogLoader = async ({ workspaceHashId }: Props) => {
 
   const { description, dailyScrumUpdateQuestions } = dailyScrumUpdateForm;
 
+  // TODO: Remove code duplication. EditUpdateDialogLoader
   const questions = dailyScrumUpdateQuestions
     .toSorted((a, b) => a.order - b.order)
     .map((question) => {
