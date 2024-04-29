@@ -19,3 +19,20 @@ export const createDailyScrumUpdateAnswers = async (
     }))
   );
 };
+
+export const updateDailyScrumUpdateAnswer = async (
+  answerId: number,
+  answersValues: Omit<
+    Database["public"]["Tables"]["daily_scrum_update_answers"]["Update"],
+    "id"
+  >
+) => {
+  const client = createClient<Database>();
+
+  return client
+    .from("daily_scrum_update_answers")
+    .update(answersValues)
+    .eq("id", answerId)
+    .select()
+    .single();
+};

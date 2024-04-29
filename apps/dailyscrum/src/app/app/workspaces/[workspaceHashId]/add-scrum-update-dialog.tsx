@@ -358,7 +358,7 @@ export const AddScrumUpdateDialog: React.FC<AddScrumUpdateDialogProps> = ({
           method="post"
           id="scrum-update-form"
           onSubmit={handleSubmit}
-          className="space-y-8"
+          className="space-y-8 mt-4"
         >
           <Form {...form}>
             <FormField

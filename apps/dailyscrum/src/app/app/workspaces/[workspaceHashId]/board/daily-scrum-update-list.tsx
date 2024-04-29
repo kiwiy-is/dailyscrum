@@ -1,7 +1,7 @@
 "use client";
 
 import { MoreHorizontalIcon, PlusIcon } from "lucide-react";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 import { cn } from "ui";
 import { Button } from "ui/button";
@@ -15,9 +15,11 @@ import { Masonry } from "ui/masonry";
 import { Card, CardContent } from "ui/shadcn-ui/card";
 
 const DailyScrumUpdateCard = ({
+  id,
   userName,
   qaPairs,
 }: {
+  id: number; // TODO: rename to entryId?
   userName: string;
   qaPairs: {
     id: number;
@@ -31,6 +33,10 @@ const DailyScrumUpdateCard = ({
   }[];
 }) => {
   const [open, setOpen] = useState(false);
+
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   return (
     <Card className="relative group" key={0}>
@@ -48,7 +54,17 @@ const DailyScrumUpdateCard = ({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
-          <DropdownMenuItem>Edit</DropdownMenuItem>
+          <DropdownMenuItem
+            onSelect={() => {
+              // TODO: Disable editing for passed date. Hide the menu when it's archived
+              const params = new URLSearchParams(searchParams);
+              params.set("dialog", "edit-update");
+              params.set("editUpdateItemId", id.toString());
+              router.replace(`${pathname}?${params.toString()}`);
+            }}
+          >
+            Edit
+          </DropdownMenuItem>
           <DropdownMenuItem>Copy text</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -162,6 +178,7 @@ const DailyScrumUpdateList = ({
           return (
             <DailyScrumUpdateCard
               key={id}
+              id={id}
               userName={userName}
               qaPairs={qaPairs}
             />

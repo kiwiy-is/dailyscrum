@@ -80,6 +80,7 @@ const DatePicker = ({ timeZone }: Props) => {
         <Calendar
           mode="single"
           selected={date.toJSDate()}
+          // TODO: Make button size bigger. Check on mobile
           classNames={{
             caption_label: "text-sm font-medium",
             nav_button: cn(
