@@ -36,3 +36,14 @@ export const updateDailyScrumUpdateAnswer = async (
     .select()
     .single();
 };
+
+export const deleteDailySrcumUpdateAnswerByUpdateEntryId = async (
+  entryId: number
+) => {
+  const client = createClient<Database>();
+
+  return client
+    .from("daily_scrum_update_answers")
+    .delete()
+    .eq("daily_scrum_update_entry_id", entryId);
+};
