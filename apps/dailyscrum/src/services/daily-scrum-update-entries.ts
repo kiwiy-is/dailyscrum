@@ -119,3 +119,9 @@ export const createDailyScrumUpdateEntry = async (
 
   return response;
 };
+
+export const deleteDailyScrumUpdateEntry = async (entryId: number) => {
+  const client = createClient<Database>();
+
+  return client.from("daily_scrum_update_entries").delete().eq("id", entryId);
+};

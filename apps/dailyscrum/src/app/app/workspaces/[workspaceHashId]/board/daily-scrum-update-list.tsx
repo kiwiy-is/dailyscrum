@@ -2,7 +2,7 @@
 
 import { MoreHorizontalIcon, PlusIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState, useTransition } from "react";
 import { cn } from "ui";
 import { Button } from "ui/button";
 import {
@@ -13,13 +13,23 @@ import {
 } from "ui/dropdown-menu";
 import { Masonry } from "ui/masonry";
 import { Card, CardContent } from "ui/shadcn-ui/card";
+import { deleteUpdate } from "./actions";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "ui/shadcn-ui/alert-dialog";
 
 const DailyScrumUpdateCard = ({
-  id,
+  entryId,
   userName,
   qaPairs,
 }: {
-  id: number; // TODO: rename to entryId?
+  entryId: number;
   userName: string;
   qaPairs: {
     id: number;
@@ -38,69 +48,118 @@ const DailyScrumUpdateCard = ({
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
+  const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
+  const [isTransitioning, startTransition] = useTransition();
+
+  useEffect(() => {
+    if (!isTransitioning) {
+      setIsConfirmDialogOpen(false);
+    }
+  }, [isTransitioning]);
+
   return (
-    <Card className="relative group" key={0}>
-      <DropdownMenu open={open} onOpenChange={setOpen}>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            className={cn(
-              open ? "opacity-100" : "opacity-0",
-              "transition	h-6 w-6 absolute right-5 top-5 group-hover:opacity-100 focus:opacity-100"
-            )}
-          >
-            <MoreHorizontalIcon size="16" className="opacity-50" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="start">
-          <DropdownMenuItem
-            onSelect={() => {
-              // TODO: Disable editing for passed date. Hide the menu when it's archived
-              const params = new URLSearchParams(searchParams);
-              params.set("dialog", "edit-update");
-              params.set("editUpdateItemId", id.toString());
-              router.replace(`${pathname}?${params.toString()}`);
-            }}
-          >
-            Edit
-          </DropdownMenuItem>
-          <DropdownMenuItem>Copy text</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+    <>
+      <Card className="relative group" key={0}>
+        <DropdownMenu open={open} onOpenChange={setOpen}>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              className={cn(
+                open ? "opacity-100" : "opacity-0",
+                "transition	h-6 w-6 absolute right-5 top-5 group-hover:opacity-100 focus:opacity-100"
+              )}
+            >
+              <MoreHorizontalIcon size="16" className="opacity-50" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start">
+            <DropdownMenuItem
+              onSelect={() => {
+                // TODO: Disable editing for passed date. Hide the menu when it's archived
+                const params = new URLSearchParams(searchParams);
+                params.set("dialog", "edit-update");
+                params.set("editUpdateItemId", entryId.toString());
+                router.replace(`${pathname}?${params.toString()}`);
+              }}
+            >
+              Edit
+            </DropdownMenuItem>
+            <DropdownMenuItem>Copy text</DropdownMenuItem>
+            <DropdownMenuItem
+              onSelect={async () => {
+                setIsConfirmDialogOpen(true);
+              }}
+            >
+              Delete (Temporary)
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
-      <CardContent className="p-6">
-        <div className="flex flex-col gap-y-6">
-          <div className="flex flex-col space-y-1.5">
-            <h3 className="text-base font-semibold">{userName}</h3>
-            {/* TODO: Render created at date properly */}
-            <p className="text-xs text-muted-foreground">24 minutes ago</p>
-          </div>
-          {qaPairs.map(
-            ({
-              id,
-              question,
-              answer,
-              // answerHtml
-            }) => (
-              <div className="flex flex-col space-y-1.5" key={id}>
-                <h4 className="text-sm font-medium">{question.question}</h4>
+        <CardContent className="p-6">
+          <div className="flex flex-col gap-y-6">
+            <div className="flex flex-col space-y-1.5">
+              <h3 className="text-base font-semibold">{userName}</h3>
+              {/* TODO: Render created at date properly */}
+              <p className="text-xs text-muted-foreground">24 minutes ago</p>
+            </div>
+            {qaPairs.map(
+              ({
+                id,
+                question,
+                answer,
+                // answerHtml
+              }) => (
+                <div className="flex flex-col space-y-1.5" key={id}>
+                  <h4 className="text-sm font-medium">{question.question}</h4>
 
-                <div className="text-sm [&>ul]:ml-6 [&>ul]:list-disc">
-                  {answer.answer}
-                  {/* TODO: Render markdown parsed text */}
+                  <div className="text-sm [&>ul]:ml-6 [&>ul]:list-disc">
+                    {answer.answer}
+                    {/* TODO: Render markdown parsed text */}
+                  </div>
                 </div>
-              </div>
-            )
-          )}
-        </div>
-      </CardContent>
-    </Card>
+              )
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
+      <AlertDialog
+        open={isConfirmDialogOpen}
+        onOpenChange={setIsConfirmDialogOpen}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete daily scrum update</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete the update? This action cannot be
+              undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <Button
+              variant="destructive"
+              loading={isTransitioning}
+              onClick={async () => {
+                startTransition(async () => {
+                  await deleteUpdate(entryId);
+
+                  router.refresh();
+                });
+              }}
+            >
+              Delete
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 };
 
 type Update = {
-  id: number;
+  entryId: number;
   userName: string;
   qaPairs: {
     id: number;
@@ -174,11 +233,11 @@ const DailyScrumUpdateList = ({
             );
           }
 
-          const { id, userName, qaPairs } = props;
+          const { entryId, userName, qaPairs } = props;
           return (
             <DailyScrumUpdateCard
-              key={id}
-              id={id}
+              key={entryId}
+              entryId={entryId}
               userName={userName}
               qaPairs={qaPairs}
             />
