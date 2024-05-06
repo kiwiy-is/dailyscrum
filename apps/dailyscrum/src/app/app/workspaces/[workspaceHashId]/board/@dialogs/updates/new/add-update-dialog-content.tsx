@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useTransition } from "react";
+import { useCallback, useEffect, useMemo, useRef, useTransition } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
@@ -13,8 +13,6 @@ import {
 } from "ui/shadcn-ui/form";
 import { Button } from "ui/button";
 import {
-  Dialog,
-  DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -35,8 +33,8 @@ import {
   useRouter,
   useSearchParams,
 } from "next/navigation";
-import { addUpdate } from "./actions";
 import { useToast } from "ui/shadcn-ui/use-toast";
+import { addUpdate } from "./actions";
 
 type DynamicFormValues = { [x: string]: string };
 type FormValues = { date: Date };
@@ -132,7 +130,7 @@ type Question = {
   maxLength?: number;
 };
 
-export interface AddScrumUpdateDialogProps {
+export interface AddUpdateDialogContentProps {
   dailyScrumUpdateFormId: number;
   description: string;
   questions: Question[];
@@ -141,7 +139,7 @@ export interface AddScrumUpdateDialogProps {
   hasAddedDailyScrumUpdateForTomorrow: boolean;
 }
 
-export const AddScrumUpdateDialog: React.FC<AddScrumUpdateDialogProps> = ({
+const AddUpdateDialogContent: React.FC<AddUpdateDialogContentProps> = ({
   dailyScrumUpdateFormId,
   description,
   questions,
@@ -149,21 +147,12 @@ export const AddScrumUpdateDialog: React.FC<AddScrumUpdateDialogProps> = ({
   hasAddedDailyScrumUpdateForToday,
   hasAddedDailyScrumUpdateForTomorrow,
 }) => {
-  const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
 
   const router = useRouter();
   const pathname = usePathname();
   const params = useParams<{ workspaceHashId: string }>();
   const searchParams = useSearchParams();
-  const dialogParamValue = searchParams.get("dialog");
-
-  const isOpen = dialogParamValue === "add-scrum-update";
-
-  useEffect(() => {
-    form.reset();
-    dynamicForm.reset();
-  }, [isOpen]);
 
   const today = DateTime.local().setZone(timeZone).startOf("day");
   const tomorrow = today.plus({ days: 1 });
@@ -273,17 +262,12 @@ export const AddScrumUpdateDialog: React.FC<AddScrumUpdateDialogProps> = ({
     resolver: zodResolver(dynamicFormSchema),
   });
 
-  const closeDialog = () => {
-    const params = new URLSearchParams(searchParams);
-    params.delete("dialog");
-    window.history.replaceState(null, "", `${pathname}?${params.toString()}`);
-  };
+  useEffect(() => {
+    form.reset();
+    dynamicForm.reset();
+  }, [dynamicForm, form]);
 
-  const handleOpenChange = (open: boolean) => {
-    if (!open) {
-      closeDialog();
-    }
-  };
+  const [isPending, startTransition] = useTransition();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -315,7 +299,7 @@ export const AddScrumUpdateDialog: React.FC<AddScrumUpdateDialogProps> = ({
             ...dynamicFormValues,
           } as unknown as FormValues & DynamicFormValues;
 
-          // TODO: handle error
+          // TODO: handle error. Maybe trigger a toast?
           const { error } = await addUpdate(
             params.workspaceHashId,
             dailyScrumUpdateFormId,
@@ -323,92 +307,94 @@ export const AddScrumUpdateDialog: React.FC<AddScrumUpdateDialogProps> = ({
             mergedValues
           );
 
-          // NOTE: closing dialog by removing dialog param and change the date to a target date of new daily scrum update
-          const mutableSearchParams = new URLSearchParams(searchParams);
-          mutableSearchParams.delete("dialog");
-          mutableSearchParams.set(
-            "date",
-            DateTime.fromJSDate(formValues.date).toISODate()!
-          );
-          router.replace(`${pathname}?${mutableSearchParams.toString()}`);
+          const dateQuery = searchParams.get("date");
+          const currentDate = dateQuery ? DateTime.fromISO(dateQuery) : today;
+          const formDate = DateTime.fromJSDate(formValues.date);
+
+          if (formDate.hasSame(currentDate, "day")) {
+            router.push(
+              `/app/workspaces/${
+                params.workspaceHashId
+              }/board?${searchParams.toString()}`
+            );
+          } else {
+            const mutableSearchParams = new URLSearchParams(searchParams);
+            mutableSearchParams.set("date", formDate.toISODate()!);
+            router.push(
+              `/app/workspaces/${
+                params.workspaceHashId
+              }/board?${mutableSearchParams.toString()}`
+            );
+          }
 
           toast({
             description: (
               <div className="flex items-center gap-x-2">
                 <CheckCircleIcon size={16} />
-                <span>Successfully added a daily scrum update.</span>
+                <span>Successfully added a daily scrum update</span>
               </div>
             ),
           });
-          return;
         });
       }
     );
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className="gap-y-8">
-        <DialogHeader>
-          <DialogTitle>Add a daily scrum update</DialogTitle>
-          <DialogDescription>{description}</DialogDescription>
-        </DialogHeader>
+    <>
+      <DialogHeader>
+        <DialogTitle>Add a daily scrum update</DialogTitle>
+        <DialogDescription>{description}</DialogDescription>
+      </DialogHeader>
 
-        <form
-          method="post"
-          id="scrum-update-form"
-          onSubmit={handleSubmit}
-          className="space-y-8 mt-4"
-        >
-          <Form {...form}>
-            <FormField
-              control={form.control}
-              name={"date"}
-              key={"date"}
-              render={({ field, fieldState }) => {
-                return (
-                  <DateField field={field} today={today} timeZone={timeZone} />
-                );
-              }}
-            />
-          </Form>
-          <Form {...dynamicForm}>
-            {questions.map((question) => {
+      <form
+        method="post"
+        id="scrum-update-form"
+        onSubmit={handleSubmit}
+        className="space-y-8"
+      >
+        <Form {...form}>
+          <FormField
+            control={form.control}
+            name={"date"}
+            key={"date"}
+            render={({ field, fieldState }) => {
               return (
-                <FormField
-                  control={dynamicForm.control}
-                  name={question.id}
-                  key={question.id}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{question.label}</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder={question.placeholder}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormDescription>{question.description}</FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <DateField field={field} today={today} timeZone={timeZone} />
               );
-            })}
-          </Form>
-        </form>
+            }}
+          />
+        </Form>
+        <Form {...dynamicForm}>
+          {questions.map((question) => {
+            return (
+              <FormField
+                control={dynamicForm.control}
+                name={question.id}
+                key={question.id}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{question.label}</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder={question.placeholder} {...field} />
+                    </FormControl>
+                    <FormDescription>{question.description}</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            );
+          })}
+        </Form>
+      </form>
 
-        <DialogFooter>
-          <Button
-            type="submit"
-            // size="sm"
-            form="scrum-update-form"
-            loading={isPending}
-          >
-            Add update
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+      <DialogFooter>
+        <Button type="submit" form="scrum-update-form" loading={isPending}>
+          Add update
+        </Button>
+      </DialogFooter>
+    </>
   );
 };
+
+export default AddUpdateDialogContent;

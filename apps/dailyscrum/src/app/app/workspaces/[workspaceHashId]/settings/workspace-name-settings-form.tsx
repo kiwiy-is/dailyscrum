@@ -7,7 +7,6 @@ import {
   Form,
   FormField,
   FormItem,
-  FormLabel,
   FormControl,
   FormMessage,
 } from "ui/shadcn-ui/form";
@@ -52,15 +51,15 @@ const WorkspaceNameSettingsForm = ({ workspaceId, name }: Props) => {
                 values.name
               );
 
-              if (!error) {
-                router.refresh();
-                form.reset({
-                  name: workspace.name,
-                });
+              if (error) {
+                form.setError("name", { message: error.message });
                 return;
               }
 
-              form.setError("name", { message: error.message });
+              router.refresh();
+              form.reset({
+                name: workspace.name,
+              });
             });
           })(event);
         }}

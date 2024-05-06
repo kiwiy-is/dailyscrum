@@ -41,16 +41,45 @@ export const listDailyScrumUpdateEntries = memoize(
     return client
       .from("daily_scrum_update_entries")
       .select(
-        "*, profile:profiles(*), daily_scrum_update_answers(*, daily_scrum_update_question:daily_scrum_update_questions(*))"
+        `
+      *,
+      user:users(id, profile:profiles(name)),
+      daily_scrum_update_answers(
+        *,
+        daily_scrum_update_question:daily_scrum_update_questions(*)
       )
-      .eq("date", date)
-      .eq(
+      `
+      )
+      .gte("date", date)
+      .lte("date", date)
+      .in(
         "daily_scrum_update_form_id",
         dailyScrumUpdateForms.map(
-          // TODO: check when multiple form exists
           (dailyScrumUpdateForm) => dailyScrumUpdateForm.id
         )
       );
+  }
+);
+
+export const getDailyScrumUpdateEntry = memoize(
+  async (updateEntryId: number) => {
+    const client = createClient<Database>();
+
+    return client
+      .from("daily_scrum_update_entries")
+      .select(
+        `
+          *,
+          user:users(id, profile:profiles(name)),
+          daily_scrum_update_form:daily_scrum_update_forms(*),
+          daily_scrum_update_answers(
+            *,
+            daily_scrum_update_question:daily_scrum_update_questions(*)
+          )
+        `
+      )
+      .eq("id", updateEntryId)
+      .single();
   }
 );
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useTransition } from "react";
+import { useEffect, useMemo, useRef, useTransition } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
@@ -13,8 +13,6 @@ import {
 } from "ui/shadcn-ui/form";
 import { Button } from "ui/button";
 import {
-  Dialog,
-  DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -27,7 +25,12 @@ import type { ControllerRenderProps } from "react-hook-form";
 import { useForm } from "react-hook-form";
 import { CalendarIcon, CheckCircleIcon } from "lucide-react";
 import { DateTime } from "luxon";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import {
+  useParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 import { useToast } from "ui/shadcn-ui/use-toast";
 import { editUpdate } from "./actions";
 
@@ -91,23 +94,19 @@ export interface EditScrumUpdateDialogProps {
 }
 
 // TODO: Open dialog as soon as edit button is clicked. Show loading state while defaultValues are fetching.
-export const EditUpdateDialog: React.FC<EditScrumUpdateDialogProps> = ({
+const EditUpdateDialogContent: React.FC<EditScrumUpdateDialogProps> = ({
   description,
   questions,
   date,
   answers,
 }) => {
-  const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
 
   const router = useRouter();
+  const params = useParams<{ workspaceHashId: string }>();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const dialogParamValue = searchParams.get("dialog");
-  const editUpdateItemIdParamValue = searchParams.get("editUpdateItemId");
 
-  const isOpen =
-    dialogParamValue === "edit-update" && Boolean(editUpdateItemIdParamValue);
+  const searchParams = useSearchParams();
 
   const formSchema = useMemo(() => {
     return zod.object({
@@ -168,21 +167,9 @@ export const EditUpdateDialog: React.FC<EditScrumUpdateDialogProps> = ({
         };
       }, {})
     );
-  }, [date, answers]);
+  }, [date, answers, form, dynamicForm]);
 
-  const closeDialog = () => {
-    const params = new URLSearchParams(searchParams);
-    params.delete("dialog");
-    params.delete("editUpdateItemId");
-    window.history.replaceState(null, "", `${pathname}?${params.toString()}`);
-    // router.replace(`${pathname}?${params.toString()}`);
-  };
-
-  const handleOpenChange = (open: boolean) => {
-    if (!open) {
-      closeDialog();
-    }
-  };
+  const [isPending, startTransition] = useTransition();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -199,28 +186,24 @@ export const EditUpdateDialog: React.FC<EditScrumUpdateDialogProps> = ({
     });
 
     form.handleSubmit((values) => {
-      console.log({ values });
-
       resolveForm(values);
     })(event);
 
     dynamicForm.handleSubmit((values) => {
-      console.log({ values });
       resolveDynamicForm(values);
     })(event);
 
     Promise.all([dynamicFormPromise, formPromise]).then(
       ([dynamicFormValues, formValues]) => {
         startTransition(async () => {
-          console.log({ dynamicFormValues });
           await editUpdate(dynamicFormValues);
-          // TODO: The data is not properly refreshed. Fix it.
-          router.refresh();
 
-          const mutableSearchParams = new URLSearchParams(searchParams);
-          mutableSearchParams.delete("dialog");
-          mutableSearchParams.delete("editUpdateItemId");
-          router.replace(`${pathname}?${mutableSearchParams.toString()}`);
+          router.push(
+            `/app/workspaces/${
+              params.workspaceHashId
+            }/board?${searchParams.toString()}`
+          );
+
           toast({
             description: (
               <div className="flex items-center gap-x-2">
@@ -235,62 +218,59 @@ export const EditUpdateDialog: React.FC<EditScrumUpdateDialogProps> = ({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className="gap-y-8" id={searchParams.toString()}>
-        <DialogHeader>
-          <DialogTitle>Edit daily scrum update</DialogTitle>
-          <DialogDescription>{description}</DialogDescription>
-        </DialogHeader>
+    <>
+      <DialogHeader>
+        <DialogTitle>Edit daily scrum update</DialogTitle>
+        <DialogDescription>{description}</DialogDescription>
+      </DialogHeader>
 
-        <form
-          method="post"
-          id="scrum-update-form"
-          onSubmit={handleSubmit}
-          className="space-y-8 mt-4"
-        >
-          <Form {...form}>
-            <FormField
-              control={form.control}
-              name={"date"}
-              key={"date"}
-              render={({ field, fieldState }) => {
-                return <DateField field={field} />;
-              }}
-            />
-          </Form>
-          <Form {...dynamicForm}>
-            {answersWithQuestions.map((answer) => {
-              const { question } = answer;
-              return (
-                <FormField
-                  control={dynamicForm.control}
-                  name={answer.id.toString()}
-                  key={answer.id}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{question.label}</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder={question.placeholder}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormDescription>{question.description}</FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              );
-            })}
-          </Form>
-        </form>
+      <form
+        method="post"
+        id="scrum-update-form"
+        onSubmit={handleSubmit}
+        className="space-y-8"
+      >
+        <Form {...form}>
+          <FormField
+            control={form.control}
+            name={"date"}
+            key={"date"}
+            render={({ field, fieldState }) => {
+              return <DateField field={field} />;
+            }}
+          />
+        </Form>
+        <Form {...dynamicForm}>
+          {answersWithQuestions.map((answer) => {
+            const { question } = answer;
+            return (
+              <FormField
+                control={dynamicForm.control}
+                name={answer.id.toString()}
+                key={answer.id}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{question.label}</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder={question.placeholder} {...field} />
+                    </FormControl>
+                    <FormDescription>{question.description}</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            );
+          })}
+        </Form>
+      </form>
 
-        <DialogFooter>
-          <Button type="submit" form="scrum-update-form" loading={isPending}>
-            Edit update
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+      <DialogFooter>
+        <Button type="submit" form="scrum-update-form" loading={isPending}>
+          Edit update
+        </Button>
+      </DialogFooter>
+    </>
   );
 };
+
+export default EditUpdateDialogContent;

@@ -53,13 +53,6 @@ const AccountSettingsDialog = ({ name, email }: Props) => {
     setIsOpen(dialogParamValue === "account-settings");
   }, [dialogParamValue]);
 
-  useEffect(() => {
-    if (!isOpen) {
-      nameForm.reset();
-      emailForm.reset();
-    }
-  }, [isOpen]);
-
   const nameForm = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -73,6 +66,13 @@ const AccountSettingsDialog = ({ name, email }: Props) => {
       email,
     },
   });
+
+  useEffect(() => {
+    if (!isOpen) {
+      nameForm.reset();
+      emailForm.reset();
+    }
+  }, [emailForm, isOpen, nameForm]);
 
   const handleOpenChange = (open: boolean) => {
     if (!open) {
@@ -90,10 +90,11 @@ const AccountSettingsDialog = ({ name, email }: Props) => {
           nameForm.setError("name", { message: error.message });
           return;
         }
-        router.refresh();
         nameForm.reset({
           name: values.name,
         });
+
+        router.refresh();
       });
     })(event);
   };

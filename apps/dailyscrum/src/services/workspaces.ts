@@ -59,6 +59,7 @@ export const getWorkspaceByHashId = memoize(async (hashId: string) => {
  * The new workspace is a member of the current user. Also, seeds the initial data for the workspace.
  */
 export const createWorkspace = async (
+  // TODO: consider renaming the function to setupWorkspace
   workspaceValues: Required<
     Pick<Database["public"]["Tables"]["workspaces"]["Insert"], "name">
   >

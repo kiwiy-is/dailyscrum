@@ -1,5 +1,6 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { type cookies } from "next/headers";
+import { createFetch } from "../fetch";
 
 export function createAuthClient<T>(cookieStore: ReturnType<typeof cookies>) {
   const client = createServerClient<T>(
@@ -28,6 +29,11 @@ export function createAuthClient<T>(cookieStore: ReturnType<typeof cookies>) {
             // user sessions.
           }
         },
+      },
+      global: {
+        fetch: createFetch({
+          cache: "no-store",
+        }),
       },
     }
   );

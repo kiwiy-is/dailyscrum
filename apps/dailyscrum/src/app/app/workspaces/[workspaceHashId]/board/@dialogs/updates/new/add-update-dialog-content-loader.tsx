@@ -1,23 +1,17 @@
 import React from "react";
-import { AddScrumUpdateDialog } from "./add-scrum-update-dialog";
 import { DateTime } from "luxon";
 import { getCurrentUser } from "@/services/users";
 import { getWorkspaceByHashId } from "@/services/workspaces";
 import { getDailyScrumUpdateForm } from "@/services/daily-scrum-update-forms";
 import { getDailyScrumUpdateEntriesCountOfCurrentUser } from "@/services/daily-scrum-update-entries";
 import { getWorkspaceSettings } from "@/services/workspace-settings";
+import AddUpdateDialogContent from "./add-update-dialog-content";
 
 type Props = {
   workspaceHashId: string;
 };
 
-const AddScrumUpdateDialogLoader = async ({ workspaceHashId }: Props) => {
-  const { data: user, error: getCurrentUserError } = await getCurrentUser();
-
-  if (getCurrentUserError || !user) {
-    return null;
-  }
-
+const AddUpdateDialogContentLoader = async ({ workspaceHashId }: Props) => {
   const { data: workspace, error: getWorkspaceError } =
     await getWorkspaceByHashId(workspaceHashId);
 
@@ -110,7 +104,7 @@ const AddScrumUpdateDialogLoader = async ({ workspaceHashId }: Props) => {
   const hasAddedDailyScrumUpdateForTomorrow = tomorrowEntriesCount > 0;
 
   return (
-    <AddScrumUpdateDialog
+    <AddUpdateDialogContent
       dailyScrumUpdateFormId={selectedDailyScrumUpdateFormId}
       description={description}
       questions={questions}
@@ -121,4 +115,4 @@ const AddScrumUpdateDialogLoader = async ({ workspaceHashId }: Props) => {
   );
 };
 
-export default AddScrumUpdateDialogLoader;
+export default AddUpdateDialogContentLoader;

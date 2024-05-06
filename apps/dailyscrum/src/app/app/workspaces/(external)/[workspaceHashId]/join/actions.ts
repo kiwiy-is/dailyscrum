@@ -2,7 +2,6 @@
 
 import { createMember } from "@/services/members";
 import { getWorkspace } from "@/services/workspaces";
-import { redirect } from "next/navigation";
 
 export async function join(workspaceId: number, userId: string) {
   const response = await createMember({
@@ -11,18 +10,16 @@ export async function join(workspaceId: number, userId: string) {
   });
 
   if (response.error) {
-    return response;
-  }
-
-  const { data: workspace, error: getWorkspaceError } = await getWorkspace(
-    workspaceId
-  );
-
-  if (getWorkspaceError) {
     return {
-      error: getWorkspaceError,
+      data: null,
+      error: response.error,
     };
   }
 
-  redirect(`/app/workspaces/${workspace.hash_id}`);
+  const getWorkspaceResponse = await getWorkspace(workspaceId);
+
+  return {
+    data: getWorkspaceResponse.data,
+    error: getWorkspaceResponse.error,
+  };
 }

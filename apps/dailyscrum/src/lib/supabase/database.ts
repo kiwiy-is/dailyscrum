@@ -75,6 +75,20 @@ export type Database = {
         };
         Relationships: [
           {
+            foreignKeyName: "daily_scrum_update_entries_submitted_user_id_fkey";
+            columns: ["submitted_user_id"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "daily_scrum_update_entries_submitted_user_id_fkey";
+            columns: ["submitted_user_id"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+          {
             foreignKeyName: "public_daily_scrum_update_entries_daily_scrum_update_form_id_fk";
             columns: ["daily_scrum_update_form_id"];
             isOneToOne: false;

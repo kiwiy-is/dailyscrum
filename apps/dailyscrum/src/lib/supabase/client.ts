@@ -5,6 +5,7 @@ import {
   type SupabaseClient,
 } from "@supabase/supabase-js";
 import { Database } from "./database";
+import { createFetch } from "../fetch";
 
 // Restrict the client to not allow access to the auth property.
 // If you need to access the auth property, use createAuthClient instead.
@@ -15,6 +16,11 @@ export function createClient<T = Database>(): SupabaseClientRestricted<T> {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
     {
+      global: {
+        fetch: createFetch({
+          cache: "no-store",
+        }),
+      },
       auth: {
         persistSession: false,
         autoRefreshToken: false,

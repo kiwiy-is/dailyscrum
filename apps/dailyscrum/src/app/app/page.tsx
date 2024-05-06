@@ -5,6 +5,7 @@ import {
 } from "@/services/workspaces";
 import { getCurrentUser } from "@/services/users";
 import { getCurrentUserProfile } from "@/services/profiles";
+import { initilizeWorkspace } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -39,11 +40,8 @@ export default async function Page() {
     return redirect(`/app/workspaces/${workspace.id}`);
   }
 
-  // TODO: Seems like the workspace is created multiple times. Maybe wrap it with a server action and call it here? Try and test it.
   const { data: workspace, error: createWorkspaceError } =
-    await createWorkspace({
-      name: "My workspace",
-    });
+    await initilizeWorkspace();
 
   if (createWorkspaceError) {
     return null;

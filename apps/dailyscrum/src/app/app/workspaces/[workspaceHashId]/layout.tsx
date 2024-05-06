@@ -1,6 +1,5 @@
 import React from "react";
 import CreateNewWorkspaceDialog from "./create-new-workspace-dialog";
-import AddScrumUpdateDialogLoader from "./add-scrum-update-dialog-loader";
 import ResizableLayout from "./resizable-layout";
 import { cookies } from "next/headers";
 import { RESIZABLE_LAYOUT_COOKIE_KEY } from "./constants";
@@ -50,8 +49,8 @@ export default async function Layout({
         }
       />
 
+      {/* TODO: Move dialogs into page. Use parallel routes if needed */}
       <CreateNewWorkspaceDialog />
-      <AddScrumUpdateDialogLoader workspaceHashId={params.workspaceHashId} />
       <AccountSettingsDialogLoader />
     </>
   );

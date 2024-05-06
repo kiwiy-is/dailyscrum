@@ -28,16 +28,12 @@ import {
   Form,
   FormField,
   FormItem,
-  FormLabel,
   FormControl,
-  FormDescription,
   FormMessage,
 } from "ui/shadcn-ui/form";
 import { Popover, PopoverContent, PopoverTrigger } from "ui/shadcn-ui/popover";
 import { ScrollArea } from "ui/shadcn-ui/scroll-area";
-import { toast } from "ui/shadcn-ui/use-toast";
 import { z } from "zod";
-import { generateNewInvitationLink } from "./@dialogs/add-member/actions";
 import { updateStandardTimeZone } from "./actions";
 
 type Props = {
@@ -218,17 +214,17 @@ const StandardTimeZoneSettingsForm = ({ workspaceId, timeZone }: Props) => {
                         values.timeZone
                       );
 
-                    if (!error) {
-                      router.refresh();
+                    if (error) {
+                      form.setError("timeZone", { message: error.message });
                       setIsConfirmDialogOpen(false);
-                      form.reset({
-                        timeZone: workspaceSetting?.attribute_value,
-                      });
                       return;
                     }
 
-                    form.setError("timeZone", { message: error.message });
+                    router.refresh();
                     setIsConfirmDialogOpen(false);
+                    form.reset({
+                      timeZone: workspaceSetting?.attribute_value,
+                    });
                   });
                 })();
               }}

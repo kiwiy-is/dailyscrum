@@ -20,9 +20,11 @@ import {
   FormControl,
 } from "ui/shadcn-ui/form";
 import { Input } from "ui/shadcn-ui/input";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Button } from "ui/button";
 import { createNewWorkspace } from "./actions";
+import { useToast } from "ui/shadcn-ui/use-toast";
+import { CheckCircleIcon } from "lucide-react";
 
 const formSchema = z.object({
   name: z.string().min(1),
@@ -31,9 +33,11 @@ const formSchema = z.object({
 type Props = {};
 
 const CreateNewWorkspaceDialog = (props: Props) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isPending, startTransition] = useTransition();
+  const { toast } = useToast();
 
+  const [isOpen, setIsOpen] = useState(false);
+
+  const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const dialogParamValue = searchParams.get("dialog");
@@ -42,12 +46,6 @@ const CreateNewWorkspaceDialog = (props: Props) => {
     setIsOpen(dialogParamValue === "create-new-workspace");
   }, [dialogParamValue]);
 
-  useEffect(() => {
-    if (!isOpen) {
-      form.reset();
-    }
-  }, [isOpen]);
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -55,7 +53,6 @@ const CreateNewWorkspaceDialog = (props: Props) => {
     },
   });
 
-  // TODO: remove usecallback
   const handleOpenChange = (open: boolean) => {
     if (!open) {
       const params = new URLSearchParams(searchParams);
@@ -64,16 +61,39 @@ const CreateNewWorkspaceDialog = (props: Props) => {
     }
   };
 
+  const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    if (!isOpen) {
+      form.reset();
+    }
+  }, [form, isOpen]);
+
   const handleSubmit = useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {
       form.handleSubmit((values) => {
         startTransition(async () => {
-          // TODO: handle error
-          const { error } = await createNewWorkspace(values.name);
+          const { data, error } = await createNewWorkspace(values.name);
+
+          if (error) {
+            form.setError("name", { message: error.message });
+            return;
+          }
+
+          router.push(`/app/workspaces/${data.hash_id}`);
+
+          toast({
+            description: (
+              <div className="flex items-center gap-x-2">
+                <CheckCircleIcon size={16} />
+                <span>Successfully created new workspace</span>
+              </div>
+            ),
+          });
         });
       })(event);
     },
-    []
+    [form, router, toast]
   );
 
   return (

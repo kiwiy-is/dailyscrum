@@ -18,6 +18,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTransition } from "react";
 import { signIn } from "./actions";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -35,12 +36,20 @@ const SignInForm = ({ returnPath }: Props) => {
     },
   });
 
+  const router = useRouter();
+
   const [isPending, startTransition] = useTransition();
 
   const handleSubmit = form.handleSubmit((values) => {
     startTransition(async () => {
       const { error } = await signIn(values.email, returnPath);
-      form.setError("email", { message: error.message });
+
+      if (error) {
+        form.setError("email", { message: error.message });
+        return;
+      }
+
+      router.push("/app/sign-in/check-email");
     });
   });
 

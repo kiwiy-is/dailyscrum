@@ -2,15 +2,14 @@ import { getDailyScrumUpdateEntry } from "@/services/daily-scrum-update-entries"
 import React from "react";
 
 import { DateTime } from "luxon";
-import { EditUpdateDialog } from "./edit-update-dialog";
-import { getCurrentUser } from "@/services/users";
 import { Database } from "@/lib/supabase/database";
+import EditUpdateDialogContent from "./edit-update-dialog-content";
 
 type Props = {
   updateEntryId: number | null;
 };
 
-const EditUpdateDialogLoader = async ({ updateEntryId }: Props) => {
+const EditUpdateDialogContentLoader = async ({ updateEntryId }: Props) => {
   if (!updateEntryId) {
     return null;
   }
@@ -18,12 +17,6 @@ const EditUpdateDialogLoader = async ({ updateEntryId }: Props) => {
   const { data, error } = await getDailyScrumUpdateEntry(updateEntryId);
 
   if (error || !data) {
-    return null;
-  }
-
-  const { data: user, error: getCurrentUserError } = await getCurrentUser();
-
-  if (getCurrentUserError || !user) {
     return null;
   }
 
@@ -38,7 +31,6 @@ const EditUpdateDialogLoader = async ({ updateEntryId }: Props) => {
     .reduce<
       Database["public"]["Tables"]["daily_scrum_update_questions"]["Row"][]
     >((acc, cv) => {
-      console.log(cv.daily_scrum_update_question);
       return cv.daily_scrum_update_question === null
         ? acc
         : [...acc, cv.daily_scrum_update_question];
@@ -67,7 +59,7 @@ const EditUpdateDialogLoader = async ({ updateEntryId }: Props) => {
 
   // TODO: Disable editing for passed date. Disabled it when it's archived
   return (
-    <EditUpdateDialog
+    <EditUpdateDialogContent
       description={description}
       questions={questions}
       date={date}
@@ -76,4 +68,4 @@ const EditUpdateDialogLoader = async ({ updateEntryId }: Props) => {
   );
 };
 
-export default EditUpdateDialogLoader;
+export default EditUpdateDialogContentLoader;

@@ -27,7 +27,7 @@ export const getMember = memoize(
 
 export const createMember = async (
   memberValues: Database["public"]["Tables"]["members"]["Insert"]
-): Promise<{ data?: any; error?: any }> => {
+) => {
   const client = createClient();
 
   const response = await client.from("members").insert(memberValues);

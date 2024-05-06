@@ -1,6 +1,5 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import { createProfile, getCurrentUserProfile } from "@/services/profiles";
 
 export async function completeSignUp(name: string, returnPath?: string) {
@@ -8,25 +7,15 @@ export async function completeSignUp(name: string, returnPath?: string) {
     await getCurrentUserProfile();
 
   if (profile) {
-    redirect(returnPath ? returnPath : "/app");
-  }
-
-  const { data: newProfile, error: insertNewProfileError } =
-    await createProfile({
-      name,
-    });
-
-  if (insertNewProfileError) {
-    return { error: insertNewProfileError };
-  }
-
-  if (!newProfile) {
     return {
+      data: null,
       error: {
-        message: "Error creating profile",
+        message: "Profile already exists",
       },
     };
   }
 
-  redirect(returnPath ? returnPath : "/app");
+  return createProfile({
+    name,
+  });
 }

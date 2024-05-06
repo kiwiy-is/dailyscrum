@@ -16,7 +16,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { MoreHorizontal } from "lucide-react";
+import { CheckCircleIcon, MoreHorizontal } from "lucide-react";
 
 import { Button } from "ui/button";
 import {
@@ -53,6 +53,7 @@ import {
   AlertDialogCancel,
 } from "ui/shadcn-ui/alert-dialog";
 import { useRouter } from "next/navigation";
+import { useToast } from "ui/shadcn-ui/use-toast";
 
 const RoleCell = ({
   row,
@@ -69,6 +70,8 @@ const RoleCell = ({
   const [selectedRole, setSelectedRole] = useState<string>(
     row.getValue(cell.column.id)
   );
+
+  const { toast } = useToast();
 
   useEffect(() => {
     if (!isTransitioning) {
@@ -140,6 +143,15 @@ const RoleCell = ({
                   );
 
                   router.refresh();
+
+                  toast({
+                    description: (
+                      <div className="flex items-center gap-x-2">
+                        <CheckCircleIcon size={16} />
+                        <span>Successfully updated member role </span>
+                      </div>
+                    ),
+                  });
                 });
               }}
             >
