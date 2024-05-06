@@ -1,13 +1,7 @@
 "use server";
 
-import {
-  createDailyScrumUpdateAnswers,
-  deleteDailySrcumUpdateAnswerByUpdateEntryId,
-} from "@/services/daily-scrum-update-answers";
-import {
-  createDailyScrumUpdateEntry,
-  deleteDailyScrumUpdateEntry,
-} from "@/services/daily-scrum-update-entries";
+import { createDailyScrumUpdateAnswers } from "@/services/daily-scrum-update-answers";
+import { createDailyScrumUpdateEntry } from "@/services/daily-scrum-update-entries";
 import { DateTime } from "luxon";
 
 export async function addUpdate(
@@ -61,9 +55,4 @@ export async function addUpdate(
   return {
     error: null,
   };
-}
-
-export async function deleteUpdate(entryId: number) {
-  await deleteDailySrcumUpdateAnswerByUpdateEntryId(entryId);
-  await deleteDailyScrumUpdateEntry(entryId);
 }

@@ -65,7 +65,7 @@ const DailyScrumUpdateListLoader = async ({
   const showAddUpdateCard =
     !isDateArchived &&
     !dailyScrumUpdateEntries.some((dailyScrumUpdateEntry) => {
-      return dailyScrumUpdateEntry.profile?.id === user?.id;
+      return dailyScrumUpdateEntry.user?.id === user?.id;
     });
 
   const showNoUpdatesFoundForArchivedDates =
@@ -73,14 +73,14 @@ const DailyScrumUpdateListLoader = async ({
 
   const dailyScrumUpdates = dailyScrumUpdateEntries.map(
     ({
-      profile,
+      user,
       daily_scrum_update_answers,
       daily_scrum_update_form_id,
       ...entry
     }) => {
       return {
         entryId: entry.id,
-        userName: profile?.name ?? "",
+        userName: user?.profile?.name ?? "",
         qaPairs: daily_scrum_update_answers
           .toSorted((a, b) => {
             return (

@@ -22,6 +22,7 @@ const Sidebar = ({ workspaceHashId }: Props) => {
 
         <div className="space-y-6 flex-1 mt-6">
           <div>
+            {/* TODO: render on page instead of layout */}
             <WorkspaceSelectionLoader workspaceHashId={workspaceHashId} />
           </div>
 

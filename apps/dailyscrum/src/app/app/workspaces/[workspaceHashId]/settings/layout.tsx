@@ -1,7 +1,7 @@
 import React from "react";
 
 type Props = {
-  children?: React.ReactNode;
+  children: React.ReactNode;
   dialogs: React.ReactNode;
 };
 

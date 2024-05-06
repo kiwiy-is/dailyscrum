@@ -18,6 +18,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTransition } from "react";
 import { completeSignUp } from "./actions";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   name: z.string().min(1),
@@ -35,15 +36,20 @@ const CompleteSignUpForm = ({ returnPath }: Props) => {
     },
   });
 
+  const router = useRouter();
+
   const [isPending, startTransition] = useTransition();
 
   const handleSubmit = form.handleSubmit((values) => {
     startTransition(async () => {
       const { error } = await completeSignUp(values.name, returnPath);
-      if (!error) {
+
+      if (error) {
+        form.setError("name", { message: error.message });
         return;
       }
-      form.setError("name", { message: error.message });
+
+      router.push(returnPath ? returnPath : "/app");
     });
   });
 

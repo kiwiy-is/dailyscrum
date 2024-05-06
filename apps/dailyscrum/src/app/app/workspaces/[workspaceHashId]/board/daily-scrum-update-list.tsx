@@ -23,6 +23,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "ui/shadcn-ui/alert-dialog";
+import Link from "next/link";
+import sqids from "@/lib/sqids";
 
 const DailyScrumUpdateCard = ({
   entryId,
@@ -49,13 +51,16 @@ const DailyScrumUpdateCard = ({
   const searchParams = useSearchParams();
 
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
-  const [isTransitioning, startTransition] = useTransition();
+  const [isPending, startTransition] = useTransition();
+
+  const hasTransitionStarted = React.useRef(false);
 
   useEffect(() => {
-    if (!isTransitioning) {
+    if (!isPending && hasTransitionStarted.current) {
       setIsConfirmDialogOpen(false);
+      hasTransitionStarted.current = false;
     }
-  }, [isTransitioning]);
+  }, [isPending]);
 
   return (
     <>
@@ -76,23 +81,23 @@ const DailyScrumUpdateCard = ({
           <DropdownMenuContent align="start">
             <DropdownMenuItem
               onSelect={() => {
-                // TODO: Disable editing for passed date. Hide the menu when it's archived
-                const params = new URLSearchParams(searchParams);
-                params.set("dialog", "edit-update");
-                params.set("editUpdateItemId", entryId.toString());
-                router.replace(`${pathname}?${params.toString()}`);
+                const hashId = sqids.encode([entryId]);
+                router.push(
+                  `${pathname}/updates/${hashId}?${searchParams.toString()}`
+                );
               }}
             >
               Edit
             </DropdownMenuItem>
             <DropdownMenuItem>Copy text</DropdownMenuItem>
-            <DropdownMenuItem
+            {/* NOTE: Use only for testing purposes */}
+            {/* <DropdownMenuItem
               onSelect={async () => {
                 setIsConfirmDialogOpen(true);
               }}
             >
               Delete (Temporary)
-            </DropdownMenuItem>
+            </DropdownMenuItem> */}
           </DropdownMenuContent>
         </DropdownMenu>
 
@@ -140,12 +145,13 @@ const DailyScrumUpdateCard = ({
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <Button
               variant="destructive"
-              loading={isTransitioning}
+              loading={isPending}
               onClick={async () => {
+                hasTransitionStarted.current = true;
                 startTransition(async () => {
                   await deleteUpdate(entryId);
 
-                  router.refresh();
+                  router.push(`${pathname}?${searchParams.toString()}`);
                 });
               }}
             >
@@ -187,12 +193,6 @@ const DailyScrumUpdateList = ({
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const handleAddUpdateCardClick = () => {
-    const params = new URLSearchParams(searchParams);
-    params.set("dialog", "add-scrum-update");
-    window.history.replaceState(null, "", `${pathname}?${params.toString()}`);
-  };
-
   if (showNoUpdatesFoundForArchivedDates) {
     return (
       <div className="flex flex-col items-center  justify-center gap-y-2 h-[208px]">
@@ -225,10 +225,14 @@ const DailyScrumUpdateList = ({
                 variant="outline"
                 size="sm"
                 className="justify-center gap-x-2 text-sm h-[208px] rounded-lg"
-                onClick={handleAddUpdateCardClick}
+                asChild
               >
-                <PlusIcon width={16} height={16} strokeWidth={2} />
-                <span className="font-medium ">Add update</span>
+                <Link
+                  href={`${pathname}/updates/new?${searchParams.toString()}`}
+                >
+                  <PlusIcon width={16} height={16} strokeWidth={2} />
+                  <span className="font-medium ">Add update</span>
+                </Link>
               </Button>
             );
           }
