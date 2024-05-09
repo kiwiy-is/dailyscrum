@@ -3,14 +3,43 @@ import MembersSettingsCard from "./members-settings-card";
 import DeleteWorkspaceSettingsCard from "./delete-workspace-settings-card";
 import StandardTimeZoneSettingsCard from "./standard-time-zone-settings-card";
 import PageHeader from "@/components/page-header";
+import { getMember } from "@/services/members";
+import { getCurrentUser } from "@/services/users";
+import { getWorkspaceByHashId } from "@/services/workspaces";
+import { NextPage } from "next";
+import { redirect, notFound } from "next/navigation";
+import {
+  redirectIfNotSignedIn,
+  redirectIfNotWorkspaceMember,
+} from "@/lib/page-flows";
 
-export const dynamic = "force-dynamic";
-
-export default async function Page({
-  params,
-}: {
+type Props = {
   params: { workspaceHashId: string };
-}) {
+};
+
+const pageFlowHandler = (Page: NextPage<Props>) => {
+  const Wrapper = async (props: Props) => {
+    const user = await redirectIfNotSignedIn();
+
+    const {
+      params: { workspaceHashId },
+    } = props;
+
+    const { data: workspace } = await getWorkspaceByHashId(workspaceHashId);
+
+    if (!workspace) {
+      return notFound();
+    }
+
+    await redirectIfNotWorkspaceMember(workspace.id, user.id);
+
+    return <Page {...props} />;
+  };
+
+  return Wrapper;
+};
+
+const Page = ({ params }: Props) => {
   return (
     <div className="space-y-8 max-w-4xl">
       <PageHeader
@@ -37,4 +66,6 @@ export default async function Page({
       </div>
     </div>
   );
-}
+};
+
+export default pageFlowHandler(Page);

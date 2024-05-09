@@ -16,7 +16,7 @@ import { Input } from "ui/shadcn-ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { z } from "zod";
-import { useTransition } from "react";
+import { useEffect, useTransition } from "react";
 import { completeSignUp } from "./actions";
 import { useRouter } from "next/navigation";
 
@@ -26,9 +26,10 @@ const formSchema = z.object({
 
 type Props = {
   returnPath: string | undefined;
+  defaultValues?: z.infer<typeof formSchema>;
 };
 
-const CompleteSignUpForm = ({ returnPath }: Props) => {
+const CompleteSignUpForm = ({ returnPath, defaultValues }: Props) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -39,6 +40,10 @@ const CompleteSignUpForm = ({ returnPath }: Props) => {
   const router = useRouter();
 
   const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    form.reset(defaultValues);
+  }, [defaultValues, form]);
 
   const handleSubmit = form.handleSubmit((values) => {
     startTransition(async () => {

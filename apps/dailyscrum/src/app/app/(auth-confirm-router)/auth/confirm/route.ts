@@ -46,8 +46,15 @@ export async function GET(request: NextRequest) {
     .single();
 
   if (!profile) {
+    const [emailUserName] = user.email ? user.email?.split("@") : [user.id];
+
+    await client.from("profiles").insert({
+      id: user.id,
+      name: emailUserName,
+    });
+
     redirect(
-      `/app/sign-up/complete${
+      `/app/onboard/create-profile${
         returnPath ? `?return-path=${encodeURIComponent(returnPath)}` : ""
       }`
     );

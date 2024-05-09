@@ -1,9 +1,18 @@
 import { redirect } from "next/navigation";
+import { NextPage } from "next";
 
-export const dynamic = "force-dynamic";
+type Props = {};
 
-const Page = () => {
-  return redirect("/app");
+const routeMiddleware = (Page: NextPage<Props>) => {
+  const Wrapper = async (props: Props) => {
+    return redirect("/app");
+  };
+
+  return Wrapper;
 };
 
-export default Page;
+const Page = async () => {
+  return null;
+};
+
+export default routeMiddleware(Page);

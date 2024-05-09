@@ -1,51 +1,22 @@
-import { redirect } from "next/navigation";
+import { NextPage } from "next";
 import {
-  createWorkspace,
-  listWorkspacesOfCurrentUser,
-} from "@/services/workspaces";
-import { getCurrentUser } from "@/services/users";
-import { getCurrentUserProfile } from "@/services/profiles";
-import { initilizeWorkspace } from "./actions";
+  redirectToWorkspaceBoard,
+  redirectIfNotSignedIn,
+} from "@/lib/page-flows";
 
-export const dynamic = "force-dynamic";
+type Props = {};
 
-export default async function Page() {
-  // TODO: consider performing these on middleware
-  const { data: user } = await getCurrentUser();
+const pageFlowHandler = (Page: NextPage<Props>) => {
+  const Wrapper = async (props: Props) => {
+    await redirectIfNotSignedIn();
+    await redirectToWorkspaceBoard();
+  };
 
-  if (!user) {
-    redirect("/app/sign-up");
-  }
+  return Wrapper;
+};
 
-  const { data: profile, error: getProfileError } =
-    await getCurrentUserProfile();
+const Page = async () => {
+  return null;
+};
 
-  if (!profile || getProfileError) {
-    redirect("/app/sign-up/complete");
-  }
-
-  const { data: workspaces, error } = await listWorkspacesOfCurrentUser();
-
-  if (!workspaces || error) {
-    return null;
-  }
-
-  if (workspaces.length > 0) {
-    const [workspace] = workspaces;
-
-    if (!workspace) {
-      return null;
-    }
-
-    return redirect(`/app/workspaces/${workspace.id}`);
-  }
-
-  const { data: workspace, error: createWorkspaceError } =
-    await initilizeWorkspace();
-
-  if (createWorkspaceError) {
-    return null;
-  }
-
-  return redirect(`/app/workspaces/${workspace.hash_id}`);
-}
+export default pageFlowHandler(Page);

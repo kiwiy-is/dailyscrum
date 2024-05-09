@@ -9,13 +9,12 @@ import Sidebar from "./sidebar";
 import KiwiyDailyScrumLogo from "./kiwiy-daily-scrum-logo";
 import AccountSettingsDialogLoader from "./account-settings-dialog-loader";
 
-export default async function Layout({
-  children,
-  params,
-}: {
+type Props = {
   children: React.ReactNode;
   params: { workspaceHashId: string };
-}) {
+};
+
+const Layout = async ({ children, params }: Props) => {
   const layoutCookieValue = cookies().get(RESIZABLE_LAYOUT_COOKIE_KEY);
 
   const defaultLayout = layoutCookieValue
@@ -54,4 +53,6 @@ export default async function Layout({
       <AccountSettingsDialogLoader />
     </>
   );
-}
+};
+
+export default Layout;

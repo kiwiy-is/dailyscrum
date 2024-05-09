@@ -7,14 +7,26 @@ import {
   CardHeader,
   CardTitle,
 } from "ui/shadcn-ui/card";
-import SignInForm from "./sign-in-form";
+import SignUpForm from "./sign-up-form";
 import Link from "next/link";
+import { NextPage } from "next";
+import { redirectIfSignedIn } from "@/lib/page-flows";
 
-export default function Page({
-  searchParams,
-}: {
+type Props = {
   searchParams: { ["return-path"]: string | undefined };
-}) {
+};
+
+const pageFlowHandler = (Page: NextPage<Props>) => {
+  const Wrapper = async (props: Props) => {
+    await redirectIfSignedIn();
+
+    return <Page {...props} />;
+  };
+
+  return Wrapper;
+};
+
+const Page = ({ searchParams }: Props) => {
   const returnPathParamValue = searchParams["return-path"];
   const returnPath = returnPathParamValue
     ? decodeURIComponent(returnPathParamValue)
@@ -25,24 +37,24 @@ export default function Page({
       <KiwiyIsSymbol />
       <Card className="w-[440px]">
         <CardHeader>
-          <CardTitle>Sign in</CardTitle>
-          <CardDescription>Sign in to your account.</CardDescription>
+          <CardTitle>Sign up</CardTitle>
+          <CardDescription>Create a new account.</CardDescription>
         </CardHeader>
         <CardContent>
-          <SignInForm returnPath={returnPath} />
+          <SignUpForm returnPath={returnPath} />
         </CardContent>
         <CardFooter className=" justify-center">
           <p className="text-sm text-muted-foreground">
             Don't have an account?
             <Link
-              href={`/app/sign-up${
+              href={`/app/sign-in${
                 returnPathParamValue
                   ? `?return-path=${returnPathParamValue}`
                   : ""
               }`}
               className="underline underline-offset-4 hover:text-foreground ml-1"
             >
-              Sign up
+              Sign in
             </Link>
             .
           </p>
@@ -50,4 +62,6 @@ export default function Page({
       </Card>
     </div>
   );
-}
+};
+
+export default pageFlowHandler(Page);

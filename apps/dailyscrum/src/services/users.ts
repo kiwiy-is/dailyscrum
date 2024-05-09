@@ -1,7 +1,7 @@
 import { cache } from "react";
 import { createAuthClient } from "../lib/supabase/auth-client";
 import { cookies } from "next/headers";
-import { AuthError, User } from "@supabase/supabase-js";
+import { AuthError } from "@supabase/supabase-js";
 
 export const getCurrentUser = cache(async () => {
   const authClient = createAuthClient(cookies());
