@@ -81,6 +81,7 @@ const DailyScrumUpdateListLoader = async ({
       return {
         entryId: entry.id,
         userName: user?.profile?.name ?? "",
+        createdAt: entry.created_at,
         qaPairs: daily_scrum_update_answers
           .toSorted((a, b) => {
             return (
