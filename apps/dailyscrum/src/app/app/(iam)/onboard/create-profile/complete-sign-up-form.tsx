@@ -72,7 +72,7 @@ const CompleteSignUpForm = ({ returnPath, defaultValues }: Props) => {
               </FormControl>
 
               <FormDescription>
-                Choose a name that will be visible to others.
+                Choose a name that will be visible to others
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -80,7 +80,7 @@ const CompleteSignUpForm = ({ returnPath, defaultValues }: Props) => {
         />
 
         <Button type="submit" className="w-full" loading={isPending}>
-          Sign up
+          Continue
         </Button>
       </form>
     </Form>
