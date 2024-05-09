@@ -23,20 +23,17 @@ const pageFlowHandler = (Page: NextPage<Props>) => {
 
 const Page = (props: Props) => {
   return (
-    <div className="h-screen flex flex-col justify-center items-center space-y-8">
-      <KiwiyIsSymbol />
-      <Card className="w-[440px]">
-        <CardHeader>
-          <CardTitle>Check your email</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <CardDescription>
-            A sign in link will be sent to the email address you provided.
-            Please check your email.
-          </CardDescription>
-        </CardContent>
-      </Card>
-    </div>
+    <Card>
+      <CardHeader>
+        <CardTitle>Check your email</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <CardDescription>
+          A sign up link will be sent to the email address you provided. Please
+          check your email.
+        </CardDescription>
+      </CardContent>
+    </Card>
   );
 };
 

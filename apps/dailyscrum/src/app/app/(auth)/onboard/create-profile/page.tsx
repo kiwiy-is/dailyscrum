@@ -37,23 +37,18 @@ const Page = async ({ searchParams }: Props) => {
   const { data: profile } = await getCurrentUserProfile();
 
   return (
-    <div className="h-screen flex flex-col justify-center items-center space-y-8">
-      <KiwiyIsSymbol />
-      <Card className="w-[440px]">
-        <CardHeader>
-          <CardTitle>Complete sign up</CardTitle>
-          <CardDescription>
-            Please fill out the form to complete sign up.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <CompleteSignUpForm
-            returnPath={returnPath}
-            defaultValues={{ name: profile?.name ?? "" }}
-          />
-        </CardContent>
-      </Card>
-    </div>
+    <Card>
+      <CardHeader>
+        <CardTitle>Create profile</CardTitle>
+        <CardDescription>Complete your profile</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <CompleteSignUpForm
+          returnPath={returnPath}
+          defaultValues={{ name: profile?.name ?? "" }}
+        />
+      </CardContent>
+    </Card>
   );
 };
 
