@@ -15,10 +15,10 @@ import { RESIZABLE_LAYOUT_COOKIE_KEY } from "./constants";
 
 const PANEL_GROUP_ID = "resizable-layout-panel-group";
 
-const SIDEBAR_PANEL_MIN_SIZE = 224; // in pixel
+const SIDEBAR_PANEL_MIN_SIZE = 240; // in pixel
 const SIDEBAR_PANEL_MAX_SIZE = 344; // in pixel
 const SIDEBAR_PANEL_MEDIAN_SIZE =
-  (SIDEBAR_PANEL_MIN_SIZE + SIDEBAR_PANEL_MAX_SIZE) / 2; // 284px
+  (SIDEBAR_PANEL_MIN_SIZE + SIDEBAR_PANEL_MAX_SIZE) / 2; // 292px
 
 const adjustLayout = (layout: number[]) => {
   const [sidebarPanelPercent] = layout;

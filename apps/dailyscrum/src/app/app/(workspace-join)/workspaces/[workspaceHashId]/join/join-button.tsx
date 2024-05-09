@@ -24,7 +24,7 @@ const JoinButton = ({ workspaceId, userId }: Props) => {
             return;
           }
 
-          router.push(`/app/workspaces/${workspace.hash_id}`);
+          router.push(`/app/workspaces/${workspace.hash_id}/board`);
         });
       }}
       loading={isPending}
