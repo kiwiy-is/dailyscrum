@@ -8,14 +8,42 @@ import PageHeader from "@/components/page-header";
 import { Suspense } from "react";
 import DailyScrumUpdateListSkeleton from "./daily-scrum-update-list-skeleton";
 import DatePickerTriggerButton from "./date-picker-trigger-button";
+import { getWorkspaceByHashId } from "@/services/workspaces";
+import { NextPage } from "next";
+import { notFound } from "next/navigation";
+import {
+  redirectIfNotWorkspaceMember,
+  redirectIfNotSignedIn,
+} from "@/lib/page-flows";
 
-export default async function Page({
-  params: { workspaceHashId },
-  searchParams,
-}: {
+type Props = {
   params: { workspaceHashId: string };
   searchParams: { date?: string; dialog?: string; editUpdateItemId?: string };
-}) {
+};
+
+const pageFlowHandler = (Page: NextPage<Props>) => {
+  const Wrapper = async (props: Props) => {
+    const user = await redirectIfNotSignedIn();
+
+    const {
+      params: { workspaceHashId },
+    } = props;
+
+    const { data: workspace } = await getWorkspaceByHashId(workspaceHashId);
+
+    if (!workspace) {
+      return notFound();
+    }
+
+    await redirectIfNotWorkspaceMember(workspace.id, user.id);
+
+    return <Page {...props} />;
+  };
+
+  return Wrapper;
+};
+
+const Page = ({ params: { workspaceHashId }, searchParams }: Props) => {
   const datePickerSuspenseKey = new URLSearchParams({
     ...(searchParams.date && { date: searchParams.date }),
   }).toString();
@@ -74,4 +102,6 @@ export default async function Page({
       </div>
     </>
   );
-}
+};
+
+export default pageFlowHandler(Page);

@@ -13,7 +13,7 @@ export async function createNewWorkspace(name: string) {
 export async function signOut() {
   const authClient = createAuthClient(cookies());
   await authClient.auth.signOut();
-  redirect("/app/sign-in");
+  redirect("/app");
 }
 
 export async function updateName(name: string) {
