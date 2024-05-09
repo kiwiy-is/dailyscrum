@@ -25,14 +25,17 @@ import {
 } from "ui/shadcn-ui/alert-dialog";
 import Link from "next/link";
 import sqids from "@/lib/sqids";
+import { DateTime } from "luxon";
 
 const DailyScrumUpdateCard = ({
   entryId,
   userName,
+  createdAt,
   qaPairs,
 }: {
   entryId: number;
   userName: string;
+  createdAt: string;
   qaPairs: {
     id: number;
     question: {
@@ -105,8 +108,9 @@ const DailyScrumUpdateCard = ({
           <div className="flex flex-col gap-y-6">
             <div className="flex flex-col space-y-1.5">
               <h3 className="text-base font-semibold">{userName}</h3>
-              {/* TODO: Render created at date properly */}
-              <p className="text-xs text-muted-foreground">24 minutes ago</p>
+              <p className="text-xs text-muted-foreground">
+                {DateTime.fromISO(createdAt).toRelative()}
+              </p>
             </div>
             {qaPairs.map(
               ({
@@ -167,6 +171,7 @@ const DailyScrumUpdateCard = ({
 type Update = {
   entryId: number;
   userName: string;
+  createdAt: string;
   qaPairs: {
     id: number;
     question: {
@@ -237,12 +242,13 @@ const DailyScrumUpdateList = ({
             );
           }
 
-          const { entryId, userName, qaPairs } = props;
+          const { entryId, userName, qaPairs, createdAt } = props;
           return (
             <DailyScrumUpdateCard
               key={entryId}
               entryId={entryId}
               userName={userName}
+              createdAt={createdAt}
               qaPairs={qaPairs}
             />
           );
