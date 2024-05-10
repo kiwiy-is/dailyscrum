@@ -38,7 +38,7 @@ const DailyScrumUpdateListLoader = async ({
 
   const date =
     dateQuery && DateTime.fromISO(dateQuery).isValid
-      ? DateTime.fromISO(dateQuery)
+      ? DateTime.fromISO(dateQuery).setZone(timeZone, { keepLocalTime: true })
       : today;
 
   const dateInISO = date.toISODate();

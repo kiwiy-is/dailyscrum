@@ -12,7 +12,7 @@ export function useDateFromSearchParams(timeZone?: string) {
   const today = DateTime.local().setZone(timeZone).startOf("day");
   const date =
     dateQuery && DateTime.fromISO(dateQuery).isValid
-      ? DateTime.fromISO(dateQuery)
+      ? DateTime.fromISO(dateQuery).setZone(timeZone, { keepLocalTime: true })
       : today;
   return date;
 }

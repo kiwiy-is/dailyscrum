@@ -20,7 +20,7 @@ const DatePickerTriggerButton = React.forwardRef<HTMLButtonElement, Props>(
       : null;
     const date =
       dateQuery && DateTime.fromISO(dateQuery).isValid
-        ? DateTime.fromISO(dateQuery)
+        ? DateTime.fromISO(dateQuery).setZone(timeZone, { keepLocalTime: true })
         : today;
 
     return (

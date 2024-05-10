@@ -215,7 +215,7 @@ const AddUpdateDialogContent: React.FC<AddUpdateDialogContentProps> = ({
 
   const date =
     dateQuery && DateTime.fromISO(dateQuery).isValid
-      ? DateTime.fromISO(dateQuery)
+      ? DateTime.fromISO(dateQuery).setZone(timeZone, { keepLocalTime: true })
       : today;
 
   const isDateArchived = !(
@@ -235,7 +235,7 @@ const AddUpdateDialogContent: React.FC<AddUpdateDialogContentProps> = ({
     const tomorrow = today.plus({ days: 1 });
     const date =
       dateQuery && DateTime.fromISO(dateQuery).isValid
-        ? DateTime.fromISO(dateQuery)
+        ? DateTime.fromISO(dateQuery).setZone(timeZone, { keepLocalTime: true })
         : today;
 
     const isDateArchived = !(
