@@ -30,11 +30,13 @@ import { markdown } from "@/lib/markdown";
 
 const DailyScrumUpdateCard = ({
   entryId,
+  isEditable,
   userName,
   createdAt,
   qaPairs,
 }: {
   entryId: number;
+  isEditable: boolean;
   userName: string;
   createdAt: string;
   qaPairs: {
@@ -83,19 +85,21 @@ const DailyScrumUpdateCard = ({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start">
-            <DropdownMenuItem
-              onSelect={() => {
-                const hashId = sqids.encode([entryId]);
-                router.push(
-                  `${pathname}/updates/${hashId}?${searchParams.toString()}`,
-                  {
-                    scroll: false,
-                  }
-                );
-              }}
-            >
-              Edit
-            </DropdownMenuItem>
+            {isEditable && (
+              <DropdownMenuItem
+                onSelect={() => {
+                  const hashId = sqids.encode([entryId]);
+                  router.push(
+                    `${pathname}/updates/${hashId}?${searchParams.toString()}`,
+                    {
+                      scroll: false,
+                    }
+                  );
+                }}
+              >
+                Edit
+              </DropdownMenuItem>
+            )}
             <DropdownMenuItem>Copy text</DropdownMenuItem>
             {/* NOTE: Use only for testing purposes */}
             {/* <DropdownMenuItem
@@ -176,6 +180,7 @@ const DailyScrumUpdateCard = ({
 
 type Update = {
   entryId: number;
+  isEditable: boolean;
   userName: string;
   createdAt: string;
   qaPairs: {
@@ -248,11 +253,12 @@ const DailyScrumUpdateList = ({
             );
           }
 
-          const { entryId, userName, qaPairs, createdAt } = props;
+          const { entryId, isEditable, userName, qaPairs, createdAt } = props;
           return (
             <DailyScrumUpdateCard
               key={entryId}
               entryId={entryId}
+              isEditable={isEditable}
               userName={userName}
               createdAt={createdAt}
               qaPairs={qaPairs}

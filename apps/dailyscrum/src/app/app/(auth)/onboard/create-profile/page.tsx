@@ -8,10 +8,7 @@ import {
 } from "ui/shadcn-ui/card";
 import CompleteSignUpForm from "./complete-sign-up-form";
 import { NextPage } from "next";
-import {
-  redirectIfProfileExists,
-  redirectIfNotSignedIn,
-} from "@/lib/page-flows";
+import { redirectIfNotSignedIn } from "@/lib/page-flows";
 import { getCurrentUserProfile } from "@/services/profiles";
 
 type Props = {
