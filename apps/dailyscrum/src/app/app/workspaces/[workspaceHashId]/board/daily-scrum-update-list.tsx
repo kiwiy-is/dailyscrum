@@ -26,6 +26,7 @@ import {
 import Link from "next/link";
 import sqids from "@/lib/sqids";
 import { DateTime } from "luxon";
+import { markdown } from "@/lib/markdown";
 
 const DailyScrumUpdateCard = ({
   entryId,
@@ -86,7 +87,10 @@ const DailyScrumUpdateCard = ({
               onSelect={() => {
                 const hashId = sqids.encode([entryId]);
                 router.push(
-                  `${pathname}/updates/${hashId}?${searchParams.toString()}`
+                  `${pathname}/updates/${hashId}?${searchParams.toString()}`,
+                  {
+                    scroll: false,
+                  }
                 );
               }}
             >
@@ -122,10 +126,12 @@ const DailyScrumUpdateCard = ({
                 <div className="flex flex-col space-y-1.5" key={id}>
                   <h4 className="text-sm font-medium">{question.question}</h4>
 
-                  <div className="text-sm [&>ul]:ml-6 [&>ul]:list-disc">
-                    {answer.answer}
-                    {/* TODO: Render markdown parsed text */}
-                  </div>
+                  <div
+                    className="text-sm [&>ul]:ml-6 [&>ul]:list-disc [&_a]:font-medium [&_a]:underline-offset-4 [&_a]:underline [&_p+*]:mt-2"
+                    dangerouslySetInnerHTML={{
+                      __html: markdown.render(answer.answer),
+                    }}
+                  />
                 </div>
               )
             )}
