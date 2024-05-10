@@ -60,12 +60,13 @@ const DailyScrumUpdateListLoader = async ({
     date.hasSame(today, "day") || date.hasSame(tomorrow, "day")
   );
 
-  const { data: user, error: getCurrentUserError } = await getCurrentUser();
+  const { data: currentUser, error: getCurrentUserError } =
+    await getCurrentUser();
 
   const showAddUpdateCard =
     !isDateArchived &&
     !dailyScrumUpdateEntries.some((dailyScrumUpdateEntry) => {
-      return dailyScrumUpdateEntry.user?.id === user?.id;
+      return dailyScrumUpdateEntry.user?.id === currentUser?.id;
     });
 
   const showNoUpdatesFoundForArchivedDates =
@@ -78,8 +79,11 @@ const DailyScrumUpdateListLoader = async ({
       daily_scrum_update_form_id,
       ...entry
     }) => {
+      const isEditable = user?.id === currentUser?.id;
+
       return {
         entryId: entry.id,
+        isEditable,
         userName: user?.profile?.name ?? "",
         createdAt: entry.created_at,
         qaPairs: daily_scrum_update_answers

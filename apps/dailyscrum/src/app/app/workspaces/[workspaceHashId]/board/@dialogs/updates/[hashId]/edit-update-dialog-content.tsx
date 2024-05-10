@@ -252,7 +252,11 @@ const EditUpdateDialogContent: React.FC<EditScrumUpdateDialogProps> = ({
                   <FormItem>
                     <FormLabel>{question.label}</FormLabel>
                     <FormControl>
-                      <Textarea placeholder={question.placeholder} {...field} />
+                      <Textarea
+                        placeholder={question.placeholder}
+                        {...field}
+                        className="min-h-[104px]"
+                      />
                     </FormControl>
                     <FormDescription>{question.description}</FormDescription>
                     <FormMessage />
