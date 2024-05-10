@@ -15,6 +15,7 @@ import {
   redirectIfNotWorkspaceMember,
   redirectIfNotSignedIn,
 } from "@/lib/page-flows";
+import TodayButton from "./today-button";
 
 type Props = {
   params: { workspaceHashId: string };
@@ -62,15 +63,10 @@ const Page = ({ params: { workspaceHashId }, searchParams }: Props) => {
         <div className="flex flex-col space-y-6">
           <div className="flex flex-wrap-reverse gap-y-2 gap-x-2 justify-between">
             <div className="flex gap-x-2">
-              {/* TODO: implement */}
-              <Button variant="outline" className="gap-x-2 text-sm">
-                <span>Today</span>
-              </Button>
-
-              {/* TODO: implement */}
-              <Button variant="outline" className="gap-x-2 text-sm">
-                <span>Tomorrow</span>
-              </Button>
+              <TodayButton
+                workspaceHashId={workspaceHashId}
+                dateQuery={dateQuery}
+              />
 
               <Suspense
                 key={datePickerSuspenseKey}
