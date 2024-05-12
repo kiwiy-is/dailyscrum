@@ -9,7 +9,7 @@ import { useSearchParams } from "next/navigation";
 export function useDateFromSearchParams(timeZone?: string) {
   const searchParams = useSearchParams();
   const dateQuery = searchParams.get("date");
-  const today = DateTime.local().setZone(timeZone).startOf("day");
+  const today = DateTime.local({ zone: timeZone }).startOf("day");
   const date =
     dateQuery && DateTime.fromISO(dateQuery).isValid
       ? DateTime.fromISO(dateQuery).setZone(timeZone, { keepLocalTime: true })

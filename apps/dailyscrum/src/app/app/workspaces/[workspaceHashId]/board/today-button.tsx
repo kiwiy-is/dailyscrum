@@ -39,7 +39,7 @@ const TodayButton = async ({ workspaceHashId, dateQuery }: Props) => {
     return null;
   }
 
-  const today = DateTime.now().setZone(timeZone).startOf("day");
+  const today = DateTime.local({ zone: timeZone }).startOf("day");
 
   const date =
     dateQuery && DateTime.fromISO(dateQuery).isValid

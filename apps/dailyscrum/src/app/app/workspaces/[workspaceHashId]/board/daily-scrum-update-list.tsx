@@ -27,6 +27,11 @@ import Link from "next/link";
 import sqids from "@/lib/sqids";
 import { DateTime } from "luxon";
 import { markdown } from "@/lib/markdown";
+import { createBrowserClient } from "@/lib/supabase/browser-client";
+import {
+  REALTIME_CHANNEL_STATES,
+  RealtimeChannel,
+} from "@supabase/supabase-js";
 
 const DailyScrumUpdateCard = ({
   entryId,
@@ -165,7 +170,7 @@ const DailyScrumUpdateCard = ({
                 startTransition(async () => {
                   await deleteUpdate(entryId);
 
-                  router.push(`${pathname}?${searchParams.toString()}`);
+                  router.refresh();
                 });
               }}
             >
@@ -196,18 +201,80 @@ type Update = {
 };
 
 type Props = {
+  workspaceHashId: string;
   updates: Update[];
   showAddUpdateCard: boolean;
   showNoUpdatesFoundForArchivedDates: boolean;
 };
 
 const DailyScrumUpdateList = ({
+  workspaceHashId,
   updates,
   showAddUpdateCard,
   showNoUpdatesFoundForArchivedDates,
 }: Props) => {
+  const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        router.refresh();
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    // Initial subscription based on the initial visibility state
+    if (document.visibilityState === "visible") {
+      handleVisibilityChange();
+    }
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [router, workspaceHashId]);
+
+  useEffect(() => {
+    const browserClient = createBrowserClient();
+    let channel: RealtimeChannel | null = null;
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        router.refresh();
+        // Subscribe to the channel when the page becomes visible
+        channel = browserClient.channel(`workspaces/${workspaceHashId}`);
+        channel
+          .on("broadcast", { event: "updateAdd" }, (payload) => {
+            router.refresh();
+            // TODO: update only the matching date page
+            // const { date } = JSON.parse(payload.message) as { date: string };
+          })
+          .on("broadcast", { event: "updateEdit" }, (payload) => {
+            router.refresh();
+          })
+          .subscribe((status) => {
+            console.log(status);
+          });
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    // Initial subscription based on the initial visibility state
+    if (document.visibilityState === "visible") {
+      handleVisibilityChange();
+    }
+
+    return () => {
+      // Unsubscribe from the channel and remove the event listener when the component is unmounted
+      if (channel) {
+        channel.unsubscribe();
+      }
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [router, workspaceHashId]);
 
   if (showNoUpdatesFoundForArchivedDates) {
     return (

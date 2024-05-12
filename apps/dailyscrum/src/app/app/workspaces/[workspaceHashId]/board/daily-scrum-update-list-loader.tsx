@@ -33,7 +33,7 @@ const DailyScrumUpdateListLoader = async ({
     (setting) => setting.attribute_key === "time_zone"
   )?.attribute_value;
 
-  const today = DateTime.local().setZone(timeZone).startOf("day");
+  const today = DateTime.local({ zone: timeZone }).startOf("day");
   const tomorrow = today.plus({ days: 1 });
 
   const date =
@@ -112,6 +112,7 @@ const DailyScrumUpdateListLoader = async ({
 
   return (
     <DailyScrumUpdateList
+      workspaceHashId={workspaceHashId}
       showAddUpdateCard={showAddUpdateCard}
       showNoUpdatesFoundForArchivedDates={showNoUpdatesFoundForArchivedDates}
       updates={dailyScrumUpdates}
