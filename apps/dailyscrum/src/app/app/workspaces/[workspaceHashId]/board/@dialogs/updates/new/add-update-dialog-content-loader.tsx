@@ -43,7 +43,7 @@ const AddUpdateDialogContentLoader = async ({ workspaceHashId }: Props) => {
     10
   );
 
-  const today = DateTime.now().setZone(timeZone).startOf("day");
+  const today = DateTime.local({ zone: timeZone }).startOf("day");
   const tomorrow = today.plus({ days: 1 });
 
   const todayInISODate = today.toISODate();

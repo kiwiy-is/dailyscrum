@@ -27,7 +27,7 @@ const DatePicker = ({ timeZone }: Props) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const today = DateTime.local().setZone(timeZone).startOf("day");
+  const today = DateTime.local({ zone: timeZone }).startOf("day");
   const tomorrow = today.plus({ days: 1 });
 
   const date = useDateFromSearchParams(timeZone);

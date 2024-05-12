@@ -9,6 +9,7 @@ import { getCurrentUser } from "@/services/users";
 
 type Props = {
   params: {
+    workspaceHashId: string;
     hashId: string;
   };
 };

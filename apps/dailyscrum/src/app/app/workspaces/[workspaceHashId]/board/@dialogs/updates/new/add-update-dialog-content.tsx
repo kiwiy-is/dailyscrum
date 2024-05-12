@@ -35,6 +35,7 @@ import {
 } from "next/navigation";
 import { useToast } from "ui/shadcn-ui/use-toast";
 import { addUpdate } from "./actions";
+import { createBrowserClient } from "@/lib/supabase/browser-client";
 
 type DynamicFormValues = { [x: string]: string };
 type FormValues = { date: Date };
@@ -154,7 +155,7 @@ const AddUpdateDialogContent: React.FC<AddUpdateDialogContentProps> = ({
   const params = useParams<{ workspaceHashId: string }>();
   const searchParams = useSearchParams();
 
-  const today = DateTime.local().setZone(timeZone).startOf("day");
+  const today = DateTime.local({ zone: timeZone }).startOf("day");
   const tomorrow = today.plus({ days: 1 });
 
   const formSchema = useMemo(() => {
@@ -231,7 +232,7 @@ const AddUpdateDialogContent: React.FC<AddUpdateDialogContentProps> = ({
 
   useEffect(() => {
     // TODO: There is a code duplicate. Refactor it.
-    const today = DateTime.local().setZone(timeZone).startOf("day");
+    const today = DateTime.local({ zone: timeZone }).startOf("day");
     const tomorrow = today.plus({ days: 1 });
     const date =
       dateQuery && DateTime.fromISO(dateQuery).isValid
@@ -307,6 +308,26 @@ const AddUpdateDialogContent: React.FC<AddUpdateDialogContentProps> = ({
             mergedValues
           );
 
+          const browserClient = createBrowserClient();
+          const channel = browserClient.channel(
+            `workspaces/${params.workspaceHashId}`
+          );
+          channel.subscribe((status) => {
+            if (status !== "SUBSCRIBED") {
+              return null;
+            }
+
+            channel.send({
+              type: "broadcast",
+              event: "updateAdd",
+              payload: {
+                message: JSON.stringify({
+                  date: DateTime.fromJSDate(formValues.date).toISODate(),
+                }),
+              },
+            });
+          });
+
           const dateQuery = searchParams.get("date");
           const currentDate = dateQuery ? DateTime.fromISO(dateQuery) : today;
           const formDate = DateTime.fromJSDate(formValues.date);
@@ -317,6 +338,7 @@ const AddUpdateDialogContent: React.FC<AddUpdateDialogContentProps> = ({
                 params.workspaceHashId
               }/board?${searchParams.toString()}`
             );
+            router.refresh();
           } else {
             const mutableSearchParams = new URLSearchParams(searchParams);
             mutableSearchParams.set("date", formDate.toISODate()!);
@@ -325,6 +347,7 @@ const AddUpdateDialogContent: React.FC<AddUpdateDialogContentProps> = ({
                 params.workspaceHashId
               }/board?${mutableSearchParams.toString()}`
             );
+            router.refresh();
           }
 
           toast({

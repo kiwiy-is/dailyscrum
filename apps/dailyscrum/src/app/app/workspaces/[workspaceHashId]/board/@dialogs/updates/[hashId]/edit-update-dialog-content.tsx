@@ -33,6 +33,7 @@ import {
 } from "next/navigation";
 import { useToast } from "ui/shadcn-ui/use-toast";
 import { editUpdate } from "./actions";
+import { createBrowserClient } from "@/lib/supabase/browser-client";
 
 export type DynamicFormValues = { [answerId: string]: string };
 export type FormValues = { date: Date };
@@ -198,11 +199,32 @@ const EditUpdateDialogContent: React.FC<EditScrumUpdateDialogProps> = ({
         startTransition(async () => {
           await editUpdate(dynamicFormValues);
 
+          const browserClient = createBrowserClient();
+          const channel = browserClient.channel(
+            `workspaces/${params.workspaceHashId}`
+          );
+          channel.subscribe((status) => {
+            if (status !== "SUBSCRIBED") {
+              return null;
+            }
+
+            channel.send({
+              type: "broadcast",
+              event: "updateEdit",
+              payload: {
+                message: JSON.stringify({
+                  date: DateTime.fromJSDate(formValues.date).toISODate(),
+                }),
+              },
+            });
+          });
+
           router.push(
             `/app/workspaces/${
               params.workspaceHashId
             }/board?${searchParams.toString()}`
           );
+          router.refresh();
 
           toast({
             description: (

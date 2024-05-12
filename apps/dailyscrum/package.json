@@ -14,6 +14,7 @@
     "@supabase/ssr": "^0.1.0",
     "@supabase/supabase-js": "^2.39.7",
     "@tanstack/react-table": "^8.15.3",
+    "client-only": "^0.0.1",
     "lucide-react": "^0.323.0",
     "luxon": "^3.4.4",
     "markdown-it": "^14.1.0",
