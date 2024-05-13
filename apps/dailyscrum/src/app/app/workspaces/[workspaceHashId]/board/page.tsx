@@ -57,34 +57,34 @@ const Page = ({ params: { workspaceHashId }, searchParams }: Props) => {
 
   return (
     <>
-      <div className="flex flex-col space-y-8 max-w-screen-2xl">
+      <div className="flex flex-col max-w-screen-2xl">
         <PageHeader title="Board" />
 
-        <div className="flex flex-col space-y-6">
-          <div className="flex flex-wrap-reverse gap-y-2 gap-x-2 justify-between">
-            <div className="flex gap-x-2">
-              <TodayButton
-                workspaceHashId={workspaceHashId}
-                dateQuery={dateQuery}
-              />
+        <div className="flex flex-wrap-reverse gap-y-2 gap-x-2 justify-between mt-8">
+          <div className="flex gap-x-2">
+            <TodayButton
+              workspaceHashId={workspaceHashId}
+              dateQuery={dateQuery}
+            />
 
-              <Suspense
-                key={datePickerSuspenseKey}
-                fallback={<DatePickerTriggerButton disabled />}
-              >
-                <DatePickerLoader workspaceHashId={workspaceHashId} />
-              </Suspense>
-            </div>
-
-            <div className="flex gap-x-2">
-              <Button variant="outline" className="gap-x-2 text-sm" disabled>
-                <Settings2Icon width={16} height={16} strokeWidth={2} />
-                <span>Settings</span>
-              </Button>
-
-              <AddUpdateButton />
-            </div>
+            <Suspense
+              key={datePickerSuspenseKey}
+              fallback={<DatePickerTriggerButton disabled />}
+            >
+              <DatePickerLoader workspaceHashId={workspaceHashId} />
+            </Suspense>
           </div>
+
+          <div className="flex gap-x-2">
+            <Button variant="outline" className="gap-x-2 text-sm" disabled>
+              <Settings2Icon width={16} height={16} strokeWidth={2} />
+              <span>Settings</span>
+            </Button>
+
+            <AddUpdateButton />
+          </div>
+        </div>
+        <div className="mt-6">
           <Suspense
             key={listSuspenseKey}
             fallback={<DailyScrumUpdateListSkeleton />}

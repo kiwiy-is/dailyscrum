@@ -41,7 +41,8 @@ const Sidebar = ({ workspaceHashId }: Props) => {
               <span>Board</span>
             </NavLink>
 
-            <MyUpdatesLink />
+            {/* TODO: Implement */}
+            {/* <MyUpdatesLink /> */}
 
             <NavLink
               href={`/app/workspaces/${workspaceHashId}/settings`}

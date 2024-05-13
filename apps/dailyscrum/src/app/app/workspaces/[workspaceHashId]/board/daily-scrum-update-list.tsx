@@ -11,7 +11,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "ui/dropdown-menu";
-import { Masonry } from "ui/masonry";
 import { Card, CardContent } from "ui/shadcn-ui/card";
 import { deleteUpdate } from "./actions";
 import {
@@ -28,10 +27,8 @@ import sqids from "@/lib/sqids";
 import { DateTime } from "luxon";
 import { markdown } from "@/lib/markdown";
 import { createBrowserClient } from "@/lib/supabase/browser-client";
-import {
-  REALTIME_CHANNEL_STATES,
-  RealtimeChannel,
-} from "@supabase/supabase-js";
+import { RealtimeChannel } from "@supabase/supabase-js";
+import Masonry from "./masonry";
 
 const DailyScrumUpdateCard = ({
   entryId,
@@ -278,8 +275,9 @@ const DailyScrumUpdateList = ({
 
   if (showNoUpdatesFoundForArchivedDates) {
     return (
-      <div className="flex flex-col items-center  justify-center gap-y-2 h-[208px]">
-        <div className="text-md font-semibold">No updates found</div>
+      // TODO: Find alternative way..
+      <div className="flex flex-1 flex-col items-center justify-center gap-y-2 min-h-[calc(100vh-284px)] md:!min-h-[calc(100vh-180px)]">
+        <div className=" text-base font-semibold">No updates found</div>
         <div className="text-sm ">
           There were no updates added for the date.
         </div>
@@ -290,24 +288,24 @@ const DailyScrumUpdateList = ({
   return (
     <div className="space-y-8">
       <Masonry
-        className="max-w-[296px] min-[896px]:max-w-[608px] min-[1208px]:max-w-[920px] min-[1520px]:max-w-[1232px] min-[1832px]:max-w-[1544px] min-[2144px]:max-w-[1856px]" // 296px
-        config={{
-          gap: [16, 16, 16, 16, 16, 16],
-          columns: [1, 2, 3, 4, 5, 6],
-          media: [896, 1208, 1520, 1832, 2144, 99999],
-        }}
         items={[
           ...updates,
-          ...(showAddUpdateCard ? ["show-add-update-card"] : []),
+          ...(showAddUpdateCard
+            ? [
+                {
+                  id: "show-add-update-card",
+                },
+              ]
+            : []),
         ]}
-        render={(props) => {
-          if (typeof props === "string") {
+        render={({ index, data, width }) => {
+          if (data.id === "show-add-update-card") {
             return (
               <Button
-                key={props}
+                key={data}
                 variant="outline"
                 size="sm"
-                className="justify-center gap-x-2 text-sm h-[208px] rounded-lg"
+                className="justify-center gap-x-2 text-sm h-[208px] w-full rounded-lg"
                 asChild
               >
                 <Link
@@ -320,7 +318,7 @@ const DailyScrumUpdateList = ({
             );
           }
 
-          const { entryId, isEditable, userName, qaPairs, createdAt } = props;
+          const { entryId, isEditable, userName, qaPairs, createdAt } = data;
           return (
             <DailyScrumUpdateCard
               key={entryId}
@@ -333,7 +331,8 @@ const DailyScrumUpdateList = ({
           );
         }}
       />
-      {updates.length === 0 && (
+      {/* TODO: This maybe not necessary. Consider removing it */}
+      {/* {updates.length === 0 && (
         <div className="flex flex-col justify-center items-center gap-y-4">
           <div className="text-center space-y-2">
             <div className="text-md font-semibold">
@@ -344,32 +343,9 @@ const DailyScrumUpdateList = ({
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };
-
-// NOTE: A calculator for masonry grid properties. Use it to calculate.
-// function calculateGridProperties(width = 240) {
-//   const GAP = 16;
-//   const SIDEBAR_WIDTH = 224;
-//   const CONTENT_AREA_PADDING = 64;
-//   const media = [];
-//   let className = "";
-//   for (let columnIndex = 0; columnIndex <= 6; columnIndex++) {
-//     const columnWidth = (columnIndex + 1) * width + columnIndex * GAP;
-
-//     if (columnIndex === 0) {
-//       className += `max-w-[${columnWidth}px]`;
-//       continue;
-//     }
-
-//     const minWidth = SIDEBAR_WIDTH + CONTENT_AREA_PADDING + columnWidth;
-//     media.push(minWidth);
-//     className += ` min-[${minWidth}px]:max-w-[${columnWidth}px]`;
-//   }
-
-//   return { media, className };
-// }
 
 export default DailyScrumUpdateList;
