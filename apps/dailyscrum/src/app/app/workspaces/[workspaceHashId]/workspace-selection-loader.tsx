@@ -9,8 +9,6 @@ type Props = {
 const WorkspaceSelectionLoader: React.FC<Props> = async ({
   workspaceHashId,
 }) => {
-  // const { workspaceHashId } = getParams() as { workspaceHashId: string };
-
   const { data: workspaces, error } = await listWorkspacesOfCurrentUser();
 
   if (!workspaces || error || workspaces.length === 0) {

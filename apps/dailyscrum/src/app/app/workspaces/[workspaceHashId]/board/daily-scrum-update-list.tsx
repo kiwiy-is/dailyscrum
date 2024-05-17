@@ -28,8 +28,12 @@ import { DateTime } from "luxon";
 import { markdown } from "@/lib/markdown";
 import { createBrowserClient } from "@/lib/supabase/browser-client";
 import { RealtimeChannel } from "@supabase/supabase-js";
-import Masonry from "./masonry";
 import { Skeleton } from "ui/shadcn-ui/skeleton";
+import dynamic from "next/dynamic";
+
+const Masonry = dynamic(() => import("./masonry"), {
+  ssr: false,
+});
 
 const DailyScrumUpdateCard = ({
   entryId,
@@ -334,9 +338,18 @@ const DailyScrumUpdateList = ({
 };
 
 export const DailyScrumUpdateListSkeleton = () => {
-  let i = 0;
-  const items = Array.from(Array(10), () => ({ id: i++ }));
-
+  const items = [
+    { id: 0, heights: [40, 80, 40] },
+    { id: 1, heights: [80, 120, 20] },
+    { id: 2, heights: [80, 60, 40] },
+    { id: 3, heights: [20, 80, 40] },
+    { id: 4, heights: [40, 100, 20] },
+    { id: 5, heights: [60, 40, 20] },
+    { id: 6, heights: [20, 80, 40] },
+    { id: 7, heights: [60, 120, 20] },
+    { id: 8, heights: [20, 40, 40] },
+    { id: 9, heights: [40, 120, 20] },
+  ];
   return (
     <div>
       <Masonry
@@ -358,13 +371,9 @@ export const DailyScrumUpdateListSkeleton = () => {
                     <h4>
                       <Skeleton className="w-[256px] max-w-full h-[20px]" />
                     </h4>
-                    <div className="[&amp;>ul]:ml-6">
+                    <div className="[&>ul]:ml-6">
                       <Skeleton
-                        style={{
-                          height: [20, 40, 60, 80][
-                            Math.floor(Math.random() * 4)
-                          ],
-                        }}
+                        style={{ height: data.heights[0] }}
                         className="w-auto max-w-full"
                       />
                     </div>
@@ -373,13 +382,9 @@ export const DailyScrumUpdateListSkeleton = () => {
                     <h4>
                       <Skeleton className="w-[208px] h-[20px] max-w-full" />
                     </h4>
-                    <div className="[&amp;>ul]:ml-6">
+                    <div className="[&>ul]:ml-6">
                       <Skeleton
-                        style={{
-                          height: [40, 60, 80, 100, 120][
-                            Math.floor(Math.random() * 5)
-                          ],
-                        }}
+                        style={{ height: data.heights[1] }}
                         className="w-auto max-w-full"
                       />
                     </div>
@@ -388,11 +393,9 @@ export const DailyScrumUpdateListSkeleton = () => {
                     <h4>
                       <Skeleton className="w-[296px] h-[20px] max-w-full" />
                     </h4>
-                    <div className="[&amp;>ul]:ml-6">
+                    <div className="[&>ul]:ml-6">
                       <Skeleton
-                        style={{
-                          height: [20, 40][Math.floor(Math.random() * 2)],
-                        }}
+                        style={{ height: data.heights[2] }}
                         className="w-auto max-w-full"
                       />
                     </div>
@@ -406,5 +409,4 @@ export const DailyScrumUpdateListSkeleton = () => {
     </div>
   );
 };
-
 export default DailyScrumUpdateList;

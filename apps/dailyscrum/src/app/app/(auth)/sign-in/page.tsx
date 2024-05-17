@@ -36,7 +36,7 @@ const Page = async ({ searchParams }: Props) => {
         </CardContent>
         <CardFooter className=" justify-center">
           <p className="text-sm text-muted-foreground">
-            Don't have an account?
+            Don{`'`}t have an account?
             <Link
               href={`/app/sign-up${
                 returnPathQuery ? `?return-path=${returnPathQuery}` : ""

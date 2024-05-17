@@ -85,12 +85,17 @@ const Page = async ({ params, searchParams }: Props) => {
         <KiwiyIsSymbol />
         <Card className="w-[440px]">
           <CardHeader>
-            <CardTitle>Join "{workspace.name}"</CardTitle>
+            <CardTitle>
+              Join {`"`}
+              {workspace.name}
+              {`"`}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <CardDescription>
-              You are invited to "{workspace.name}". Please sign in to join the
-              workspace.
+              You are invited to {`"`}
+              {workspace.name}
+              {`"`}. Please sign in to join the workspace.
             </CardDescription>
           </CardContent>
           <CardFooter>
@@ -136,11 +141,17 @@ const Page = async ({ params, searchParams }: Props) => {
       <KiwiyIsSymbol />
       <Card className="w-[440px]">
         <CardHeader>
-          <CardTitle>Join "{workspace.name}"</CardTitle>
+          <CardTitle>
+            Join {`"`}
+            {workspace.name}
+            {`"`}
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <CardDescription>
-            You are invited to "{workspace.name}".
+            You are invited to {`"`}
+            {workspace.name}
+            {`"`}.
           </CardDescription>
         </CardContent>
         <CardFooter>

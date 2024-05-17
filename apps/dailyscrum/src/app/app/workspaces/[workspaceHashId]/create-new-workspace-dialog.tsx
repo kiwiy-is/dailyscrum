@@ -80,7 +80,7 @@ const CreateNewWorkspaceDialog = (props: Props) => {
             return;
           }
 
-          router.push(`/app/workspaces/${data.hash_id}`);
+          router.push(`/app/workspaces/${data.hash_id}/board`);
 
           toast({
             description: (

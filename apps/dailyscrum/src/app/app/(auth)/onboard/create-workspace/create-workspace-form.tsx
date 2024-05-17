@@ -52,11 +52,7 @@ const CreateWorkspaceForm = ({
 
   const handleSubmit = form.handleSubmit((values) => {
     startTransition(async () => {
-      const { error } = await completeCreateWorkspace(
-        workspaceId,
-        values.name,
-        returnPath
-      );
+      const { error } = await completeCreateWorkspace(workspaceId, values.name);
 
       if (error) {
         form.setError("name", { message: error.message });

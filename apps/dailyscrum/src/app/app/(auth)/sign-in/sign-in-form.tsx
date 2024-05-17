@@ -66,7 +66,7 @@ const SignInForm = ({ returnPath }: Props) => {
                 <Input placeholder="name@example.com" {...field} />
               </FormControl>
               <FormDescription>
-                We'll send you a sign in link to this email address.
+                We{`'`}ll send you a sign in link to this email address.
               </FormDescription>
               <FormMessage />
             </FormItem>

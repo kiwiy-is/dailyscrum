@@ -1,8 +1,8 @@
-const isProd = process.env.NODE_ENV === "production";
+const assetPrefix = process.env.ASSET_PREFIX || "";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  assetPrefix: isProd ? "https://dailyscrum.fly.dev" : undefined,
+  assetPrefix,
   async headers() {
     return [
       {
