@@ -1,6 +1,5 @@
 import React from "react";
 import CreateNewWorkspaceDialog from "./create-new-workspace-dialog";
-import ResizableLayout from "./resizable-layout";
 import { cookies } from "next/headers";
 import { RESIZABLE_LAYOUT_COOKIE_KEY } from "./constants";
 
@@ -8,6 +7,11 @@ import SidebarSheetOpener from "./sidebar-sheet-opener";
 import Sidebar from "./sidebar";
 import KiwiyDailyScrumLogo from "./kiwiy-daily-scrum-logo";
 import AccountSettingsDialogLoader from "./account-settings-dialog-loader";
+import dynamic from "next/dynamic";
+
+const ResizableLayout = dynamic(() => import("./resizable-layout"), {
+  ssr: false,
+});
 
 type Props = {
   children: React.ReactNode;

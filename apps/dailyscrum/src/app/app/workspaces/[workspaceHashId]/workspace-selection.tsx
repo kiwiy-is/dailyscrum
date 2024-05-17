@@ -38,7 +38,7 @@ function WorkspaceSelection({ workspaces, selectedWorkspace }: Props) {
       setOpen(false);
       router.push(`/app/workspaces/${workspaceId}/board`);
     },
-    []
+    [router]
   );
 
   const handleCreateWorkspaceSelect = () => {

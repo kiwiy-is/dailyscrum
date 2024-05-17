@@ -3,7 +3,6 @@ import { LayoutDashboardIcon, Settings2Icon } from "lucide-react";
 import React from "react";
 import { cn } from "ui";
 import { buttonVariants } from "ui/button";
-import MyUpdatesLink from "./my-updates-link";
 import UserMenu from "./user-menu";
 import WorkspaceSelectionLoader from "./workspace-selection-loader";
 import KiwiyDailyScrumLogo from "./kiwiy-daily-scrum-logo";

@@ -65,7 +65,7 @@ const SignUpForm = ({ returnPath }: Props) => {
                 <Input placeholder="name@example.com" {...field} />
               </FormControl>
               <FormDescription>
-                We'll send you a sign up link to this email address.
+                We{`'`}ll send you a sign up link to this email address.
               </FormDescription>
               <FormMessage />
             </FormItem>
