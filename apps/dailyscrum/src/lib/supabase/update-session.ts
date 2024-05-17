@@ -17,7 +17,6 @@ export const updateSession = async (request: NextRequest) => {
           return request.cookies.get(name)?.value;
         },
         set(name: string, value: string, options: CookieOptions) {
-          // If the cookie is updated, update the cookies for the request and response
           request.cookies.set({
             name,
             value,
@@ -56,7 +55,7 @@ export const updateSession = async (request: NextRequest) => {
     }
   );
 
-  await supabase.auth.getUser();
+  await supabase.auth.getSession(); // NOTE: Delayed only when the access_token is expired
 
   return response;
 };

@@ -46,7 +46,8 @@ const UserDropdown = ({ trigger, label, ...props }: Props) => {
             />
             <span>Account settings</span>
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          {/* TODO: Implement appearance settings */}
+          {/* <DropdownMenuItem>
             <PaletteIcon
               className="mr-2"
               width={16}
@@ -54,8 +55,9 @@ const UserDropdown = ({ trigger, label, ...props }: Props) => {
               strokeWidth={2}
             />
             <span>Appearance</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
+          </DropdownMenuItem> */}
+          {/* TODO: Implement theme settings */}
+          {/* <DropdownMenuItem>
             <SunMoonIcon
               className="mr-2"
               width={16}
@@ -63,7 +65,7 @@ const UserDropdown = ({ trigger, label, ...props }: Props) => {
               strokeWidth={2}
             />
             <span>Toggle theme</span>
-          </DropdownMenuItem>{" "}
+          </DropdownMenuItem>{" "} */}
           <DropdownMenuItem
             onSelect={async () => {
               await signOut();

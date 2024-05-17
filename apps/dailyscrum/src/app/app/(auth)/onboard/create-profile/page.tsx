@@ -1,52 +1,41 @@
-import { KiwiyIsSymbol } from "ui/kiwiy-is-symbol";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "ui/shadcn-ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "ui/shadcn-ui/card";
 import CompleteSignUpForm from "./complete-sign-up-form";
-import { NextPage } from "next";
-import { redirectIfNotSignedIn } from "@/lib/page-flows";
 import { getCurrentUserProfile } from "@/services/profiles";
+import { Suspense } from "react";
+import PageFlowHandler from "./page-flow-handler";
 
 type Props = {
   searchParams: { ["return-path"]: string | undefined };
 };
 
-const pageFlowHandler = (Page: NextPage<Props>) => {
-  const Wrapper = async (props: Props) => {
-    await redirectIfNotSignedIn();
-
-    return <Page {...props} />;
-  };
-
-  return Wrapper;
-};
-
 const Page = async ({ searchParams }: Props) => {
-  const returnPathParamValue = searchParams["return-path"];
-  const returnPath = returnPathParamValue
-    ? decodeURIComponent(returnPathParamValue)
+  const returnPathQuery = searchParams["return-path"];
+  const returnPath = returnPathQuery
+    ? decodeURIComponent(returnPathQuery)
     : undefined;
 
   const { data: profile } = await getCurrentUserProfile();
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Create profile</CardTitle>
-        <CardDescription>Complete your profile</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <CompleteSignUpForm
-          returnPath={returnPath}
-          defaultValues={{ name: profile?.name ?? "" }}
-        />
-      </CardContent>
-    </Card>
+    <>
+      <Suspense>
+        <PageFlowHandler />
+      </Suspense>
+      <Card>
+        <CardHeader>
+          <CardTitle>Create profile</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {/* TODO: Rename to create-profile-form */}
+          {/* TODO: wrap in loader component */}
+          <CompleteSignUpForm
+            returnPath={returnPath}
+            defaultValues={{ name: profile?.name ?? "" }}
+          />
+        </CardContent>
+      </Card>
+    </>
   );
 };
 
-export default pageFlowHandler(Page);
+export default Page;

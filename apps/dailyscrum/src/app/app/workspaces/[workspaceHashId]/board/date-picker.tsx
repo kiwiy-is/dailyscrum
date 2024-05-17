@@ -2,7 +2,7 @@
 
 import { DateTime } from "luxon";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { cn } from "ui";
 import { Button, buttonVariants } from "ui/button";
 import {
@@ -13,7 +13,7 @@ import {
 } from "ui/dropdown-menu";
 import { Calendar } from "ui/shadcn-ui/calendar";
 import DatePickerTriggerButton from "./date-picker-trigger-button";
-import { useDateFromSearchParams } from "./use-date-from-search-params";
+import { Skeleton } from "ui/shadcn-ui/skeleton";
 
 type Props = {
   timeZone: string;
@@ -30,16 +30,24 @@ const DatePicker = ({ timeZone }: Props) => {
   const today = DateTime.local({ zone: timeZone }).startOf("day");
   const tomorrow = today.plus({ days: 1 });
 
-  const date = useDateFromSearchParams(timeZone);
+  const dateQuery = searchParams.get("date");
+  const date =
+    dateQuery && DateTime.fromISO(dateQuery).isValid
+      ? DateTime.fromISO(dateQuery).setZone(timeZone, { keepLocalTime: true })
+      : today;
+
+  const [month, setMonth] = useState(date.startOf("month").toJSDate());
+
+  useEffect(() => {
+    if (!isOpen && DateTime.fromJSDate(month).month !== date.month) {
+      setTimeout(() => {
+        setMonth(date.startOf("month").toJSDate());
+      }, 150);
+    }
+  }, [date, isOpen, month]);
 
   const handleTodayButtonClick = () => {
-    const todayInISO = today.toISODate();
-    if (todayInISO) {
-      const params = new URLSearchParams(searchParams);
-      params.set("date", todayInISO);
-      router.replace(`${pathname}?${params.toString()}`);
-    }
-    setIsOpen(false);
+    setMonth(today.startOf("month").toJSDate());
   };
 
   const handleSelect = (systemZoneDate: Date | undefined) => {
@@ -56,7 +64,7 @@ const DatePicker = ({ timeZone }: Props) => {
     if (isoDate) {
       const params = new URLSearchParams(searchParams);
       params.set("date", isoDate);
-      router.replace(`${pathname}?${params.toString()}`);
+      router.push(`${pathname}?${params.toString()}`);
     }
 
     setIsOpen(false);
@@ -76,46 +84,63 @@ const DatePicker = ({ timeZone }: Props) => {
         <DatePickerTriggerButton timeZone={timeZone} />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="center">
-        {/* TODO: The calender should show the month of the selected date */}
         <Calendar
+          today={today.toJSDate()}
+          month={month}
+          onMonthChange={setMonth}
           mode="single"
           selected={date.toJSDate()}
-          // TODO: Make button size bigger. Check on mobile
+          onSelect={handleSelect}
+          className="p-2"
           classNames={{
-            caption_label: "text-sm font-medium",
+            caption_label: "text-base font-medium",
+            caption: "flex justify-between items-center pl-[10px]",
             nav_button: cn(
               buttonVariants({ variant: "ghost" }),
-              "h-8 w-8 bg-transparent p-0 opacity-50 hover:opacity-100"
+              "h-10 w-10 bg-transparent p-0 opacity-50 hover:opacity-100"
             ),
-            nav_button_previous: "absolute left-0",
-            nav_button_next: "absolute right-0",
+            nav_button_previous: "",
+            nav_button_next: "",
             head_cell:
-              "text-muted-foreground rounded-md w-8 font-normal text-xs",
+              "text-muted-foreground rounded-md w-10 font-normal text-xs",
             row: "flex w-full mt-2",
-            cell: "h-8 w-8 text-center text-sm p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
+            cell: "h-10 w-10 text-center text-sm p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-accent/50  first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
             day: cn(
               buttonVariants({ variant: "ghost" }),
-              "h-8 w-8 p-0 font-normal aria-selected:opacity-100 text-xs"
+              "h-10 w-10 p-0 font-normal aria-selected:opacity-100"
             ),
           }}
-          onSelect={handleSelect}
           initialFocus
           disabled={disabled}
         />
         <DropdownMenuSeparator />
-        <div className="px-2 flex justify-end">
+        <div className="px-2 flex justify-end space-x-1">
+          {/* TODO: Consider adding today pointing arrow */}
           <Button
             variant="outline"
-            size="sm"
-            className="text-xs h-8"
+            className="text-sm"
             onClick={handleTodayButtonClick}
           >
             Today
           </Button>
+
+          {/* TODO: Add tomorrow button */}
+          {/* <Button
+            variant="outline"
+            size="sm"
+            className="text-xs"
+            onClick={handleTodayButtonClick}
+          >
+            Tomorrow
+          </Button> */}
         </div>
       </DropdownMenuContent>
     </DropdownMenu>
   );
+};
+
+export const DatePickerSkeleton = () => {
+  return <Skeleton className="w-[148px] h-[40px] rounded-md" />;
 };
 
 export default DatePicker;

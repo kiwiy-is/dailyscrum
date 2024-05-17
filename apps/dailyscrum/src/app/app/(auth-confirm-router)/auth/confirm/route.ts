@@ -1,5 +1,6 @@
 import { createAuthClient } from "@/lib/supabase/auth-client";
 import { createClient } from "@/lib/supabase/client";
+import { setUpWorkspaceForCurrentUser } from "@/services/workspaces";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { NextRequest } from "next/server";
@@ -13,9 +14,9 @@ export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
 
   const codeParamValue = searchParams.get("code");
-  const returnPathParamValue = searchParams.get("return-path");
-  const returnPath = returnPathParamValue
-    ? decodeURIComponent(returnPathParamValue)
+  const returnPathQuery = searchParams.get("return-path");
+  const returnPath = returnPathQuery
+    ? decodeURIComponent(returnPathQuery)
     : undefined;
 
   if (!codeParamValue) {
@@ -46,12 +47,18 @@ export async function GET(request: NextRequest) {
     .single();
 
   if (!profile) {
+    // NOTE: sign up flow
     const [emailUserName] = user.email ? user.email?.split("@") : [user.id];
 
-    await client.from("profiles").insert({
-      id: user.id,
-      name: emailUserName,
-    });
+    await Promise.all([
+      client.from("profiles").insert({
+        id: user.id,
+        name: emailUserName,
+      }),
+      setUpWorkspaceForCurrentUser({
+        name: "My workspace",
+      }),
+    ]);
 
     redirect(
       `/app/onboard/create-profile${

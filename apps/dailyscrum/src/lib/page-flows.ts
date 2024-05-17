@@ -1,4 +1,3 @@
-import { initilizeWorkspace } from "@/app/app/actions";
 import { getMember } from "@/services/members";
 import { getCurrentUserProfile } from "@/services/profiles";
 import { getCurrentUser } from "@/services/users";
@@ -11,6 +10,8 @@ export const redirectIfNotSignedIn = async () => {
   if (!user) {
     return redirect("/app/sign-in");
   }
+
+  // TODO: check profile existance too? redirect to /onboard/create-profile
 
   return user;
 };
@@ -55,14 +56,5 @@ export const redirectToWorkspaceBoard = async () => {
     return redirect(`/app/workspaces/${workspace.id}/board`);
   }
 
-  const { data: workspace, error: createWorkspaceError } =
-    await initilizeWorkspace();
-
-  if (!workspace) {
-    // TODO: work on error.js
-    console.error(createWorkspaceError);
-    return redirect("/app/error");
-  }
-
-  return redirect(`/app/workspaces/${workspace.hash_id}/board`);
+  return redirect(`/app/onboard/create-workspace`);
 };

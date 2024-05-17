@@ -1,22 +1,16 @@
-import { NextPage } from "next";
-import {
-  redirectToWorkspaceBoard,
-  redirectIfNotSignedIn,
-} from "@/lib/page-flows";
+import { Suspense } from "react";
+import PageFlowHandler from "./page-flow-handler";
 
 type Props = {};
 
-const pageFlowHandler = (Page: NextPage<Props>) => {
-  const Wrapper = async (props: Props) => {
-    await redirectIfNotSignedIn();
-    await redirectToWorkspaceBoard();
-  };
-
-  return Wrapper;
-};
-
 const Page = async () => {
-  return null;
+  return (
+    <>
+      <Suspense>
+        <PageFlowHandler />
+      </Suspense>
+    </>
+  );
 };
 
-export default pageFlowHandler(Page);
+export default Page;

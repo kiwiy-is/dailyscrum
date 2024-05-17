@@ -11,7 +11,9 @@ import {
   FormLabel,
   FormMessage,
 } from "ui/shadcn-ui/form";
-import { Button } from "ui/button";
+import { Button, buttonVariants } from "ui/button";
+import { cn } from "ui";
+
 import {
   DialogFooter,
   DialogHeader,
@@ -104,9 +106,29 @@ const DateField: React.FC<{
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="start">
             <Calendar
+              today={today.toJSDate()}
               mode="single"
               selected={selected}
               onSelect={handleSelect}
+              className="p-2"
+              classNames={{
+                caption_label: "text-base font-medium",
+                caption: "flex justify-between items-center pl-[10px]",
+                nav_button: cn(
+                  buttonVariants({ variant: "ghost" }),
+                  "h-10 w-10 bg-transparent p-0 opacity-50 hover:opacity-100"
+                ),
+                nav_button_previous: "",
+                nav_button_next: "",
+                head_cell:
+                  "text-muted-foreground rounded-md w-10 font-normal text-xs",
+                row: "flex w-full mt-2",
+                cell: "h-10 w-10 text-center text-sm p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-accent/50  first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
+                day: cn(
+                  buttonVariants({ variant: "ghost" }),
+                  "h-10 w-10 p-0 font-normal aria-selected:opacity-100"
+                ),
+              }}
               disabled={disabled}
               initialFocus
             />

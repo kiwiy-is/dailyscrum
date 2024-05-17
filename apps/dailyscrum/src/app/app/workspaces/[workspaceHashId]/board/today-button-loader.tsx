@@ -1,12 +1,12 @@
 "use client";
 
 import { useContext } from "react";
+import TodayButton from "./today-button";
 import { PageDataContext } from "./page-data-context";
-import DatePicker from "./date-picker";
 
 type Props = {};
 
-const DatePickerLoader = (props: Props) => {
+const TodayButtonLoader = (props: Props) => {
   const {
     data: {
       currentWorkspace: { timeZone },
@@ -17,7 +17,7 @@ const DatePickerLoader = (props: Props) => {
     throw Promise.reject();
   }
 
-  return <DatePicker timeZone={timeZone} />;
+  return <TodayButton timeZone={timeZone} />;
 };
 
-export default DatePickerLoader;
+export default TodayButtonLoader;

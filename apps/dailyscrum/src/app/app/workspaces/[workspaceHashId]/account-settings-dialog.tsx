@@ -156,8 +156,9 @@ const AccountSettingsDialog = ({ name, email }: Props) => {
             <CardHeader>
               <CardTitle className="text-base">Email</CardTitle>
               <CardDescription>
-                Email address for your account. (Temporarily unavailable to
-                update)
+                Email address for your account.
+                <br />
+                (Temporarily unavailable to update)
               </CardDescription>
             </CardHeader>
             <CardContent>

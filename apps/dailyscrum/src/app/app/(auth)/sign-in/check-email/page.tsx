@@ -1,6 +1,4 @@
-import { redirectIfSignedIn } from "@/lib/page-flows";
-import { NextPage } from "next";
-import { KiwiyIsSymbol } from "ui/kiwiy-is-symbol";
+import { Suspense } from "react";
 import {
   Card,
   CardContent,
@@ -8,33 +6,29 @@ import {
   CardHeader,
   CardTitle,
 } from "ui/shadcn-ui/card";
+import PageFlowHandler from "../page-flow-handler";
 
 type Props = {};
 
-const pageFlowHandler = (Page: NextPage<Props>) => {
-  const Wrapper = async (props: Props) => {
-    await redirectIfSignedIn();
-
-    return <Page {...props} />;
-  };
-
-  return Wrapper;
-};
-
 const Page = (props: Props) => {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Check your email</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <CardDescription>
-          A sign in link will be sent to the email address you provided. Please
-          check your email.
-        </CardDescription>
-      </CardContent>
-    </Card>
+    <>
+      <Suspense>
+        <PageFlowHandler />
+      </Suspense>
+      <Card>
+        <CardHeader>
+          <CardTitle>Check your email</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <CardDescription>
+            A sign in link will be sent to the email address you provided.
+            Please check your email.
+          </CardDescription>
+        </CardContent>
+      </Card>
+    </>
   );
 };
 
-export default pageFlowHandler(Page);
+export default Page;

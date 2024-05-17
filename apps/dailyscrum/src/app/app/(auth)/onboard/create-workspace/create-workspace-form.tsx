@@ -17,7 +17,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { z } from "zod";
 import { useEffect, useTransition } from "react";
-import { completeSignUp } from "./actions";
+import { completeCreateWorkspace } from "./actions";
 import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
@@ -25,15 +25,20 @@ const formSchema = z.object({
 });
 
 type Props = {
+  workspaceId: number | undefined;
   returnPath: string | undefined;
   defaultValues?: z.infer<typeof formSchema>;
 };
 
-const CompleteSignUpForm = ({ returnPath, defaultValues }: Props) => {
+const CreateWorkspaceForm = ({
+  workspaceId,
+  returnPath,
+  defaultValues,
+}: Props) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
+      name: "My workspace",
     },
   });
 
@@ -47,18 +52,18 @@ const CompleteSignUpForm = ({ returnPath, defaultValues }: Props) => {
 
   const handleSubmit = form.handleSubmit((values) => {
     startTransition(async () => {
-      const { error } = await completeSignUp(values.name);
+      const { error } = await completeCreateWorkspace(
+        workspaceId,
+        values.name,
+        returnPath
+      );
 
       if (error) {
         form.setError("name", { message: error.message });
         return;
       }
 
-      router.push(
-        `/app/onboard/create-workspace${
-          returnPath ? `?return-path=${encodeURIComponent(returnPath)}` : ""
-        }`
-      );
+      router.push(returnPath ? returnPath : "/app");
     });
   });
 
@@ -76,7 +81,7 @@ const CompleteSignUpForm = ({ returnPath, defaultValues }: Props) => {
               </FormControl>
 
               <FormDescription>
-                Choose a name that will be visible to others
+                Choose a name for your workspace
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -91,4 +96,4 @@ const CompleteSignUpForm = ({ returnPath, defaultValues }: Props) => {
   );
 };
 
-export default CompleteSignUpForm;
+export default CreateWorkspaceForm;
