@@ -88,6 +88,7 @@ const RoleCell = ({
           setSelectedRole(value);
           setIsConfirmDialogOpen(true);
         }}
+        disabled // TODO: Implement role change
       >
         <SelectTrigger className="h-10 w-[140px]">
           <SelectValue placeholder="Select a role" />
@@ -167,6 +168,8 @@ const RoleCell = ({
 const ActionsCell = ({ row }: { row: Row<Member> }) => {
   const member = row.original;
 
+  const { isCurrentUser } = member;
+
   const router = useRouter();
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
   const [isTransitioning, startTransition] = useTransition();
@@ -189,11 +192,12 @@ const ActionsCell = ({ row }: { row: Row<Member> }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem
+            // TOOO: make this cursor pointer on hover
             onClick={() => {
               setIsConfirmDialogOpen(true);
             }}
           >
-            Remove member
+            {isCurrentUser ? "Leave workspace" : "Remove from workspace"}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -203,13 +207,22 @@ const ActionsCell = ({ row }: { row: Row<Member> }) => {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Remove member from workspace</AlertDialogTitle>
+            <AlertDialogTitle>
+              {isCurrentUser && "Leave workspace"}
+              {!isCurrentUser && "Remove member from workspace"}
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to remove{" "}
-              <span className="text-foreground font-medium capitalize">
-                {row.original.name}
-              </span>{" "}
-              from workspace? This is permanent.
+              {isCurrentUser &&
+                "Are you sure you want to leave the workspace? You will no longer have access to the workspace."}
+              {!isCurrentUser && (
+                <>
+                  Are you sure you want to remove{" "}
+                  <span className="text-foreground font-medium capitalize">
+                    {row.original.name}
+                  </span>{" "}
+                  from workspace? This is permanent.
+                </>
+              )}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -229,7 +242,8 @@ const ActionsCell = ({ row }: { row: Row<Member> }) => {
                 });
               }}
             >
-              Remove
+              {isCurrentUser && "Leave"}
+              {!isCurrentUser && "Remove"}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -240,6 +254,7 @@ const ActionsCell = ({ row }: { row: Row<Member> }) => {
 
 export type Member = {
   id: number;
+  isCurrentUser: boolean;
   email: string;
   name: string;
   role: "owner" | "admin" | "member";
@@ -266,7 +281,14 @@ export const columns: ColumnDef<Member>[] = [
   {
     id: "actions",
     enableHiding: false,
-    cell: ({ row }) => <ActionsCell row={row} />,
+    cell: (props) => {
+      if (props.table.getRowCount() === 1) {
+        // NOTE: hide actions cell when members.length === 0
+        return null;
+      }
+
+      return <ActionsCell row={props.row} />;
+    },
   },
 ];
 

@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Database } from "@/lib/supabase/database";
 import { getCurrentUser } from "./users";
 import { memoize } from "@/lib/cache";
+import { createMember } from "./members";
 
 const listWorkspaces = memoize(async (userId: string) => {
   const client = createClient<Database>();
@@ -58,8 +59,7 @@ export const getWorkspaceByHashId = memoize(async (hashId: string) => {
  * Creates a new workspace with the provided workspace values.
  * The new workspace is a member of the current user. Also, seeds the initial data for the workspace.
  */
-export const createWorkspace = async (
-  // TODO: consider renaming the function to setupWorkspace
+export const setUpWorkspaceForCurrentUser = async (
   workspaceValues: Required<
     Pick<Database["public"]["Tables"]["workspaces"]["Insert"], "name">
   >
@@ -102,9 +102,10 @@ export const createWorkspace = async (
     };
   }
 
-  const { error: insertMemberError } = await client.from("members").insert({
-    workspace_id: workspace.id,
+  const { error: insertMemberError } = await createMember({
     user_id: user.id,
+    workspace_id: workspace.id,
+    role: "admin",
   });
 
   if (insertMemberError) {

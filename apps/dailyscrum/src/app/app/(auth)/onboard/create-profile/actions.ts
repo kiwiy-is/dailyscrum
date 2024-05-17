@@ -2,7 +2,7 @@
 
 import { updateProfile } from "@/services/profiles";
 
-export async function completeSignUp(name: string, returnPath?: string) {
+export async function completeSignUp(name: string) {
   return updateProfile({
     name,
   });

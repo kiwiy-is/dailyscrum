@@ -29,6 +29,7 @@ import { markdown } from "@/lib/markdown";
 import { createBrowserClient } from "@/lib/supabase/browser-client";
 import { RealtimeChannel } from "@supabase/supabase-js";
 import Masonry from "./masonry";
+import { Skeleton } from "ui/shadcn-ui/skeleton";
 
 const DailyScrumUpdateCard = ({
   entryId,
@@ -73,46 +74,49 @@ const DailyScrumUpdateCard = ({
   return (
     <>
       <Card className="relative group" key={0}>
-        <DropdownMenu open={open} onOpenChange={setOpen}>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              className={cn(
-                open ? "opacity-100" : "opacity-0",
-                "transition	h-6 w-6 absolute right-5 top-5 group-hover:opacity-100 focus:opacity-100"
-              )}
-            >
-              <MoreHorizontalIcon size="16" className="opacity-50" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start">
-            {isEditable && (
-              <DropdownMenuItem
-                onSelect={() => {
-                  const hashId = sqids.encode([entryId]);
-                  router.push(
-                    `${pathname}/updates/${hashId}?${searchParams.toString()}`,
-                    {
-                      scroll: false,
-                    }
-                  );
-                }}
+        {isEditable && (
+          <DropdownMenu open={open} onOpenChange={setOpen}>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                className={cn(
+                  open ? "opacity-100" : "opacity-0",
+                  "transition	h-6 w-6 absolute right-5 top-5 group-hover:opacity-100 focus:opacity-100"
+                )}
               >
-                Edit
-              </DropdownMenuItem>
-            )}
-            <DropdownMenuItem>Copy text</DropdownMenuItem>
-            {/* NOTE: Use only for testing purposes */}
-            {/* <DropdownMenuItem
+                <MoreHorizontalIcon size="16" className="opacity-50" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start">
+              {isEditable && (
+                <DropdownMenuItem
+                  onSelect={() => {
+                    const hashId = sqids.encode([entryId]);
+                    router.push(
+                      `${pathname}/updates/${hashId}?${searchParams.toString()}`,
+                      {
+                        scroll: false,
+                      }
+                    );
+                  }}
+                >
+                  Edit
+                </DropdownMenuItem>
+              )}
+              {/* TODO: Implement copy text */}
+              {/* <DropdownMenuItem>Copy text</DropdownMenuItem> */}
+              {/* NOTE: Use only for testing purposes */}
+              {/* <DropdownMenuItem
               onSelect={async () => {
                 setIsConfirmDialogOpen(true);
               }}
             >
               Delete (Temporary)
             </DropdownMenuItem> */}
-          </DropdownMenuContent>
-        </DropdownMenu>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
 
         <CardContent className="p-6">
           <div className="flex flex-col gap-y-6">
@@ -213,25 +217,6 @@ const DailyScrumUpdateList = ({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-
-  useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === "visible") {
-        router.refresh();
-      }
-    };
-
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-
-    // Initial subscription based on the initial visibility state
-    if (document.visibilityState === "visible") {
-      handleVisibilityChange();
-    }
-
-    return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-    };
-  }, [router, workspaceHashId]);
 
   useEffect(() => {
     const browserClient = createBrowserClient();
@@ -344,6 +329,80 @@ const DailyScrumUpdateList = ({
           </div>
         </div>
       )} */}
+    </div>
+  );
+};
+
+export const DailyScrumUpdateListSkeleton = () => {
+  let i = 0;
+  const items = Array.from(Array(10), () => ({ id: i++ }));
+
+  return (
+    <div>
+      <Masonry
+        items={items}
+        render={({ data, width }) => {
+          return (
+            <div className="border rounded-lg shadow-sm relative">
+              <div className="p-6">
+                <div className="flex flex-col gap-y-6">
+                  <div className="flex flex-col space-y-1.5">
+                    <h3>
+                      <Skeleton className="w-[64px] max-w-full h-[24px]" />
+                    </h3>
+                    <div>
+                      <Skeleton className="w-[112px] max-w-full h-[16px]" />
+                    </div>
+                  </div>
+                  <div className="flex flex-col space-y-1.5">
+                    <h4>
+                      <Skeleton className="w-[256px] max-w-full h-[20px]" />
+                    </h4>
+                    <div className="[&amp;>ul]:ml-6">
+                      <Skeleton
+                        style={{
+                          height: [20, 40, 60, 80][
+                            Math.floor(Math.random() * 4)
+                          ],
+                        }}
+                        className="w-auto max-w-full"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex flex-col space-y-1.5">
+                    <h4>
+                      <Skeleton className="w-[208px] h-[20px] max-w-full" />
+                    </h4>
+                    <div className="[&amp;>ul]:ml-6">
+                      <Skeleton
+                        style={{
+                          height: [40, 60, 80, 100, 120][
+                            Math.floor(Math.random() * 5)
+                          ],
+                        }}
+                        className="w-auto max-w-full"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex flex-col space-y-1.5">
+                    <h4>
+                      <Skeleton className="w-[296px] h-[20px] max-w-full" />
+                    </h4>
+                    <div className="[&amp;>ul]:ml-6">
+                      <Skeleton
+                        style={{
+                          height: [20, 40][Math.floor(Math.random() * 2)],
+                        }}
+                        className="w-auto max-w-full"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        }}
+      />
     </div>
   );
 };

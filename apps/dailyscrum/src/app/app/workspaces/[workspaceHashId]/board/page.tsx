@@ -1,92 +1,68 @@
-import { Settings2Icon } from "lucide-react";
-import { Button } from "ui/button";
-
-import AddUpdateButton from "./add-update-button";
-import DatePickerLoader from "./date-picker-loader";
-import DailyScrumUpdateListLoader from "./daily-scrum-update-list-loader";
 import PageHeader from "@/components/page-header";
 import { Suspense } from "react";
-import DailyScrumUpdateListSkeleton from "./daily-scrum-update-list-skeleton";
-import DatePickerTriggerButton from "./date-picker-trigger-button";
-import { getWorkspaceByHashId } from "@/services/workspaces";
-import { NextPage } from "next";
-import { notFound } from "next/navigation";
-import {
-  redirectIfNotWorkspaceMember,
-  redirectIfNotSignedIn,
-} from "@/lib/page-flows";
-import TodayButton from "./today-button";
+
+import PageFlowHandler from "./page-flow-handler";
+import { TodayButtonSkeleton } from "./today-button";
+
+import AddUpdateButton from "./add-update-button";
+import DailyScrumUpdateListLoader from "./daily-scrum-update-list-loader";
+import { DailyScrumUpdateListSkeleton } from "./daily-scrum-update-list";
+import PageLoader from "./page-loader";
+import { PageDataProvider } from "./page-data-context";
+import { DatePickerSkeleton } from "./date-picker";
+import TodayButtonLoader from "./today-button-loader";
+import DatePickerLoader from "./date-picker-loader";
+import VisibilityRefresher from "@/components/visibility-refresher";
 
 type Props = {
   params: { workspaceHashId: string };
   searchParams: { date?: string; dialog?: string; editUpdateItemId?: string };
 };
 
-const pageFlowHandler = (Page: NextPage<Props>) => {
-  const Wrapper = async (props: Props) => {
-    const user = await redirectIfNotSignedIn();
-
-    const {
-      params: { workspaceHashId },
-    } = props;
-
-    const { data: workspace } = await getWorkspaceByHashId(workspaceHashId);
-
-    if (!workspace) {
-      return notFound();
-    }
-
-    await redirectIfNotWorkspaceMember(workspace.id, user.id);
-
-    return <Page {...props} />;
-  };
-
-  return Wrapper;
-};
-
-const Page = ({ params: { workspaceHashId }, searchParams }: Props) => {
-  const datePickerSuspenseKey = new URLSearchParams({
-    ...(searchParams.date && { date: searchParams.date }),
-  }).toString();
-
-  const mutableSearchParams = new URLSearchParams();
-  mutableSearchParams.append("date", searchParams.date || "");
-  const listSuspenseKey = mutableSearchParams.toString();
-
+const Page = async ({ params: { workspaceHashId }, searchParams }: Props) => {
   const dateQuery = searchParams.date;
 
+  const genralSuspenseKey = dateQuery || "";
+  const pageFlowHandlerSuspenseKey = genralSuspenseKey + "page-flow-handler";
+  const pageLoaderSuspenseKey = genralSuspenseKey + "page-loader";
+  const updateListSuspenseKey = genralSuspenseKey + "update-list";
+
   return (
-    <>
+    <PageDataProvider>
+      <Suspense key={pageFlowHandlerSuspenseKey}>
+        <PageFlowHandler workspaceHashId={workspaceHashId} />
+      </Suspense>
+      <Suspense key={pageLoaderSuspenseKey}>
+        <PageLoader workspaceHashId={workspaceHashId} />
+      </Suspense>
+      <VisibilityRefresher />
       <div className="flex flex-col max-w-screen-2xl">
         <PageHeader title="Board" />
 
         <div className="flex flex-wrap-reverse gap-y-2 gap-x-2 justify-between mt-8">
           <div className="flex gap-x-2">
-            <TodayButton
-              workspaceHashId={workspaceHashId}
-              dateQuery={dateQuery}
-            />
+            <Suspense fallback={<TodayButtonSkeleton />}>
+              <TodayButtonLoader />
+            </Suspense>
 
-            <Suspense
-              key={datePickerSuspenseKey}
-              fallback={<DatePickerTriggerButton disabled />}
-            >
-              <DatePickerLoader workspaceHashId={workspaceHashId} />
+            <Suspense fallback={<DatePickerSkeleton />}>
+              <DatePickerLoader />
             </Suspense>
           </div>
 
           <div className="flex gap-x-2">
-            <Button variant="outline" className="gap-x-2 text-sm" disabled>
+            {/* TODO: implement board view settings */}
+            {/* <Button variant="outline" className="gap-x-2 text-sm" disabled>
               <Settings2Icon width={16} height={16} strokeWidth={2} />
               <span>Settings</span>
-            </Button>
+            </Button> */}
 
             <AddUpdateButton />
           </div>
         </div>
         <div className="mt-6">
           <Suspense
-            key={listSuspenseKey}
+            key={updateListSuspenseKey}
             fallback={<DailyScrumUpdateListSkeleton />}
           >
             <DailyScrumUpdateListLoader
@@ -96,8 +72,8 @@ const Page = ({ params: { workspaceHashId }, searchParams }: Props) => {
           </Suspense>
         </div>
       </div>
-    </>
+    </PageDataProvider>
   );
 };
 
-export default pageFlowHandler(Page);
+export default Page;

@@ -1,13 +1,13 @@
 "use server";
 
 import { createAuthClient } from "@/lib/supabase/auth-client";
-import { createWorkspace } from "@/services/workspaces";
+import { setUpWorkspaceForCurrentUser } from "@/services/workspaces";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { getCurrentUserProfile, updateProfile } from "@/services/profiles";
 
 export async function createNewWorkspace(name: string) {
-  return createWorkspace({ name });
+  return setUpWorkspaceForCurrentUser({ name });
 }
 
 export async function signOut() {

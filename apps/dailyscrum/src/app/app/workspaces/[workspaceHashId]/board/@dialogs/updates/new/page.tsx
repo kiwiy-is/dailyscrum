@@ -12,7 +12,8 @@ const Page = ({ params }: Props) => {
   return (
     <AddUpdateDialog
       content={
-        <Suspense fallback="Loading...">
+        // TODO: apply skeleton
+        <Suspense fallback={null}>
           <AddUpdateDialogContentLoader
             workspaceHashId={params.workspaceHashId}
           />

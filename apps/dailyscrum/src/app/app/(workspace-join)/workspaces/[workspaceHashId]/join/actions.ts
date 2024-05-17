@@ -7,6 +7,7 @@ export async function join(workspaceId: number, userId: string) {
   const response = await createMember({
     user_id: userId,
     workspace_id: workspaceId,
+    role: "admin",
   });
 
   if (response.error) {

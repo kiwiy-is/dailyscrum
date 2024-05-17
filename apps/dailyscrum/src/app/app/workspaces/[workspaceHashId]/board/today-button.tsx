@@ -1,5 +1,5 @@
-import { getWorkspaceSettings } from "@/services/workspace-settings";
-import { getWorkspaceByHashId } from "@/services/workspaces";
+"use client";
+
 import {
   ArrowDownToDotIcon,
   ArrowLeftIcon,
@@ -10,34 +10,18 @@ import Link from "next/link";
 import React from "react";
 import { cn } from "ui";
 import { buttonVariants } from "ui/button";
+import { useParams, useSearchParams } from "next/navigation";
+import { Skeleton } from "ui/shadcn-ui/skeleton";
 
 type Props = {
-  workspaceHashId: string;
-  dateQuery: string | undefined;
+  timeZone: string;
 };
 
-const TodayButton = async ({ workspaceHashId, dateQuery }: Props) => {
-  const { data: workspace, error: getWorkspaceError } =
-    await getWorkspaceByHashId(workspaceHashId);
+const TodayButton = ({ timeZone }: Props) => {
+  const searchParams = useSearchParams();
+  const { workspaceHashId } = useParams<{ workspaceHashId: string }>();
 
-  if (getWorkspaceError || !workspace) {
-    return null;
-  }
-
-  const { data: settings, error: getSettingsError } =
-    await getWorkspaceSettings(workspace.id);
-
-  if (getSettingsError || !settings) {
-    return null;
-  }
-
-  const timeZone = settings.find(
-    (setting) => setting.attribute_key === "time_zone"
-  )?.attribute_value;
-
-  if (!timeZone) {
-    return null;
-  }
+  const dateQuery = searchParams.get("date");
 
   const today = DateTime.local({ zone: timeZone }).startOf("day");
 
@@ -56,7 +40,6 @@ const TodayButton = async ({ workspaceHashId, dateQuery }: Props) => {
     <Link
       href={`/app/workspaces/${workspaceHashId}/board?date=${today.toISODate()}`}
       className={cn(buttonVariants({ variant: "outline" }), "gap-x-2 text-sm")}
-      replace
     >
       {isToday && <ArrowDownToDotIcon size={16} />}
       {isBeforeToday && <ArrowRightIcon size={16} />}
@@ -64,6 +47,10 @@ const TodayButton = async ({ workspaceHashId, dateQuery }: Props) => {
       <span>Today</span>
     </Link>
   );
+};
+
+export const TodayButtonSkeleton = () => {
+  return <Skeleton className="w-[98px] h-[40px] rounded-md" />;
 };
 
 export default TodayButton;

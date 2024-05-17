@@ -79,7 +79,16 @@ const DailyScrumUpdateListLoader = async ({
       daily_scrum_update_form_id,
       ...entry
     }) => {
-      const isEditable = user?.id === currentUser?.id;
+      const today = DateTime.local({ zone: entry.time_zone }).startOf("day");
+      const tomorrow = today.plus({ days: 1 });
+
+      const date = DateTime.fromISO(entry.date).setZone(entry.time_zone, {
+        keepLocalTime: true,
+      });
+
+      const isDateActive = !(date < today || date > tomorrow);
+
+      const isEditable = user?.id === currentUser?.id && isDateActive;
 
       return {
         entryId: entry.id,
