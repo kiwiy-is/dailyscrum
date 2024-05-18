@@ -8,7 +8,7 @@ export const redirectIfNotSignedIn = async () => {
   const { data: user } = await getCurrentUser();
 
   if (!user) {
-    return redirect("/app/sign-in");
+    return redirect("/app/sign-up");
   }
 
   // TODO: check profile existance too? redirect to /onboard/create-profile

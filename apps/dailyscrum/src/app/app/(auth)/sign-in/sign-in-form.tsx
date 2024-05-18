@@ -17,7 +17,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { z } from "zod";
 import { useTransition } from "react";
-import { signIn } from "./actions";
+import { signIn, test } from "./actions";
 import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
@@ -49,7 +49,13 @@ const SignInForm = ({ returnPath }: Props) => {
         return;
       }
 
-      router.push("/app/sign-in/check-email");
+      const searchParams = new URLSearchParams();
+      searchParams.set("email", encodeURIComponent(values.email));
+      if (returnPath) {
+        searchParams.set("return-path", encodeURIComponent(returnPath));
+      }
+
+      router.push(`/app/sign-in/verify?${searchParams.toString()}`);
     });
   });
 
@@ -66,7 +72,8 @@ const SignInForm = ({ returnPath }: Props) => {
                 <Input placeholder="name@example.com" {...field} />
               </FormControl>
               <FormDescription>
-                We{`'`}ll send you a sign in link to this email address.
+                We{`'`}ll send you a verification code to this email for a
+                password-free sign in
               </FormDescription>
               <FormMessage />
             </FormItem>
