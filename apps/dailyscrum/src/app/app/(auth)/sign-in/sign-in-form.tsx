@@ -17,7 +17,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { z } from "zod";
 import { useTransition } from "react";
-import { signIn, test } from "./actions";
+import { signIn } from "./actions";
 import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
