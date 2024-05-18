@@ -48,7 +48,13 @@ const SignUpForm = ({ returnPath }: Props) => {
         return;
       }
 
-      router.push("/app/sign-up/check-email");
+      const searchParams = new URLSearchParams();
+      searchParams.set("email", encodeURIComponent(values.email));
+      if (returnPath) {
+        searchParams.set("return-path", encodeURIComponent(returnPath));
+      }
+
+      router.push(`/app/sign-up/verify?${searchParams.toString()}`);
     });
   });
 
@@ -65,7 +71,7 @@ const SignUpForm = ({ returnPath }: Props) => {
                 <Input placeholder="name@example.com" {...field} />
               </FormControl>
               <FormDescription>
-                We{`'`}ll send you a sign up link to this email address.
+                We{`'`}ll send you a verification code to this email address
               </FormDescription>
               <FormMessage />
             </FormItem>

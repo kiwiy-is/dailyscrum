@@ -29,14 +29,14 @@ const Page = ({ searchParams }: Props) => {
       <Card>
         <CardHeader>
           <CardTitle>Sign up</CardTitle>
-          <CardDescription>Create a new account.</CardDescription>
+          <CardDescription>Create a new account</CardDescription>
         </CardHeader>
         <CardContent>
           <SignUpForm returnPath={returnPath} />
         </CardContent>
         <CardFooter className=" justify-center">
           <p className="text-sm text-muted-foreground">
-            Don{`'`}t have an account?
+            Already have an account?
             <Link
               href={`/app/sign-in${
                 returnPathQuery ? `?return-path=${returnPathQuery}` : ""
@@ -45,7 +45,6 @@ const Page = ({ searchParams }: Props) => {
             >
               Sign in
             </Link>
-            .
           </p>
         </CardFooter>
       </Card>

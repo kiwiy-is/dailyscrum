@@ -6,7 +6,10 @@ import { cookies, headers } from "next/headers";
 export async function signIn(email: string, returnPath?: string) {
   const headerList = headers();
 
-  const origin = headerList.get("origin");
+  const protocol = headerList.get("x-forwarded-proto");
+  const hostname = headerList.get("x-forwarded-host");
+
+  const origin = `${protocol}://${hostname}`;
 
   const cookieStore = cookies();
   const authClient = createAuthClient(cookieStore);
@@ -14,6 +17,7 @@ export async function signIn(email: string, returnPath?: string) {
   return authClient.auth.signInWithOtp({
     email,
     options: {
+      shouldCreateUser: false,
       emailRedirectTo: `${origin}/app/auth/confirm${
         returnPath ? `?return-path=${encodeURIComponent(returnPath)}` : ""
       }`,

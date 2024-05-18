@@ -29,7 +29,7 @@ const Page = async ({ searchParams }: Props) => {
       <Card>
         <CardHeader>
           <CardTitle>Sign in</CardTitle>
-          <CardDescription>Sign in to your account.</CardDescription>
+          <CardDescription>Sign in to your account</CardDescription>
         </CardHeader>
         <CardContent>
           <SignInForm returnPath={returnPath} />
@@ -45,7 +45,6 @@ const Page = async ({ searchParams }: Props) => {
             >
               Sign up
             </Link>
-            .
           </p>
         </CardFooter>
       </Card>
