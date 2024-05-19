@@ -7,7 +7,7 @@ app = 'dailyscrum-core'
 primary_region = 'sjc'
 
 [build]
-  dockerfile = './apps/core/Dockerfile'
+  dockerfile = './Dockerfile'
 
 [http_service]
   internal_port = 4001
