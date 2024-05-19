@@ -20,8 +20,8 @@ COPY . .
 
 RUN pnpm install --prod=false
 
-RUN pnpm exec nx build website
+RUN pnpm exec nx build dailyscrum-website
 
 EXPOSE 3000
 
-CMD ["pnpm", "exec", "nx", "start", "website"]
+CMD ["pnpm", "exec", "nx", "start", "dailyscrum-website"]

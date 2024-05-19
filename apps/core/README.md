@@ -1,0 +1,3 @@
+# dailyscrum-core
+
+(TBD)

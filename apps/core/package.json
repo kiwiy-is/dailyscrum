@@ -1,5 +1,5 @@
 {
-  "name": "dailyscrum",
+  "name": "dailyscrum-core",
   "version": "0.1.0",
   "private": true,
   "scripts": {
