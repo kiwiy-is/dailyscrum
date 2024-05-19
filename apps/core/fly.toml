@@ -1,12 +1,13 @@
-# fly.toml app configuration file generated for dailyscrum-by-kiwiy-is on 2024-02-11T23:48:21+09:00
+# fly.toml app configuration file generated for dailyscrum-core on 2024-05-19T08:10:20+09:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'dailyscrum'
-primary_region = 'lax'
+app = 'dailyscrum-core'
+primary_region = 'sjc'
 
 [build]
+  dockerfile = './apps/core/Dockerfile'
 
 [http_service]
   internal_port = 4001
@@ -17,6 +18,6 @@ primary_region = 'lax'
   processes = ['app']
 
 [[vm]]
+  memory = '1gb'
   cpu_kind = 'shared'
   cpus = 1
-  memory_mb = 1024
