@@ -8,7 +8,10 @@ import { Toaster } from "ui/shadcn-ui/toaster";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Daily Scrum | Kiwiy",
+  title: {
+    template: '%s | Kiwiy Daily Scrum',
+    default: 'Kiwiy Daily Scrum',
+  },
   description: "",
 };
 

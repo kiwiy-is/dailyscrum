@@ -7,4 +7,5 @@
 
 - fly deploy --config apps/core/fly.toml --dockerfile --remote-only
 
-- pnpm exec nx dev dailyscrum
+- pnpm exec nx dev dailyscrum-core
+- - pnpm exec nx dev dailyscrum-website

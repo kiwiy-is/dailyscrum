@@ -10,6 +10,11 @@ import SignUpForm from "./sign-up-form";
 import Link from "next/link";
 import { Suspense } from "react";
 import PageFlowHandler from "./page-flow-handler";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Sign up",
+};
 
 type Props = {
   searchParams: { ["return-path"]: string | undefined };
