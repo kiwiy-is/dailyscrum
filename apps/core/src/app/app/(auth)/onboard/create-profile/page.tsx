@@ -3,6 +3,11 @@ import CompleteSignUpForm from "./complete-sign-up-form";
 import { getCurrentUserProfile } from "@/services/profiles";
 import { Suspense } from "react";
 import PageFlowHandler from "./page-flow-handler";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Create profile",
+};
 
 type Props = {
   searchParams: { ["return-path"]: string | undefined };

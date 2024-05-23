@@ -8,6 +8,11 @@ import {
 } from "ui/shadcn-ui/card";
 import PageFlowHandler from "./page-flow-handler";
 import VerificationForm from "./verification-form";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Verify",
+};
 
 type Props = {
   searchParams: { ["return-path"]: string | undefined };

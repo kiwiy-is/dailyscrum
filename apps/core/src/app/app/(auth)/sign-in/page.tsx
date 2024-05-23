@@ -10,6 +10,11 @@ import SignInForm from "./sign-in-form";
 import Link from "next/link";
 import { Suspense } from "react";
 import PageFlowHandler from "./page-flow-handler";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Sign in",
+};
 
 type Props = {
   searchParams: { ["return-path"]: string | undefined };

@@ -2,6 +2,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "ui/shadcn-ui/card";
 import PageFlowHandler from "./page-flow-handler";
 import { Suspense } from "react";
 import CreateWorkspaceFormLoader from "./create-workspace-form-loader";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Create workspace",
+};
 
 type Props = {
   searchParams: { ["return-path"]: string | undefined };

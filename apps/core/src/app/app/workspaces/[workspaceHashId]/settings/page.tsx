@@ -6,6 +6,11 @@ import PageHeader from "@/components/page-header";
 import PageFlowHandler from "./page-flow-handler";
 import { Suspense } from "react";
 import VisibilityRefresher from "@/components/visibility-refresher";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Settings",
+};
 
 type Props = {
   params: { workspaceHashId: string };

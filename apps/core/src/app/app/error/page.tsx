@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import React from "react";
 import { KiwiyIsSymbol } from "ui/kiwiy-is-symbol";
 import {
@@ -7,6 +8,11 @@ import {
   CardHeader,
   CardTitle,
 } from "ui/shadcn-ui/card";
+
+export const metadata: Metadata = {
+  title: "Error",
+};
+
 type Props = {};
 
 const Page = (props: Props) => {

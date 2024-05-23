@@ -13,6 +13,11 @@ import { DatePickerSkeleton } from "./date-picker";
 import TodayButtonLoader from "./today-button-loader";
 import DatePickerLoader from "./date-picker-loader";
 import VisibilityRefresher from "@/components/visibility-refresher";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: 'Board',
+}
 
 type Props = {
   params: { workspaceHashId: string };
