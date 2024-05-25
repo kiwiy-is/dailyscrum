@@ -11,6 +11,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: superfly/flyctl-actions/setup-flyctl@master
-      - run: flyctl deploy --config apps/website/fly.toml --remote-only
+      - run: flyctl deploy --config apps/website/fly.toml --build-secret ASSET_PREFIX=${{ secrets.DAILYSCRUM_WEBSITE_PROXY_URL }} --remote-only
         env:
           FLY_API_TOKEN: ${{ secrets.DAILYSCRUM_WEBSITE_FLY_API_TOKEN }}
