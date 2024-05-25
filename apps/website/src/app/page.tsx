@@ -89,7 +89,7 @@ const Page = () => {
               free!
             </p>
             <Button size="lg" className="w-full md:!w-auto" asChild>
-              <Link href="/app">Get Started</Link>
+              <a href="/app">Get Started</a>
             </Button>
           </div>
         </section>
@@ -228,7 +228,7 @@ const Page = () => {
             </p>
 
             <Button size="lg" className="w-full md:!w-auto" asChild>
-              <Link href="/app">Get Started</Link>
+              <a href="/app">Get Started</a>
             </Button>
           </div>
         </section>
