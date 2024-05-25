@@ -20,7 +20,7 @@ COPY . .
 
 RUN pnpm install --prod=false
 
-RUN pnpm exec nx build dailyscrum-core
+RUN --mount=type=secret,id=ASSET_PREFIX ASSET_PREFIX="$(cat /run/secrets/ASSET_PREFIX)" pnpm exec nx build dailyscrum-core
 
 EXPOSE 4001
 
