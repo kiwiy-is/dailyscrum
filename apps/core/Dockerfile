@@ -1,7 +1,13 @@
 # syntax = docker/dockerfile:1
 
-# Adjust NODE_VERSION as desired
+
+ARG NEXT_PUBLIC_SUPABASE_URL
+ARG NEXT_PUBLIC_SUPABASE_ANON_KEY
+ARG SUPABASE_SERVICE_ROLE_KEY
+ARG ASSET_PREFIX
 ARG NODE_VERSION=21.6.1
+
+# Adjust NODE_VERSION as desired
 FROM node:${NODE_VERSION}-slim as base
 
 ENV PNPM_HOME="/pnpm"
@@ -15,12 +21,16 @@ WORKDIR /app
 
 # Set production environment
 ENV NODE_ENV="production"
+ENV NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+ENV SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+ENV ASSET_PREFIX=${ASSET_PREFIX}
 
 COPY . .
 
 RUN pnpm install --prod=false
 
-RUN --mount=type=secret,id=ASSET_PREFIX ASSET_PREFIX="$(cat /run/secrets/ASSET_PREFIX)" pnpm exec nx build dailyscrum-core
+RUN pnpm exec nx build dailyscrum-core
 
 EXPOSE 4001
 
