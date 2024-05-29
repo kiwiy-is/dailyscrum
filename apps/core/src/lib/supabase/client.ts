@@ -11,8 +11,8 @@ import { createFetch } from "../fetch";
 // If you need to access the auth property, use createAuthClient instead.
 type SupabaseClientRestricted<T> = Omit<SupabaseClient<T>, "auth">;
 
-export function createClient<T = Database>(): SupabaseClientRestricted<T> {
-  const client = supabaseJsCreateClient<T>(
+export function createClient(): SupabaseClientRestricted<Database> {
+  const client = supabaseJsCreateClient<Database, "daily_scrum">(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
     {
@@ -20,6 +20,9 @@ export function createClient<T = Database>(): SupabaseClientRestricted<T> {
         fetch: createFetch({
           cache: "no-store",
         }),
+      },
+      db: {
+        schema: "daily_scrum",
       },
       auth: {
         persistSession: false,

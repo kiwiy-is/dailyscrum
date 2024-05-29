@@ -1,5 +1,4 @@
 import { createClient } from "@/lib/supabase/client";
-import { Database } from "@/lib/supabase/database";
 import { memoize } from "@/lib/cache";
 
 /**
@@ -9,7 +8,7 @@ import { memoize } from "@/lib/cache";
  */
 export const listDailyScrumUpdateFormIdsOfWorkspace = memoize(
   async (workspaceId: number) => {
-    const client = createClient<Database>();
+    const client = createClient();
 
     return client
       .from("daily_scrum_update_forms")
@@ -19,7 +18,7 @@ export const listDailyScrumUpdateFormIdsOfWorkspace = memoize(
 );
 
 export const getDailyScrumUpdateForm = memoize(async (formId: number) => {
-  const client = createClient<Database>();
+  const client = createClient();
 
   return client
     .from("daily_scrum_update_forms")

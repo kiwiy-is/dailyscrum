@@ -24,7 +24,7 @@ export const listDailyScrumUpdateEntries = memoize(
       };
     }
 
-    const client = createClient<Database>();
+    const client = createClient();
 
     const {
       data: dailyScrumUpdateForms,
@@ -63,7 +63,7 @@ export const listDailyScrumUpdateEntries = memoize(
 
 export const getDailyScrumUpdateEntry = memoize(
   async (updateEntryId: number) => {
-    const client = createClient<Database>();
+    const client = createClient();
 
     return client
       .from("daily_scrum_update_entries")
@@ -85,7 +85,7 @@ export const getDailyScrumUpdateEntry = memoize(
 
 const getDailyScrumUpdateEntriesCount = memoize(
   async (userId: string, formId: number, date: string) => {
-    const client = createClient<Database>();
+    const client = createClient();
 
     return client
       .from("daily_scrum_update_entries")
@@ -131,7 +131,7 @@ export const createDailyScrumUpdateEntry = async (
     };
   }
 
-  const client = createClient<Database>();
+  const client = createClient();
 
   const response = await client
     .from("daily_scrum_update_entries")
@@ -150,7 +150,7 @@ export const createDailyScrumUpdateEntry = async (
 };
 
 export const deleteDailyScrumUpdateEntry = async (entryId: number) => {
-  const client = createClient<Database>();
+  const client = createClient();
 
   return client.from("daily_scrum_update_entries").delete().eq("id", entryId);
 };
