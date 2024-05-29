@@ -1,63 +1,902 @@
--- Migrate data from public schema to daily_scrum schema
-INSERT INTO
-  "daily_scrum"."daily_scrum_update_answers"
-SELECT
-  *
-FROM
-  "public"."daily_scrum_update_answers";
 
-INSERT INTO
-  "daily_scrum"."daily_scrum_update_entries"
-SELECT
-  *
-FROM
-  "public"."daily_scrum_update_entries";
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
 
-INSERT INTO
-  "daily_scrum"."daily_scrum_update_forms"
-SELECT
-  *
-FROM
-  "public"."daily_scrum_update_forms";
+CREATE SCHEMA IF NOT EXISTS "daily_scrum";
 
-INSERT INTO
-  "daily_scrum"."daily_scrum_update_questions"
-SELECT
-  *
-FROM
-  "public"."daily_scrum_update_questions";
+ALTER SCHEMA "daily_scrum" OWNER TO "postgres";
 
-INSERT INTO
-  "daily_scrum"."invitations"
-SELECT
-  *
-FROM
-  "public"."invitations";
+CREATE EXTENSION IF NOT EXISTS "pg_net" WITH SCHEMA "extensions";
 
-INSERT INTO
-  "daily_scrum"."members"
-SELECT
-  *
-FROM
-  "public"."members";
+CREATE EXTENSION IF NOT EXISTS "pgsodium" WITH SCHEMA "pgsodium";
 
-INSERT INTO
-  "daily_scrum"."profiles"
-SELECT
-  *
-FROM
-  "public"."profiles";
+COMMENT ON SCHEMA "public" IS 'standard public schema';
 
-INSERT INTO
-  "daily_scrum"."workspace_settings"
-SELECT
-  *
-FROM
-  "public"."workspace_settings";
+CREATE EXTENSION IF NOT EXISTS "pg_graphql" WITH SCHEMA "graphql";
 
-INSERT INTO
-  "daily_scrum"."workspaces"
-SELECT
-  *
-FROM
-  "public"."workspaces";
+CREATE EXTENSION IF NOT EXISTS "pg_hashids" WITH SCHEMA "extensions";
+
+CREATE EXTENSION IF NOT EXISTS "pg_stat_statements" WITH SCHEMA "extensions";
+
+CREATE EXTENSION IF NOT EXISTS "pgcrypto" WITH SCHEMA "extensions";
+
+CREATE EXTENSION IF NOT EXISTS "pgjwt" WITH SCHEMA "extensions";
+
+CREATE EXTENSION IF NOT EXISTS "supabase_vault" WITH SCHEMA "vault";
+
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA "extensions";
+
+CREATE TYPE "daily_scrum"."role" AS ENUM (
+    'member',
+    'admin',
+    'owner'
+);
+
+ALTER TYPE "daily_scrum"."role" OWNER TO "postgres";
+
+CREATE TYPE "public"."role" AS ENUM (
+    'member',
+    'admin',
+    'owner'
+);
+
+ALTER TYPE "public"."role" OWNER TO "postgres";
+
+COMMENT ON TYPE "public"."role" IS 'Member role';
+
+CREATE OR REPLACE FUNCTION "daily_scrum"."handle_before_organization_insert"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    AS $$ BEGIN NEW.hash_id := extensions.id_encode(NEW.id, '', 20);
+
+RETURN NEW;
+
+END;
+
+$$;
+
+ALTER FUNCTION "daily_scrum"."handle_before_organization_insert"() OWNER TO "postgres";
+
+CREATE OR REPLACE FUNCTION "public"."handle_before_organization_insert"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    AS $$
+BEGIN
+  NEW.hash_id := extensions.id_encode(NEW.id, '', 20);
+  RETURN NEW;
+END;
+$$;
+
+ALTER FUNCTION "public"."handle_before_organization_insert"() OWNER TO "postgres";
+
+CREATE OR REPLACE FUNCTION "public"."insert_initial_organization_for_user_on_profile_insert"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    AS $$DECLARE
+    new_organization_id int8;
+BEGIN
+    -- Create a new organization with a fixed name
+    INSERT INTO public.orgs (name, created_at, updated_at)
+    VALUES ('My Organization', (now() AT TIME ZONE 'utc'::text), (now() AT TIME ZONE 'utc'::text))
+    RETURNING id INTO new_organization_id;
+
+    -- Link the new organization with the newly created profile in members
+    INSERT INTO public.members (user_id, org_id, created_at, updated_at)
+    VALUES (NEW.id, new_organization_id, (now() AT TIME ZONE 'utc'::text), (now() AT TIME ZONE 'utc'::text));
+
+    -- Return the modified NEW record for AFTER triggers or the original NEW for BEFORE triggers
+    RETURN NEW;
+END;$$;
+
+ALTER FUNCTION "public"."insert_initial_organization_for_user_on_profile_insert"() OWNER TO "postgres";
+
+CREATE OR REPLACE FUNCTION "public"."insert_profile_on_auth_user_insert"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$BEGIN
+    INSERT INTO public.profiles (id)
+    VALUES (NEW.id);
+    RETURN NEW;
+END;$$;
+
+ALTER FUNCTION "public"."insert_profile_on_auth_user_insert"() OWNER TO "postgres";
+
+SET default_tablespace = '';
+
+SET default_table_access_method = "heap";
+
+CREATE TABLE IF NOT EXISTS "daily_scrum"."daily_scrum_update_answers" (
+    "id" bigint NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "daily_scrum_update_entry_id" bigint NOT NULL,
+    "daily_scrum_update_question_id" bigint NOT NULL,
+    "answer" "text" DEFAULT ''::"text" NOT NULL
+);
+
+ALTER TABLE "daily_scrum"."daily_scrum_update_answers" OWNER TO "postgres";
+
+ALTER TABLE "daily_scrum"."daily_scrum_update_answers" ALTER COLUMN "id" ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME "daily_scrum"."daily_scrum_update_answers_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+CREATE TABLE IF NOT EXISTS "daily_scrum"."daily_scrum_update_entries" (
+    "id" bigint NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "daily_scrum_update_form_id" bigint NOT NULL,
+    "submitted_user_id" "uuid" NOT NULL,
+    "time_zone" "text" DEFAULT ''::"text" NOT NULL,
+    "date" timestamp with time zone NOT NULL
+);
+
+ALTER TABLE "daily_scrum"."daily_scrum_update_entries" OWNER TO "postgres";
+
+ALTER TABLE "daily_scrum"."daily_scrum_update_entries" ALTER COLUMN "id" ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME "daily_scrum"."daily_scrum_update_entries_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+CREATE TABLE IF NOT EXISTS "daily_scrum"."daily_scrum_update_forms" (
+    "id" bigint NOT NULL,
+    "created_at" timestamp with time zone DEFAULT ("now"() AT TIME ZONE 'utc'::"text") NOT NULL,
+    "description" "text" DEFAULT ''::"text" NOT NULL,
+    "workspace_id" bigint NOT NULL
+);
+
+ALTER TABLE "daily_scrum"."daily_scrum_update_forms" OWNER TO "postgres";
+
+ALTER TABLE "daily_scrum"."daily_scrum_update_forms" ALTER COLUMN "id" ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME "daily_scrum"."daily_scrum_update_forms_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+CREATE TABLE IF NOT EXISTS "daily_scrum"."daily_scrum_update_questions" (
+    "daily_scrum_update_form_id" bigint NOT NULL,
+    "question" "text" NOT NULL,
+    "brief_question" "text" NOT NULL,
+    "placeholder" "text",
+    "description" "text",
+    "is_required" boolean NOT NULL,
+    "max_length" integer,
+    "order" integer NOT NULL,
+    "created_at" timestamp with time zone DEFAULT ("now"() AT TIME ZONE 'utc'::"text") NOT NULL,
+    "id" bigint NOT NULL
+);
+
+ALTER TABLE "daily_scrum"."daily_scrum_update_questions" OWNER TO "postgres";
+
+ALTER TABLE "daily_scrum"."daily_scrum_update_questions" ALTER COLUMN "id" ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME "daily_scrum"."daily_scrum_update_questions_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+CREATE TABLE IF NOT EXISTS "daily_scrum"."invitations" (
+    "id" bigint NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "workspace_id" bigint NOT NULL,
+    "code" "uuid" DEFAULT "gen_random_uuid"() NOT NULL
+);
+
+ALTER TABLE "daily_scrum"."invitations" OWNER TO "postgres";
+
+ALTER TABLE "daily_scrum"."invitations" ALTER COLUMN "id" ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME "daily_scrum"."invitations_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+CREATE TABLE IF NOT EXISTS "daily_scrum"."members" (
+    "id" bigint NOT NULL,
+    "created_at" timestamp with time zone DEFAULT ("now"() AT TIME ZONE 'utc'::"text") NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT ("now"() AT TIME ZONE 'utc'::"text") NOT NULL,
+    "user_id" "uuid" NOT NULL,
+    "workspace_id" bigint NOT NULL,
+    "role" "text" NOT NULL
+);
+
+ALTER TABLE "daily_scrum"."members" OWNER TO "postgres";
+
+ALTER TABLE "daily_scrum"."members" ALTER COLUMN "id" ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME "daily_scrum"."members_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+CREATE TABLE IF NOT EXISTS "daily_scrum"."profiles" (
+    "id" "uuid" NOT NULL,
+    "created_at" timestamp with time zone DEFAULT ("now"() AT TIME ZONE 'utc'::"text") NOT NULL,
+    "update_at" timestamp with time zone DEFAULT ("now"() AT TIME ZONE 'utc'::"text") NOT NULL,
+    "name" "text" DEFAULT ''::"text" NOT NULL,
+    "display_name" "text" DEFAULT ''::"text" NOT NULL
+);
+
+ALTER TABLE "daily_scrum"."profiles" OWNER TO "postgres";
+
+CREATE OR REPLACE VIEW "daily_scrum"."users" AS
+ SELECT "users"."instance_id",
+    "users"."id",
+    "users"."aud",
+    "users"."role",
+    "users"."email",
+    "users"."encrypted_password",
+    "users"."email_confirmed_at",
+    "users"."invited_at",
+    "users"."confirmation_token",
+    "users"."confirmation_sent_at",
+    "users"."recovery_token",
+    "users"."recovery_sent_at",
+    "users"."email_change_token_new",
+    "users"."email_change",
+    "users"."email_change_sent_at",
+    "users"."last_sign_in_at",
+    "users"."raw_app_meta_data",
+    "users"."raw_user_meta_data",
+    "users"."is_super_admin",
+    "users"."created_at",
+    "users"."updated_at",
+    "users"."phone",
+    "users"."phone_confirmed_at",
+    "users"."phone_change",
+    "users"."phone_change_token",
+    "users"."phone_change_sent_at",
+    "users"."confirmed_at",
+    "users"."email_change_token_current",
+    "users"."email_change_confirm_status",
+    "users"."banned_until",
+    "users"."reauthentication_token",
+    "users"."reauthentication_sent_at",
+    "users"."is_sso_user",
+    "users"."deleted_at",
+    "users"."is_anonymous"
+   FROM "auth"."users";
+
+ALTER TABLE "daily_scrum"."users" OWNER TO "postgres";
+
+CREATE TABLE IF NOT EXISTS "daily_scrum"."workspace_settings" (
+    "id" bigint NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "workspace_id" bigint NOT NULL,
+    "attribute_key" "text" DEFAULT ''::"text" NOT NULL,
+    "attribute_value" "text" DEFAULT ''::"text" NOT NULL
+);
+
+ALTER TABLE "daily_scrum"."workspace_settings" OWNER TO "postgres";
+
+ALTER TABLE "daily_scrum"."workspace_settings" ALTER COLUMN "id" ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME "daily_scrum"."workspace_settings_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+CREATE TABLE IF NOT EXISTS "daily_scrum"."workspaces" (
+    "id" bigint NOT NULL,
+    "created_at" timestamp with time zone DEFAULT ("now"() AT TIME ZONE 'utc'::"text") NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT ("now"() AT TIME ZONE 'utc'::"text") NOT NULL,
+    "name" "text" DEFAULT ''::"text" NOT NULL,
+    "hash_id" "text" DEFAULT ''::"text" NOT NULL
+);
+
+ALTER TABLE "daily_scrum"."workspaces" OWNER TO "postgres";
+
+ALTER TABLE "daily_scrum"."workspaces" ALTER COLUMN "id" ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME "daily_scrum"."workspaces_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+CREATE TABLE IF NOT EXISTS "public"."daily_scrum_update_answers" (
+    "id" bigint NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "daily_scrum_update_entry_id" bigint NOT NULL,
+    "daily_scrum_update_question_id" bigint NOT NULL,
+    "answer" "text" DEFAULT ''::"text" NOT NULL
+);
+
+ALTER TABLE "public"."daily_scrum_update_answers" OWNER TO "postgres";
+
+ALTER TABLE "public"."daily_scrum_update_answers" ALTER COLUMN "id" ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME "public"."daily_scrum_update_answers_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+CREATE TABLE IF NOT EXISTS "public"."daily_scrum_update_entries" (
+    "id" bigint NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "daily_scrum_update_form_id" bigint NOT NULL,
+    "submitted_user_id" "uuid" NOT NULL,
+    "time_zone" "text" DEFAULT ''::"text" NOT NULL,
+    "date" timestamp with time zone NOT NULL
+);
+
+ALTER TABLE "public"."daily_scrum_update_entries" OWNER TO "postgres";
+
+ALTER TABLE "public"."daily_scrum_update_entries" ALTER COLUMN "id" ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME "public"."daily_scrum_update_entries_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+CREATE TABLE IF NOT EXISTS "public"."daily_scrum_update_forms" (
+    "id" bigint NOT NULL,
+    "created_at" timestamp with time zone DEFAULT ("now"() AT TIME ZONE 'utc'::"text") NOT NULL,
+    "description" "text" DEFAULT ''::"text" NOT NULL,
+    "workspace_id" bigint NOT NULL
+);
+
+ALTER TABLE "public"."daily_scrum_update_forms" OWNER TO "postgres";
+
+CREATE TABLE IF NOT EXISTS "public"."daily_scrum_update_questions" (
+    "daily_scrum_update_form_id" bigint NOT NULL,
+    "question" "text" NOT NULL,
+    "brief_question" "text" NOT NULL,
+    "placeholder" "text",
+    "description" "text",
+    "is_required" boolean NOT NULL,
+    "max_length" integer,
+    "order" integer NOT NULL,
+    "created_at" timestamp with time zone DEFAULT ("now"() AT TIME ZONE 'utc'::"text") NOT NULL,
+    "id" bigint NOT NULL
+);
+
+ALTER TABLE "public"."daily_scrum_update_questions" OWNER TO "postgres";
+
+ALTER TABLE "public"."daily_scrum_update_questions" ALTER COLUMN "id" ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME "public"."daily_scrum_update_questions_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+CREATE TABLE IF NOT EXISTS "public"."invitations" (
+    "id" bigint NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "workspace_id" bigint NOT NULL,
+    "code" "uuid" DEFAULT "gen_random_uuid"() NOT NULL
+);
+
+ALTER TABLE "public"."invitations" OWNER TO "postgres";
+
+ALTER TABLE "public"."invitations" ALTER COLUMN "id" ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME "public"."invitations_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+CREATE TABLE IF NOT EXISTS "public"."members" (
+    "id" bigint NOT NULL,
+    "created_at" timestamp with time zone DEFAULT ("now"() AT TIME ZONE 'utc'::"text") NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT ("now"() AT TIME ZONE 'utc'::"text") NOT NULL,
+    "user_id" "uuid" NOT NULL,
+    "workspace_id" bigint NOT NULL,
+    "role" "text" NOT NULL
+);
+
+ALTER TABLE "public"."members" OWNER TO "postgres";
+
+CREATE TABLE IF NOT EXISTS "public"."workspace_settings" (
+    "id" bigint NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "workspace_id" bigint NOT NULL,
+    "attribute_key" "text" DEFAULT ''::"text" NOT NULL,
+    "attribute_value" "text" DEFAULT ''::"text" NOT NULL
+);
+
+ALTER TABLE "public"."workspace_settings" OWNER TO "postgres";
+
+ALTER TABLE "public"."workspace_settings" ALTER COLUMN "id" ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME "public"."organizationSettings_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+ALTER TABLE "public"."daily_scrum_update_forms" ALTER COLUMN "id" ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME "public"."organization_daily_scrum_update_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+CREATE TABLE IF NOT EXISTS "public"."workspaces" (
+    "id" bigint NOT NULL,
+    "created_at" timestamp with time zone DEFAULT ("now"() AT TIME ZONE 'utc'::"text") NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT ("now"() AT TIME ZONE 'utc'::"text") NOT NULL,
+    "name" "text" DEFAULT ''::"text" NOT NULL,
+    "hash_id" "text" DEFAULT ''::"text" NOT NULL
+);
+
+ALTER TABLE "public"."workspaces" OWNER TO "postgres";
+
+ALTER TABLE "public"."workspaces" ALTER COLUMN "id" ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME "public"."organizations_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+ALTER TABLE "public"."members" ALTER COLUMN "id" ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME "public"."organizations_users_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+CREATE TABLE IF NOT EXISTS "public"."profiles" (
+    "id" "uuid" NOT NULL,
+    "created_at" timestamp with time zone DEFAULT ("now"() AT TIME ZONE 'utc'::"text") NOT NULL,
+    "update_at" timestamp with time zone DEFAULT ("now"() AT TIME ZONE 'utc'::"text") NOT NULL,
+    "name" "text" DEFAULT ''::"text" NOT NULL,
+    "display_name" "text" DEFAULT ''::"text" NOT NULL
+);
+
+ALTER TABLE "public"."profiles" OWNER TO "postgres";
+
+CREATE OR REPLACE VIEW "public"."users" AS
+ SELECT "users"."instance_id",
+    "users"."id",
+    "users"."aud",
+    "users"."role",
+    "users"."email",
+    "users"."encrypted_password",
+    "users"."email_confirmed_at",
+    "users"."invited_at",
+    "users"."confirmation_token",
+    "users"."confirmation_sent_at",
+    "users"."recovery_token",
+    "users"."recovery_sent_at",
+    "users"."email_change_token_new",
+    "users"."email_change",
+    "users"."email_change_sent_at",
+    "users"."last_sign_in_at",
+    "users"."raw_app_meta_data",
+    "users"."raw_user_meta_data",
+    "users"."is_super_admin",
+    "users"."created_at",
+    "users"."updated_at",
+    "users"."phone",
+    "users"."phone_confirmed_at",
+    "users"."phone_change",
+    "users"."phone_change_token",
+    "users"."phone_change_sent_at",
+    "users"."confirmed_at",
+    "users"."email_change_token_current",
+    "users"."email_change_confirm_status",
+    "users"."banned_until",
+    "users"."reauthentication_token",
+    "users"."reauthentication_sent_at",
+    "users"."is_sso_user",
+    "users"."deleted_at",
+    "users"."is_anonymous"
+   FROM "auth"."users";
+
+ALTER TABLE "public"."users" OWNER TO "postgres";
+
+ALTER TABLE ONLY "daily_scrum"."daily_scrum_update_answers"
+    ADD CONSTRAINT "daily_scrum_update_answers_pkey" PRIMARY KEY ("id");
+
+ALTER TABLE ONLY "daily_scrum"."daily_scrum_update_entries"
+    ADD CONSTRAINT "daily_scrum_update_entries_pkey" PRIMARY KEY ("id");
+
+ALTER TABLE ONLY "daily_scrum"."daily_scrum_update_questions"
+    ADD CONSTRAINT "daily_scrum_update_questions_pkey" PRIMARY KEY ("id");
+
+ALTER TABLE ONLY "daily_scrum"."invitations"
+    ADD CONSTRAINT "invitations_code_key" UNIQUE ("code");
+
+ALTER TABLE ONLY "daily_scrum"."invitations"
+    ADD CONSTRAINT "invitations_pkey" PRIMARY KEY ("id");
+
+ALTER TABLE ONLY "daily_scrum"."members"
+    ADD CONSTRAINT "members_pkey" PRIMARY KEY ("id", "user_id");
+
+ALTER TABLE ONLY "daily_scrum"."workspace_settings"
+    ADD CONSTRAINT "organizationSettings_pkey" PRIMARY KEY ("id");
+
+ALTER TABLE ONLY "daily_scrum"."daily_scrum_update_forms"
+    ADD CONSTRAINT "organization_daily_scrum_update_pkey" PRIMARY KEY ("id");
+
+ALTER TABLE ONLY "daily_scrum"."profiles"
+    ADD CONSTRAINT "profiles_pkey" PRIMARY KEY ("id");
+
+ALTER TABLE ONLY "daily_scrum"."workspaces"
+    ADD CONSTRAINT "teams_pkey" PRIMARY KEY ("id");
+
+ALTER TABLE ONLY "public"."daily_scrum_update_answers"
+    ADD CONSTRAINT "daily_scrum_update_answers_pkey" PRIMARY KEY ("id");
+
+ALTER TABLE ONLY "public"."daily_scrum_update_entries"
+    ADD CONSTRAINT "daily_scrum_update_entries_pkey" PRIMARY KEY ("id");
+
+ALTER TABLE ONLY "public"."daily_scrum_update_questions"
+    ADD CONSTRAINT "daily_scrum_update_questions_pkey" PRIMARY KEY ("id");
+
+ALTER TABLE ONLY "public"."invitations"
+    ADD CONSTRAINT "invitations_code_key" UNIQUE ("code");
+
+ALTER TABLE ONLY "public"."invitations"
+    ADD CONSTRAINT "invitations_pkey" PRIMARY KEY ("id");
+
+ALTER TABLE ONLY "public"."members"
+    ADD CONSTRAINT "members_pkey" PRIMARY KEY ("id", "user_id");
+
+ALTER TABLE ONLY "public"."workspace_settings"
+    ADD CONSTRAINT "organizationSettings_pkey" PRIMARY KEY ("id");
+
+ALTER TABLE ONLY "public"."daily_scrum_update_forms"
+    ADD CONSTRAINT "organization_daily_scrum_update_pkey" PRIMARY KEY ("id");
+
+ALTER TABLE ONLY "public"."profiles"
+    ADD CONSTRAINT "profiles_pkey" PRIMARY KEY ("id");
+
+ALTER TABLE ONLY "public"."workspaces"
+    ADD CONSTRAINT "teams_pkey" PRIMARY KEY ("id");
+
+CREATE OR REPLACE TRIGGER "before_organization_insert" BEFORE INSERT ON "daily_scrum"."workspaces" FOR EACH ROW EXECUTE FUNCTION "daily_scrum"."handle_before_organization_insert"();
+
+CREATE OR REPLACE TRIGGER "before_organization_insert" BEFORE INSERT ON "public"."workspaces" FOR EACH ROW EXECUTE FUNCTION "public"."handle_before_organization_insert"();
+
+ALTER TABLE ONLY "daily_scrum"."daily_scrum_update_answers"
+    ADD CONSTRAINT "daily_scrum_daily_scrum_update_answers_daily_scrum_update_entry" FOREIGN KEY ("daily_scrum_update_entry_id") REFERENCES "daily_scrum"."daily_scrum_update_entries"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+ALTER TABLE ONLY "daily_scrum"."daily_scrum_update_answers"
+    ADD CONSTRAINT "daily_scrum_daily_scrum_update_answers_daily_scrum_update_quest" FOREIGN KEY ("daily_scrum_update_question_id") REFERENCES "daily_scrum"."daily_scrum_update_questions"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+ALTER TABLE ONLY "daily_scrum"."daily_scrum_update_entries"
+    ADD CONSTRAINT "daily_scrum_daily_scrum_update_entries_daily_scrum_update_form_" FOREIGN KEY ("daily_scrum_update_form_id") REFERENCES "daily_scrum"."daily_scrum_update_forms"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+ALTER TABLE ONLY "daily_scrum"."daily_scrum_update_entries"
+    ADD CONSTRAINT "daily_scrum_daily_scrum_update_entries_submitted_user_id_fkey" FOREIGN KEY ("submitted_user_id") REFERENCES "daily_scrum"."profiles"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+ALTER TABLE ONLY "daily_scrum"."daily_scrum_update_forms"
+    ADD CONSTRAINT "daily_scrum_daily_scrum_update_forms_org_id_fkey" FOREIGN KEY ("workspace_id") REFERENCES "daily_scrum"."workspaces"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+ALTER TABLE ONLY "daily_scrum"."daily_scrum_update_questions"
+    ADD CONSTRAINT "daily_scrum_daily_scrum_update_questions_daily_scrum_update_for" FOREIGN KEY ("daily_scrum_update_form_id") REFERENCES "daily_scrum"."daily_scrum_update_forms"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+ALTER TABLE ONLY "daily_scrum"."invitations"
+    ADD CONSTRAINT "daily_scrum_invitations_org_id_fkey" FOREIGN KEY ("workspace_id") REFERENCES "daily_scrum"."workspaces"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+ALTER TABLE ONLY "daily_scrum"."members"
+    ADD CONSTRAINT "daily_scrum_members_org_id_fkey" FOREIGN KEY ("workspace_id") REFERENCES "daily_scrum"."workspaces"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+ALTER TABLE ONLY "daily_scrum"."members"
+    ADD CONSTRAINT "daily_scrum_members_user_id_b_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id");
+
+ALTER TABLE ONLY "daily_scrum"."workspace_settings"
+    ADD CONSTRAINT "daily_scrum_org_settings_org_id_fkey" FOREIGN KEY ("workspace_id") REFERENCES "daily_scrum"."workspaces"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+ALTER TABLE ONLY "daily_scrum"."profiles"
+    ADD CONSTRAINT "daily_scrum_profiles_id_fkey" FOREIGN KEY ("id") REFERENCES "auth"."users"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+ALTER TABLE ONLY "daily_scrum"."daily_scrum_update_entries"
+    ADD CONSTRAINT "daily_scrum_update_entries_submitted_user_id_fkey" FOREIGN KEY ("submitted_user_id") REFERENCES "auth"."users"("id");
+
+ALTER TABLE ONLY "public"."daily_scrum_update_entries"
+    ADD CONSTRAINT "daily_scrum_update_entries_submitted_user_id_fkey" FOREIGN KEY ("submitted_user_id") REFERENCES "auth"."users"("id");
+
+ALTER TABLE ONLY "public"."daily_scrum_update_answers"
+    ADD CONSTRAINT "public_daily_scrum_update_answers_daily_scrum_update_entry_id_f" FOREIGN KEY ("daily_scrum_update_entry_id") REFERENCES "public"."daily_scrum_update_entries"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+ALTER TABLE ONLY "public"."daily_scrum_update_answers"
+    ADD CONSTRAINT "public_daily_scrum_update_answers_daily_scrum_update_question_i" FOREIGN KEY ("daily_scrum_update_question_id") REFERENCES "public"."daily_scrum_update_questions"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+ALTER TABLE ONLY "public"."daily_scrum_update_entries"
+    ADD CONSTRAINT "public_daily_scrum_update_entries_daily_scrum_update_form_id_fk" FOREIGN KEY ("daily_scrum_update_form_id") REFERENCES "public"."daily_scrum_update_forms"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+ALTER TABLE ONLY "public"."daily_scrum_update_entries"
+    ADD CONSTRAINT "public_daily_scrum_update_entries_submitted_user_id_fkey" FOREIGN KEY ("submitted_user_id") REFERENCES "public"."profiles"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+ALTER TABLE ONLY "public"."daily_scrum_update_forms"
+    ADD CONSTRAINT "public_daily_scrum_update_forms_org_id_fkey" FOREIGN KEY ("workspace_id") REFERENCES "public"."workspaces"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+ALTER TABLE ONLY "public"."daily_scrum_update_questions"
+    ADD CONSTRAINT "public_daily_scrum_update_questions_daily_scrum_update_form_id_" FOREIGN KEY ("daily_scrum_update_form_id") REFERENCES "public"."daily_scrum_update_forms"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+ALTER TABLE ONLY "public"."invitations"
+    ADD CONSTRAINT "public_invitations_org_id_fkey" FOREIGN KEY ("workspace_id") REFERENCES "public"."workspaces"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+ALTER TABLE ONLY "public"."members"
+    ADD CONSTRAINT "public_members_org_id_fkey" FOREIGN KEY ("workspace_id") REFERENCES "public"."workspaces"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+ALTER TABLE ONLY "public"."members"
+    ADD CONSTRAINT "public_members_user_id_b_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id");
+
+ALTER TABLE ONLY "public"."workspace_settings"
+    ADD CONSTRAINT "public_org_settings_org_id_fkey" FOREIGN KEY ("workspace_id") REFERENCES "public"."workspaces"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+ALTER TABLE ONLY "public"."profiles"
+    ADD CONSTRAINT "public_profiles_id_fkey" FOREIGN KEY ("id") REFERENCES "auth"."users"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+ALTER TABLE "daily_scrum"."daily_scrum_update_answers" ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE "daily_scrum"."daily_scrum_update_entries" ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE "daily_scrum"."daily_scrum_update_forms" ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE "daily_scrum"."daily_scrum_update_questions" ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE "daily_scrum"."invitations" ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE "daily_scrum"."members" ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE "daily_scrum"."profiles" ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE "daily_scrum"."workspace_settings" ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE "daily_scrum"."workspaces" ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE "public"."daily_scrum_update_answers" ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE "public"."daily_scrum_update_entries" ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE "public"."daily_scrum_update_forms" ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE "public"."daily_scrum_update_questions" ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE "public"."invitations" ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE "public"."members" ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE "public"."profiles" ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE "public"."workspace_settings" ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE "public"."workspaces" ENABLE ROW LEVEL SECURITY;
+
+ALTER PUBLICATION "supabase_realtime" OWNER TO "postgres";
+
+GRANT USAGE ON SCHEMA "daily_scrum" TO "anon";
+GRANT USAGE ON SCHEMA "daily_scrum" TO "authenticated";
+GRANT USAGE ON SCHEMA "daily_scrum" TO "service_role";
+
+GRANT USAGE ON SCHEMA "public" TO "postgres";
+GRANT USAGE ON SCHEMA "public" TO "anon";
+GRANT USAGE ON SCHEMA "public" TO "authenticated";
+GRANT USAGE ON SCHEMA "public" TO "service_role";
+
+GRANT ALL ON FUNCTION "daily_scrum"."handle_before_organization_insert"() TO "anon";
+GRANT ALL ON FUNCTION "daily_scrum"."handle_before_organization_insert"() TO "authenticated";
+GRANT ALL ON FUNCTION "daily_scrum"."handle_before_organization_insert"() TO "service_role";
+
+GRANT ALL ON FUNCTION "public"."handle_before_organization_insert"() TO "anon";
+GRANT ALL ON FUNCTION "public"."handle_before_organization_insert"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."handle_before_organization_insert"() TO "service_role";
+
+GRANT ALL ON FUNCTION "public"."insert_initial_organization_for_user_on_profile_insert"() TO "anon";
+GRANT ALL ON FUNCTION "public"."insert_initial_organization_for_user_on_profile_insert"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."insert_initial_organization_for_user_on_profile_insert"() TO "service_role";
+
+GRANT ALL ON FUNCTION "public"."insert_profile_on_auth_user_insert"() TO "anon";
+GRANT ALL ON FUNCTION "public"."insert_profile_on_auth_user_insert"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."insert_profile_on_auth_user_insert"() TO "service_role";
+
+GRANT ALL ON TABLE "daily_scrum"."daily_scrum_update_answers" TO "anon";
+GRANT ALL ON TABLE "daily_scrum"."daily_scrum_update_answers" TO "authenticated";
+GRANT ALL ON TABLE "daily_scrum"."daily_scrum_update_answers" TO "service_role";
+
+GRANT ALL ON SEQUENCE "daily_scrum"."daily_scrum_update_answers_id_seq" TO "anon";
+GRANT ALL ON SEQUENCE "daily_scrum"."daily_scrum_update_answers_id_seq" TO "authenticated";
+GRANT ALL ON SEQUENCE "daily_scrum"."daily_scrum_update_answers_id_seq" TO "service_role";
+
+GRANT ALL ON TABLE "daily_scrum"."daily_scrum_update_entries" TO "anon";
+GRANT ALL ON TABLE "daily_scrum"."daily_scrum_update_entries" TO "authenticated";
+GRANT ALL ON TABLE "daily_scrum"."daily_scrum_update_entries" TO "service_role";
+
+GRANT ALL ON SEQUENCE "daily_scrum"."daily_scrum_update_entries_id_seq" TO "anon";
+GRANT ALL ON SEQUENCE "daily_scrum"."daily_scrum_update_entries_id_seq" TO "authenticated";
+GRANT ALL ON SEQUENCE "daily_scrum"."daily_scrum_update_entries_id_seq" TO "service_role";
+
+GRANT ALL ON TABLE "daily_scrum"."daily_scrum_update_forms" TO "anon";
+GRANT ALL ON TABLE "daily_scrum"."daily_scrum_update_forms" TO "authenticated";
+GRANT ALL ON TABLE "daily_scrum"."daily_scrum_update_forms" TO "service_role";
+
+GRANT ALL ON SEQUENCE "daily_scrum"."daily_scrum_update_forms_id_seq" TO "anon";
+GRANT ALL ON SEQUENCE "daily_scrum"."daily_scrum_update_forms_id_seq" TO "authenticated";
+GRANT ALL ON SEQUENCE "daily_scrum"."daily_scrum_update_forms_id_seq" TO "service_role";
+
+GRANT ALL ON TABLE "daily_scrum"."daily_scrum_update_questions" TO "anon";
+GRANT ALL ON TABLE "daily_scrum"."daily_scrum_update_questions" TO "authenticated";
+GRANT ALL ON TABLE "daily_scrum"."daily_scrum_update_questions" TO "service_role";
+
+GRANT ALL ON SEQUENCE "daily_scrum"."daily_scrum_update_questions_id_seq" TO "anon";
+GRANT ALL ON SEQUENCE "daily_scrum"."daily_scrum_update_questions_id_seq" TO "authenticated";
+GRANT ALL ON SEQUENCE "daily_scrum"."daily_scrum_update_questions_id_seq" TO "service_role";
+
+GRANT ALL ON TABLE "daily_scrum"."invitations" TO "anon";
+GRANT ALL ON TABLE "daily_scrum"."invitations" TO "authenticated";
+GRANT ALL ON TABLE "daily_scrum"."invitations" TO "service_role";
+
+GRANT ALL ON SEQUENCE "daily_scrum"."invitations_id_seq" TO "anon";
+GRANT ALL ON SEQUENCE "daily_scrum"."invitations_id_seq" TO "authenticated";
+GRANT ALL ON SEQUENCE "daily_scrum"."invitations_id_seq" TO "service_role";
+
+GRANT ALL ON TABLE "daily_scrum"."members" TO "anon";
+GRANT ALL ON TABLE "daily_scrum"."members" TO "authenticated";
+GRANT ALL ON TABLE "daily_scrum"."members" TO "service_role";
+
+GRANT ALL ON SEQUENCE "daily_scrum"."members_id_seq" TO "anon";
+GRANT ALL ON SEQUENCE "daily_scrum"."members_id_seq" TO "authenticated";
+GRANT ALL ON SEQUENCE "daily_scrum"."members_id_seq" TO "service_role";
+
+GRANT ALL ON TABLE "daily_scrum"."profiles" TO "anon";
+GRANT ALL ON TABLE "daily_scrum"."profiles" TO "authenticated";
+GRANT ALL ON TABLE "daily_scrum"."profiles" TO "service_role";
+
+GRANT ALL ON TABLE "daily_scrum"."users" TO "anon";
+GRANT ALL ON TABLE "daily_scrum"."users" TO "authenticated";
+GRANT ALL ON TABLE "daily_scrum"."users" TO "service_role";
+
+GRANT ALL ON TABLE "daily_scrum"."workspace_settings" TO "anon";
+GRANT ALL ON TABLE "daily_scrum"."workspace_settings" TO "authenticated";
+GRANT ALL ON TABLE "daily_scrum"."workspace_settings" TO "service_role";
+
+GRANT ALL ON SEQUENCE "daily_scrum"."workspace_settings_id_seq" TO "anon";
+GRANT ALL ON SEQUENCE "daily_scrum"."workspace_settings_id_seq" TO "authenticated";
+GRANT ALL ON SEQUENCE "daily_scrum"."workspace_settings_id_seq" TO "service_role";
+
+GRANT ALL ON TABLE "daily_scrum"."workspaces" TO "anon";
+GRANT ALL ON TABLE "daily_scrum"."workspaces" TO "authenticated";
+GRANT ALL ON TABLE "daily_scrum"."workspaces" TO "service_role";
+
+GRANT ALL ON SEQUENCE "daily_scrum"."workspaces_id_seq" TO "anon";
+GRANT ALL ON SEQUENCE "daily_scrum"."workspaces_id_seq" TO "authenticated";
+GRANT ALL ON SEQUENCE "daily_scrum"."workspaces_id_seq" TO "service_role";
+
+GRANT ALL ON TABLE "public"."daily_scrum_update_answers" TO "anon";
+GRANT ALL ON TABLE "public"."daily_scrum_update_answers" TO "authenticated";
+GRANT ALL ON TABLE "public"."daily_scrum_update_answers" TO "service_role";
+
+GRANT ALL ON SEQUENCE "public"."daily_scrum_update_answers_id_seq" TO "anon";
+GRANT ALL ON SEQUENCE "public"."daily_scrum_update_answers_id_seq" TO "authenticated";
+GRANT ALL ON SEQUENCE "public"."daily_scrum_update_answers_id_seq" TO "service_role";
+
+GRANT ALL ON TABLE "public"."daily_scrum_update_entries" TO "anon";
+GRANT ALL ON TABLE "public"."daily_scrum_update_entries" TO "authenticated";
+GRANT ALL ON TABLE "public"."daily_scrum_update_entries" TO "service_role";
+
+GRANT ALL ON SEQUENCE "public"."daily_scrum_update_entries_id_seq" TO "anon";
+GRANT ALL ON SEQUENCE "public"."daily_scrum_update_entries_id_seq" TO "authenticated";
+GRANT ALL ON SEQUENCE "public"."daily_scrum_update_entries_id_seq" TO "service_role";
+
+GRANT ALL ON TABLE "public"."daily_scrum_update_forms" TO "anon";
+GRANT ALL ON TABLE "public"."daily_scrum_update_forms" TO "authenticated";
+GRANT ALL ON TABLE "public"."daily_scrum_update_forms" TO "service_role";
+
+GRANT ALL ON TABLE "public"."daily_scrum_update_questions" TO "anon";
+GRANT ALL ON TABLE "public"."daily_scrum_update_questions" TO "authenticated";
+GRANT ALL ON TABLE "public"."daily_scrum_update_questions" TO "service_role";
+
+GRANT ALL ON SEQUENCE "public"."daily_scrum_update_questions_id_seq" TO "anon";
+GRANT ALL ON SEQUENCE "public"."daily_scrum_update_questions_id_seq" TO "authenticated";
+GRANT ALL ON SEQUENCE "public"."daily_scrum_update_questions_id_seq" TO "service_role";
+
+GRANT ALL ON TABLE "public"."invitations" TO "anon";
+GRANT ALL ON TABLE "public"."invitations" TO "authenticated";
+GRANT ALL ON TABLE "public"."invitations" TO "service_role";
+
+GRANT ALL ON SEQUENCE "public"."invitations_id_seq" TO "anon";
+GRANT ALL ON SEQUENCE "public"."invitations_id_seq" TO "authenticated";
+GRANT ALL ON SEQUENCE "public"."invitations_id_seq" TO "service_role";
+
+GRANT ALL ON TABLE "public"."members" TO "anon";
+GRANT ALL ON TABLE "public"."members" TO "authenticated";
+GRANT ALL ON TABLE "public"."members" TO "service_role";
+
+GRANT ALL ON TABLE "public"."workspace_settings" TO "anon";
+GRANT ALL ON TABLE "public"."workspace_settings" TO "authenticated";
+GRANT ALL ON TABLE "public"."workspace_settings" TO "service_role";
+
+GRANT ALL ON SEQUENCE "public"."organizationSettings_id_seq" TO "anon";
+GRANT ALL ON SEQUENCE "public"."organizationSettings_id_seq" TO "authenticated";
+GRANT ALL ON SEQUENCE "public"."organizationSettings_id_seq" TO "service_role";
+
+GRANT ALL ON SEQUENCE "public"."organization_daily_scrum_update_id_seq" TO "anon";
+GRANT ALL ON SEQUENCE "public"."organization_daily_scrum_update_id_seq" TO "authenticated";
+GRANT ALL ON SEQUENCE "public"."organization_daily_scrum_update_id_seq" TO "service_role";
+
+GRANT ALL ON TABLE "public"."workspaces" TO "anon";
+GRANT ALL ON TABLE "public"."workspaces" TO "authenticated";
+GRANT ALL ON TABLE "public"."workspaces" TO "service_role";
+
+GRANT ALL ON SEQUENCE "public"."organizations_id_seq" TO "anon";
+GRANT ALL ON SEQUENCE "public"."organizations_id_seq" TO "authenticated";
+GRANT ALL ON SEQUENCE "public"."organizations_id_seq" TO "service_role";
+
+GRANT ALL ON SEQUENCE "public"."organizations_users_id_seq" TO "anon";
+GRANT ALL ON SEQUENCE "public"."organizations_users_id_seq" TO "authenticated";
+GRANT ALL ON SEQUENCE "public"."organizations_users_id_seq" TO "service_role";
+
+GRANT ALL ON TABLE "public"."profiles" TO "anon";
+GRANT ALL ON TABLE "public"."profiles" TO "authenticated";
+GRANT ALL ON TABLE "public"."profiles" TO "service_role";
+
+GRANT ALL ON TABLE "public"."users" TO "anon";
+GRANT ALL ON TABLE "public"."users" TO "authenticated";
+GRANT ALL ON TABLE "public"."users" TO "service_role";
+
+ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "daily_scrum" GRANT ALL ON SEQUENCES  TO "anon";
+ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "daily_scrum" GRANT ALL ON SEQUENCES  TO "authenticated";
+ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "daily_scrum" GRANT ALL ON SEQUENCES  TO "service_role";
+
+ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "daily_scrum" GRANT ALL ON FUNCTIONS  TO "anon";
+ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "daily_scrum" GRANT ALL ON FUNCTIONS  TO "authenticated";
+ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "daily_scrum" GRANT ALL ON FUNCTIONS  TO "service_role";
+
+ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "daily_scrum" GRANT ALL ON TABLES  TO "anon";
+ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "daily_scrum" GRANT ALL ON TABLES  TO "authenticated";
+ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "daily_scrum" GRANT ALL ON TABLES  TO "service_role";
+
+ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES  TO "postgres";
+ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES  TO "anon";
+ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES  TO "authenticated";
+ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES  TO "service_role";
+
+ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON FUNCTIONS  TO "postgres";
+ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON FUNCTIONS  TO "anon";
+ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON FUNCTIONS  TO "authenticated";
+ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON FUNCTIONS  TO "service_role";
+
+ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES  TO "postgres";
+ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES  TO "anon";
+ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES  TO "authenticated";
+ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES  TO "service_role";
+
+RESET ALL;
+
+--
+-- Dumped schema changes for auth and storage
+--
+
