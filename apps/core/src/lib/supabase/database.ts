@@ -220,7 +220,7 @@ export type Database = {
         Row: {
           created_at: string;
           id: number;
-          role: Database["public"]["Enums"]["role"];
+          role: string;
           updated_at: string;
           user_id: string;
           workspace_id: number;
@@ -228,7 +228,7 @@ export type Database = {
         Insert: {
           created_at?: string;
           id?: number;
-          role?: Database["public"]["Enums"]["role"];
+          role: string;
           updated_at?: string;
           user_id: string;
           workspace_id: number;
@@ -236,7 +236,7 @@ export type Database = {
         Update: {
           created_at?: string;
           id?: number;
-          role?: Database["public"]["Enums"]["role"];
+          role?: string;
           updated_at?: string;
           user_id?: string;
           workspace_id?: number;
@@ -267,52 +267,6 @@ export type Database = {
             foreignKeyName: "daily_scrum_members_user_id_b_fkey";
             columns: ["user_id"];
             isOneToOne: false;
-            referencedRelation: "users";
-            referencedColumns: ["id"];
-          }
-        ];
-      };
-      profiles: {
-        Row: {
-          created_at: string;
-          display_name: string;
-          id: string;
-          name: string;
-          update_at: string;
-        };
-        Insert: {
-          created_at?: string;
-          display_name?: string;
-          id: string;
-          name?: string;
-          update_at?: string;
-        };
-        Update: {
-          created_at?: string;
-          display_name?: string;
-          id?: string;
-          name?: string;
-          update_at?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "daily_scrum_profiles_id_fkey";
-            columns: ["id"];
-            isOneToOne: true;
-            referencedRelation: "users";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "daily_scrum_profiles_id_fkey";
-            columns: ["id"];
-            isOneToOne: true;
-            referencedRelation: "users";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "daily_scrum_profiles_id_fkey";
-            columns: ["id"];
-            isOneToOne: true;
             referencedRelation: "users";
             referencedColumns: ["id"];
           }
@@ -495,7 +449,7 @@ export type Database = {
       [_ in never]: never;
     };
     Enums: {
-      role: "member" | "admin" | "owner";
+      [_ in never]: never;
     };
     CompositeTypes: {
       [_ in never]: never;
@@ -584,6 +538,27 @@ export type Database = {
           },
           {
             foreignKeyName: "daily_scrum_update_entries_submitted_user_id_fkey";
+            columns: ["submitted_user_id"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "daily_scrum_update_entries_submitted_user_id_fkey1";
+            columns: ["submitted_user_id"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "daily_scrum_update_entries_submitted_user_id_fkey1";
+            columns: ["submitted_user_id"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "daily_scrum_update_entries_submitted_user_id_fkey1";
             columns: ["submitted_user_id"];
             isOneToOne: false;
             referencedRelation: "users";
@@ -714,7 +689,7 @@ export type Database = {
         Row: {
           created_at: string;
           id: number;
-          role: Database["public"]["Enums"]["role"];
+          role: string;
           updated_at: string;
           user_id: string;
           workspace_id: number;
@@ -722,7 +697,7 @@ export type Database = {
         Insert: {
           created_at?: string;
           id?: number;
-          role?: Database["public"]["Enums"]["role"];
+          role: string;
           updated_at?: string;
           user_id: string;
           workspace_id: number;
@@ -730,7 +705,7 @@ export type Database = {
         Update: {
           created_at?: string;
           id?: number;
-          role?: Database["public"]["Enums"]["role"];
+          role?: string;
           updated_at?: string;
           user_id?: string;
           workspace_id?: number;

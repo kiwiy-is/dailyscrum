@@ -19,7 +19,7 @@ export const getInvitationByWorkspaceId = memoize(
 );
 
 export const createInvitation = async (
-  invitationValues: Database["public"]["Tables"]["invitations"]["Insert"]
+  invitationValues: Database["daily_scrum"]["Tables"]["invitations"]["Insert"]
 ) => {
   const client = createClient();
   const response = await client

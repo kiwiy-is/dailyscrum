@@ -41,6 +41,7 @@ export async function GET(request: NextRequest) {
   const client = createClient();
 
   const { data: profile } = await client
+    .schema("public")
     .from("profiles")
     .select()
     .eq("id", user.id)
@@ -51,7 +52,7 @@ export async function GET(request: NextRequest) {
     const [emailUserName] = user.email ? user.email?.split("@") : [user.id];
 
     await Promise.all([
-      client.from("profiles").insert({
+      client.schema("public").from("profiles").insert({
         id: user.id,
         name: emailUserName,
       }),

@@ -29,7 +29,12 @@ export const getCurrentUserProfile = cache(async () => {
 const getProfile = memoize(async (userId: string) => {
   const client = createClient();
 
-  return client.from("profiles").select().eq("id", userId).single();
+  return client
+    .schema("public")
+    .from("profiles")
+    .select()
+    .eq("id", userId)
+    .single();
 });
 
 export const createProfile = async (
@@ -58,6 +63,7 @@ export const createProfile = async (
   const client = createClient();
 
   const response = await client
+    .schema("public")
     .from("profiles")
     .insert({
       id: user.id,
@@ -87,6 +93,7 @@ export const updateProfile = async (
 
   const client = createClient();
   return client
+    .schema("public")
     .from("profiles")
     .update(profileValues)
     .eq("id", user.id)
