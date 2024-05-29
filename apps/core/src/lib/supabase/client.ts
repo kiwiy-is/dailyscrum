@@ -42,5 +42,5 @@ export function createClient(): SupabaseClientRestricted<Database> {
     },
   });
 
-  return proxy as SupabaseClientRestricted<T>;
+  return proxy as SupabaseClientRestricted<Database>;
 }
