@@ -27,7 +27,7 @@ export const getCurrentUserProfile = cache(async () => {
 });
 
 const getProfile = memoize(async (userId: string) => {
-  const client = createClient<Database>();
+  const client = createClient();
 
   return client.from("profiles").select().eq("id", userId).single();
 });
@@ -55,7 +55,7 @@ export const createProfile = async (
     };
   }
 
-  const client = createClient<Database>();
+  const client = createClient();
 
   const response = await client
     .from("profiles")
@@ -85,7 +85,7 @@ export const updateProfile = async (
     };
   }
 
-  const client = createClient<Database>();
+  const client = createClient();
   return client
     .from("profiles")
     .update(profileValues)

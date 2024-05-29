@@ -6,7 +6,7 @@ import { memoize } from "@/lib/cache";
 import { createMember } from "./members";
 
 const listWorkspaces = memoize(async (userId: string) => {
-  const client = createClient<Database>();
+  const client = createClient();
 
   // TODO: don't alias hash_id as id
   return await client
@@ -44,13 +44,13 @@ export const listWorkspacesOfCurrentUser = cache(async () => {
 });
 
 export const getWorkspace = memoize(async (id: number) => {
-  const client = createClient<Database>();
+  const client = createClient();
 
   return client.from("workspaces").select("*").eq("id", id).single();
 });
 
 export const getWorkspaceByHashId = memoize(async (hashId: string) => {
-  const client = createClient<Database>();
+  const client = createClient();
 
   return client.from("workspaces").select("*").eq("hash_id", hashId).single();
 });
@@ -80,7 +80,7 @@ export const setUpWorkspaceForCurrentUser = async (
     };
   }
 
-  const client = createClient<Database>();
+  const client = createClient();
 
   const { data: workspaces, error: insertWorkspaceError } = await client
     .from("workspaces")

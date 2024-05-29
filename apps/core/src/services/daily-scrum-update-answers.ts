@@ -10,7 +10,7 @@ export const createDailyScrumUpdateAnswers = async (
     >
   >[]
 ) => {
-  const client = createClient<Database>();
+  const client = createClient();
 
   return client.from("daily_scrum_update_answers").insert(
     answersValues.map((answer) => ({
@@ -27,7 +27,7 @@ export const updateDailyScrumUpdateAnswer = async (
     "id"
   >
 ) => {
-  const client = createClient<Database>();
+  const client = createClient();
 
   return client
     .from("daily_scrum_update_answers")
@@ -40,7 +40,7 @@ export const updateDailyScrumUpdateAnswer = async (
 export const deleteDailySrcumUpdateAnswerByUpdateEntryId = async (
   entryId: number
 ) => {
-  const client = createClient<Database>();
+  const client = createClient();
 
   return client
     .from("daily_scrum_update_answers")
