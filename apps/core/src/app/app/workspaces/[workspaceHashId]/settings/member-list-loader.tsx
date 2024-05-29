@@ -30,7 +30,7 @@ const MemberListLoader = async ({ workspaceHashId }: Props) => {
       isCurrentUser: member.user_id === currentUser?.id,
       email: member.user?.email ?? "",
       name: member.user?.profile?.name ?? "",
-      role: member.role,
+      role: member.role as "owner" | "admin" | "member",
     };
   });
 

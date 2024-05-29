@@ -29,7 +29,7 @@ const EditUpdateDialogContentLoader = async ({ updateEntryId }: Props) => {
   // TODO: Remove code duplication. AddScrumUpdateDialogLoader
   const questions = data.daily_scrum_update_answers
     .reduce<
-      Database["public"]["Tables"]["daily_scrum_update_questions"]["Row"][]
+      Database["daily_scrum"]["Tables"]["daily_scrum_update_questions"]["Row"][]
     >((acc, cv) => {
       return cv.daily_scrum_update_question === null
         ? acc

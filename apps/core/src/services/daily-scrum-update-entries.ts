@@ -117,7 +117,7 @@ export const createDailyScrumUpdateEntry = async (
   workspaceHashId: string,
   entryValues: Required<
     Pick<
-      Database["public"]["Tables"]["daily_scrum_update_entries"]["Insert"],
+      Database["daily_scrum"]["Tables"]["daily_scrum_update_entries"]["Insert"],
       "daily_scrum_update_form_id" | "date" | "time_zone"
     >
   >

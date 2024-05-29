@@ -26,7 +26,7 @@ export const getMember = memoize(
 );
 
 export const createMember = async (
-  memberValues: Database["public"]["Tables"]["members"]["Insert"]
+  memberValues: Database["daily_scrum"]["Tables"]["members"]["Insert"]
 ) => {
   const client = createClient();
 
@@ -41,7 +41,10 @@ export const createMember = async (
 
 export const updateMember = async (
   memberId: number,
-  memberValues: Omit<Database["public"]["Tables"]["members"]["Update"], "id">
+  memberValues: Omit<
+    Database["daily_scrum"]["Tables"]["members"]["Update"],
+    "id"
+  >
 ) => {
   const client = createClient();
   return await client

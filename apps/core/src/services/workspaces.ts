@@ -61,7 +61,7 @@ export const getWorkspaceByHashId = memoize(async (hashId: string) => {
  */
 export const setUpWorkspaceForCurrentUser = async (
   workspaceValues: Required<
-    Pick<Database["public"]["Tables"]["workspaces"]["Insert"], "name">
+    Pick<Database["daily_scrum"]["Tables"]["workspaces"]["Insert"], "name">
   >
 ) => {
   const { data: user, error: getCurrentUserError } = await getCurrentUser();
@@ -205,7 +205,7 @@ export const setUpWorkspaceForCurrentUser = async (
 export const updateWorkspace = async (
   workspaceId: number,
   workspaceValues: Omit<
-    Database["public"]["Tables"]["workspaces"]["Update"],
+    Database["daily_scrum"]["Tables"]["workspaces"]["Update"],
     "id"
   >
 ) => {

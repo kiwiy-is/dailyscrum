@@ -25,6 +25,7 @@ export async function verify(email: string, code: string, returnPath?: string) {
   const { user } = verificationResponse.data;
 
   const { data: profile } = await client
+    .schema("public")
     .from("profiles")
     .select()
     .eq("id", user.id)
@@ -35,7 +36,7 @@ export async function verify(email: string, code: string, returnPath?: string) {
   if (isSignUpFlow) {
     // NOTE: sign up flow
     const [emailUserName] = user.email ? user.email?.split("@") : [user.id];
-    await client.from("profiles").insert({
+    await client.schema("public").from("profiles").insert({
       id: user.id,
       name: emailUserName,
     });

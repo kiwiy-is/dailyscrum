@@ -5,7 +5,7 @@ export const createDailyScrumUpdateAnswers = async (
   entryId: number,
   answersValues: Required<
     Pick<
-      Database["public"]["Tables"]["daily_scrum_update_answers"]["Insert"],
+      Database["daily_scrum"]["Tables"]["daily_scrum_update_answers"]["Insert"],
       "daily_scrum_update_question_id" | "answer"
     >
   >[]
@@ -23,7 +23,7 @@ export const createDailyScrumUpdateAnswers = async (
 export const updateDailyScrumUpdateAnswer = async (
   answerId: number,
   answersValues: Omit<
-    Database["public"]["Tables"]["daily_scrum_update_answers"]["Update"],
+    Database["daily_scrum"]["Tables"]["daily_scrum_update_answers"]["Update"],
     "id"
   >
 ) => {
