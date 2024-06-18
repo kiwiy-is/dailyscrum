@@ -16,8 +16,8 @@ import VisibilityRefresher from "@/components/visibility-refresher";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: 'Board',
-}
+  title: "Board",
+};
 
 type Props = {
   params: { workspaceHashId: string };
