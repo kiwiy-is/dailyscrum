@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 4001",
+    "dev:public": "APP_ENV=public.local react-env --env APP_ENV -- next dev -p 4001",
     "build": "next build",
     "start": "next start -p 4001",
     "lint": "next lint",
@@ -31,6 +32,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@beam-australia/react-env": "^3.1.1",
     "@types/luxon": "^3.4.2",
     "@types/markdown-it": "^14.1.1",
     "@types/node": "^20",
