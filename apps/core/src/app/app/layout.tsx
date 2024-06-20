@@ -9,9 +9,10 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: {
-    template: '%s | Kiwiy Daily Scrum',
-    default: 'Kiwiy Daily Scrum',
+    template: "%s | Kiwiy Daily Scrum",
+    default: "Kiwiy Daily Scrum",
   },
+  metadataBase: new URL(process.env.NEXT_PUBLIC_METADATA_BASE_URL!),
   description: "",
 };
 
