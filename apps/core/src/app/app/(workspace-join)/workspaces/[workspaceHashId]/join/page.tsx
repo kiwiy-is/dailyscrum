@@ -2,7 +2,6 @@ import { getWorkspaceByHashId } from "@/services/workspaces";
 import { getCurrentUser } from "@/services/users";
 import Link from "next/link";
 import React from "react";
-import { KiwiyIsSymbol } from "ui/kiwiy-is-symbol";
 import {
   Card,
   CardContent,
@@ -36,20 +35,17 @@ const Page = async ({ params, searchParams }: Props) => {
 
   if (!codeParamValue) {
     return (
-      <div className="h-screen flex flex-col justify-center items-center space-y-8">
-        <KiwiyIsSymbol />
-        <Card className="w-[440px]">
-          <CardHeader>
-            <CardTitle>The invitation link is no longer valid</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <CardDescription>
-              The link might have expired. Please ask workspace members for an
-              updated link.
-            </CardDescription>
-          </CardContent>
-        </Card>
-      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>The invitation link is no longer valid</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <CardDescription>
+            The link might have expired. Please ask workspace members for an
+            updated link.
+          </CardDescription>
+        </CardContent>
+      </Card>
     );
   }
 
@@ -58,20 +54,17 @@ const Page = async ({ params, searchParams }: Props) => {
 
   if (!invitation || getInvitationError) {
     return (
-      <div className="h-screen flex flex-col justify-center items-center space-y-8">
-        <KiwiyIsSymbol />
-        <Card className="w-[440px]">
-          <CardHeader>
-            <CardTitle>The invitation link is no longer valid</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <CardDescription>
-              The link might have expired. Please ask workspace members for an
-              updated link.
-            </CardDescription>
-          </CardContent>
-        </Card>
-      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>The invitation link is no longer valid</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <CardDescription>
+            The link might have expired. Please ask workspace members for an
+            updated link.
+          </CardDescription>
+        </CardContent>
+      </Card>
     );
   }
 
@@ -81,46 +74,43 @@ const Page = async ({ params, searchParams }: Props) => {
     const returnPath = `/app/workspaces/${workspace.hash_id}/join?code=${codeParamValue}`;
 
     return (
-      <div className="h-screen flex flex-col justify-center items-center space-y-8">
-        <KiwiyIsSymbol />
-        <Card className="w-[440px]">
-          <CardHeader>
-            <CardTitle>
-              Join {`"`}
-              {workspace.name}
-              {`"`}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <CardDescription>
-              You are invited to {`"`}
-              {workspace.name}
-              {`"`}. Please sign in to join the workspace.
-            </CardDescription>
-          </CardContent>
-          <CardFooter>
-            <div className="flex gap-2 w-full">
-              <Link
-                className={cn(buttonVariants({ variant: "default" }), "flex-1")}
-                href={`/app/sign-up?return-path=${encodeURIComponent(
-                  returnPath
-                )}`}
-              >
-                Sign up
-              </Link>
+      <Card>
+        <CardHeader>
+          <CardTitle>
+            Join {`"`}
+            {workspace.name}
+            {`"`}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <CardDescription>
+            You are invited to {`"`}
+            {workspace.name}
+            {`"`}. Please sign in to join the workspace.
+          </CardDescription>
+        </CardContent>
+        <CardFooter>
+          <div className="flex gap-2 w-full">
+            <Link
+              className={cn(buttonVariants({ variant: "default" }), "flex-1")}
+              href={`/app/sign-up?return-path=${encodeURIComponent(
+                returnPath
+              )}`}
+            >
+              Sign up
+            </Link>
 
-              <Link
-                className={cn(buttonVariants({ variant: "outline" }), "flex-1")}
-                href={`/app/sign-in?return-path=${encodeURIComponent(
-                  returnPath
-                )}`}
-              >
-                Sign in
-              </Link>
-            </div>
-          </CardFooter>
-        </Card>
-      </div>
+            <Link
+              className={cn(buttonVariants({ variant: "outline" }), "flex-1")}
+              href={`/app/sign-in?return-path=${encodeURIComponent(
+                returnPath
+              )}`}
+            >
+              Sign in
+            </Link>
+          </div>
+        </CardFooter>
+      </Card>
     );
   }
 
@@ -137,28 +127,25 @@ const Page = async ({ params, searchParams }: Props) => {
   }
 
   return (
-    <div className="h-screen flex flex-col justify-center items-center space-y-8">
-      <KiwiyIsSymbol />
-      <Card className="w-[440px]">
-        <CardHeader>
-          <CardTitle>
-            Join {`"`}
-            {workspace.name}
-            {`"`}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <CardDescription>
-            You are invited to {`"`}
-            {workspace.name}
-            {`"`}.
-          </CardDescription>
-        </CardContent>
-        <CardFooter>
-          <JoinButton workspaceId={workspace.id} userId={user.id} />
-        </CardFooter>
-      </Card>
-    </div>
+    <Card>
+      <CardHeader>
+        <CardTitle>
+          Join {`"`}
+          {workspace.name}
+          {`"`}
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <CardDescription>
+          You are invited to {`"`}
+          {workspace.name}
+          {`"`}.
+        </CardDescription>
+      </CardContent>
+      <CardFooter>
+        <JoinButton workspaceId={workspace.id} userId={user.id} />
+      </CardFooter>
+    </Card>
   );
 };
 
