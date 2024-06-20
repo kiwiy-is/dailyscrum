@@ -14,6 +14,7 @@ import {
 import { Calendar } from "ui/shadcn-ui/calendar";
 import DatePickerTriggerButton from "./date-picker-trigger-button";
 import { Skeleton } from "ui/shadcn-ui/skeleton";
+import { expressInJsDate } from "@/lib/date-time";
 
 type Props = {
   timeZone: string;
@@ -36,18 +37,25 @@ const DatePicker = ({ timeZone }: Props) => {
       ? DateTime.fromISO(dateQuery).setZone(timeZone, { keepLocalTime: true })
       : today;
 
-  const [month, setMonth] = useState(date.startOf("month").toJSDate());
+  const [month, setMonth] = useState(expressInJsDate(date.startOf("month")));
 
   useEffect(() => {
-    if (!isOpen && DateTime.fromJSDate(month).month !== date.month) {
-      setTimeout(() => {
-        setMonth(date.startOf("month").toJSDate());
-      }, 150);
+    if (!isOpen) {
+      const dateTimeMonth = DateTime.fromJSDate(month);
+
+      if (
+        dateTimeMonth.month !== date.month ||
+        dateTimeMonth.year !== date.year
+      ) {
+        setTimeout(() => {
+          setMonth(expressInJsDate(date.startOf("month")));
+        }, 150);
+      }
     }
   }, [date, isOpen, month]);
 
   const handleTodayButtonClick = () => {
-    setMonth(today.startOf("month").toJSDate());
+    setMonth(expressInJsDate(today.startOf("month")));
   };
 
   const handleSelect = (systemZoneDate: Date | undefined) => {
@@ -85,11 +93,11 @@ const DatePicker = ({ timeZone }: Props) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="center">
         <Calendar
-          today={today.toJSDate()}
+          today={expressInJsDate(today)}
           month={month}
           onMonthChange={setMonth}
           mode="single"
-          selected={date.toJSDate()}
+          selected={expressInJsDate(date)}
           onSelect={handleSelect}
           className="p-2"
           classNames={{
