@@ -38,6 +38,7 @@ import {
 import { useToast } from "ui/shadcn-ui/use-toast";
 import { addUpdate } from "./actions";
 import { createBrowserClient } from "@/lib/supabase/browser-client";
+import { expressInJsDate } from "@/lib/date-time";
 
 type DynamicFormValues = { [x: string]: string };
 type FormValues = { date: Date };
@@ -72,7 +73,7 @@ const DateField: React.FC<{
         keepLocalTime: true,
       });
 
-      field.onChange(date.toJSDate());
+      field.onChange(expressInJsDate(date));
     },
     [field, timeZone]
   );
@@ -106,7 +107,7 @@ const DateField: React.FC<{
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="start">
             <Calendar
-              today={today.toJSDate()}
+              today={expressInJsDate(today)}
               mode="single"
               selected={selected}
               onSelect={handleSelect}
@@ -248,7 +249,7 @@ const AddUpdateDialogContent: React.FC<AddUpdateDialogContentProps> = ({
   const form = useForm<zod.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      date: isDateArchived ? today.toJSDate() : date.toJSDate(),
+      date: isDateArchived ? expressInJsDate(today) : expressInJsDate(date),
     },
   });
 
@@ -267,7 +268,7 @@ const AddUpdateDialogContent: React.FC<AddUpdateDialogContentProps> = ({
 
     // TODO: form.setValue didn't trigger rendering. Find out why.
     form.reset({
-      date: isDateArchived ? today.toJSDate() : date.toJSDate(),
+      date: isDateArchived ? expressInJsDate(today) : expressInJsDate(date),
     });
   }, [dateQuery, timeZone, form]);
 

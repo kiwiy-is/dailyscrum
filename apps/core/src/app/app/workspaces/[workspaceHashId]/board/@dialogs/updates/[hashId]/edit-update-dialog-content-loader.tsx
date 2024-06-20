@@ -4,6 +4,7 @@ import React from "react";
 import { DateTime } from "luxon";
 import { Database } from "@/lib/supabase/database";
 import EditUpdateDialogContent from "./edit-update-dialog-content";
+import { expressInJsDate } from "@/lib/date-time";
 
 type Props = {
   updateEntryId: number | null;
@@ -47,7 +48,7 @@ const EditUpdateDialogContentLoader = async ({ updateEntryId }: Props) => {
       };
     });
 
-  const date = DateTime.fromISO(data.date).toJSDate();
+  const date = expressInJsDate(DateTime.fromISO(data.date));
 
   const answers = data.daily_scrum_update_answers.map((answer) => {
     return {
