@@ -1,21 +1,12 @@
 "use server";
 
-import {
-  setUpWorkspaceForCurrentUser,
-  updateWorkspace,
-} from "@/services/workspaces";
+import { setUpWorkspaceForCurrentUser } from "@/services/workspaces";
 
-export async function completeCreateWorkspace(
-  workspaceId: number | undefined,
-  name: string
-) {
-  if (workspaceId) {
-    return updateWorkspace(workspaceId, {
+export async function completeCreateWorkspace(name: string, timeZone: string) {
+  return setUpWorkspaceForCurrentUser(
+    {
       name,
-    });
-  } else {
-    return setUpWorkspaceForCurrentUser({
-      name,
-    });
-  }
+    },
+    timeZone
+  );
 }

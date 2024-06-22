@@ -15,11 +15,11 @@ const StandardTimeZoneSettingsCard = ({ workspaceHashId }: Props) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">Standard time zone</CardTitle>
+        <CardTitle className="text-base">Default time zone</CardTitle>
         <CardDescription>
           {" "}
-          The standard time zone for the workspace. All dates and times of are
-          considered to be in this time zone.
+          All dates and times are considered to be in this time zone for the
+          workspace.
         </CardDescription>
       </CardHeader>
       <CardContent>

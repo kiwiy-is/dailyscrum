@@ -54,11 +54,12 @@ const CompleteSignUpForm = ({ returnPath, defaultValues }: Props) => {
         return;
       }
 
-      router.push(
-        `/app/onboard/create-workspace${
-          returnPath ? `?return-path=${encodeURIComponent(returnPath)}` : ""
-        }`
-      );
+      if (returnPath) {
+        router.push(returnPath);
+        return;
+      }
+
+      router.push("/app/onboard/create-workspace");
     });
   });
 

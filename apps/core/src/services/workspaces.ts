@@ -62,7 +62,8 @@ export const getWorkspaceByHashId = memoize(async (hashId: string) => {
 export const setUpWorkspaceForCurrentUser = async (
   workspaceValues: Required<
     Pick<Database["daily_scrum"]["Tables"]["workspaces"]["Insert"], "name">
-  >
+  >,
+  timeZone: string
 ) => {
   const { data: user, error: getCurrentUserError } = await getCurrentUser();
 
@@ -142,7 +143,7 @@ export const setUpWorkspaceForCurrentUser = async (
       {
         workspace_id: workspace.id,
         attribute_key: "time_zone",
-        attribute_value: "America/New_York", // TODO: Get user timezone
+        attribute_value: timeZone,
       },
       {
         workspace_id: workspace.id,

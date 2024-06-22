@@ -2,7 +2,6 @@
 
 import { createAuthClient } from "@/lib/supabase/auth-client";
 import { createClient } from "@/lib/supabase/client";
-import { setUpWorkspaceForCurrentUser } from "@/services/workspaces";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -25,7 +24,6 @@ export async function verify(email: string, code: string, returnPath?: string) {
   const { user } = verificationResponse.data;
 
   const { data: profile } = await client
-    .schema("public")
     .from("profiles")
     .select()
     .eq("id", user.id)
@@ -34,22 +32,6 @@ export async function verify(email: string, code: string, returnPath?: string) {
   const isSignUpFlow = !Boolean(profile);
 
   if (isSignUpFlow) {
-    // NOTE: sign up flow
-    const [emailUserName] = user.email ? user.email?.split("@") : [user.id];
-    await client.schema("public").from("profiles").insert({
-      id: user.id,
-      name: emailUserName,
-    });
-
-    await setUpWorkspaceForCurrentUser({
-      name: "My workspace",
-    });
-
-    if (returnPath) {
-      // TODO: redirect on client side
-      redirect(returnPath);
-    }
-
     // TODO: redirect on client side
     redirect(
       `/app/onboard/create-profile${

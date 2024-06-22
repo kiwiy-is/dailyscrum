@@ -16,29 +16,26 @@ import { Input } from "ui/shadcn-ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { z } from "zod";
-import { useEffect, useTransition } from "react";
+import { useTransition } from "react";
 import { completeCreateWorkspace } from "./actions";
 import { useRouter } from "next/navigation";
+import TimeZoneSelector from "@/components/time-zone-selector";
 
 const formSchema = z.object({
   name: z.string().min(1),
+  timeZone: z.string().min(1),
 });
 
 type Props = {
-  workspaceId: number | undefined;
   returnPath: string | undefined;
-  defaultValues?: z.infer<typeof formSchema>;
 };
 
-const CreateWorkspaceForm = ({
-  workspaceId,
-  returnPath,
-  defaultValues,
-}: Props) => {
+const CreateWorkspaceForm = ({ returnPath }: Props) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "My workspace",
+      name: "",
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     },
   });
 
@@ -46,13 +43,12 @@ const CreateWorkspaceForm = ({
 
   const [isPending, startTransition] = useTransition();
 
-  useEffect(() => {
-    form.reset(defaultValues);
-  }, [defaultValues, form]);
-
   const handleSubmit = form.handleSubmit((values) => {
     startTransition(async () => {
-      const { error } = await completeCreateWorkspace(workspaceId, values.name);
+      const { error } = await completeCreateWorkspace(
+        values.name,
+        values.timeZone
+      );
 
       if (error) {
         form.setError("name", { message: error.message });
@@ -73,7 +69,7 @@ const CreateWorkspaceForm = ({
             <FormItem>
               <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="Name" {...field} />
+                <Input placeholder="My workspace" {...field} />
               </FormControl>
 
               <FormDescription>
@@ -82,6 +78,31 @@ const CreateWorkspaceForm = ({
               <FormMessage />
             </FormItem>
           )}
+        />
+
+        <FormField
+          control={form.control}
+          name="timeZone"
+          render={({ field }) => {
+            return (
+              <FormItem className="flex flex-col">
+                <FormLabel>Default time zone</FormLabel>
+                <FormControl>
+                  <TimeZoneSelector
+                    value={field.value}
+                    onSelect={field.onChange}
+                  />
+                </FormControl>
+
+                <FormDescription>
+                  All dates and times are considered to be in this time zone for
+                  the workspace. You can change this in the workspace settings
+                  later.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            );
+          }}
         />
 
         <Button type="submit" className="w-full" loading={isPending}>

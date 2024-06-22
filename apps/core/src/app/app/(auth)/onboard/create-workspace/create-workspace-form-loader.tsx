@@ -1,9 +1,7 @@
 import React from "react";
 import CreateWorkspaceForm from "./create-workspace-form";
-import {
-  getWorkspaceByHashId,
-  listWorkspacesOfCurrentUser,
-} from "@/services/workspaces";
+import { listWorkspacesOfCurrentUser } from "@/services/workspaces";
+import { redirect } from "next/navigation";
 
 type Props = {
   returnPathQuery: string | undefined;
@@ -20,24 +18,11 @@ const CreateWorkspaceFormLoader = async ({ returnPathQuery }: Props) => {
     return null;
   }
 
-  const [workspace] = workspaces;
-
-  let defaultValues: { name: string } | undefined;
-  let worksapceId: number | undefined;
-
-  if (workspace) {
-    defaultValues = { name: workspace.name };
-    const { data } = await getWorkspaceByHashId(workspace.id);
-    worksapceId = data?.id;
+  if (workspaces.length > 0) {
+    return redirect("/app");
   }
 
-  return (
-    <CreateWorkspaceForm
-      workspaceId={worksapceId}
-      returnPath={returnPath}
-      defaultValues={defaultValues}
-    />
-  );
+  return <CreateWorkspaceForm returnPath={returnPath} />;
 };
 
 export default CreateWorkspaceFormLoader;
