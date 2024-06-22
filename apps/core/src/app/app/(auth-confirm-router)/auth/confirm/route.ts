@@ -1,3 +1,9 @@
+import { NextRequest } from "next/server";
+
+export async function GET(request: NextRequest) {
+  return new Response("Invalid request", { status: 400 });
+}
+
 // import { createAuthClient } from "@/lib/supabase/auth-client";
 // import { createClient } from "@/lib/supabase/client";
 // import { setUpWorkspaceForCurrentUser } from "@/services/workspaces";
