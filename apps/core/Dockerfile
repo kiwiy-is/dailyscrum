@@ -27,6 +27,7 @@ RUN --mount=type=secret,id=NEXT_PUBLIC_SUPABASE_URL \
   --mount=type=secret,id=ASSET_PREFIX \
   NEXT_PUBLIC_SUPABASE_URL="$(cat /run/secrets/NEXT_PUBLIC_SUPABASE_URL)" \
   NEXT_PUBLIC_SUPABASE_ANON_KEY="$(cat /run/secrets/NEXT_PUBLIC_SUPABASE_ANON_KEY)" \
+  NEXT_PUBLIC_METADATA_BASE_URL="$(cat /run/secrets/NEXT_PUBLIC_METADATA_BASE_URL)" \
   SUPABASE_SERVICE_ROLE_KEY="$(cat /run/secrets/SUPABASE_SERVICE_ROLE_KEY)" \
   ASSET_PREFIX="$(cat /run/secrets/ASSET_PREFIX)" \
   pnpm exec nx build dailyscrum-core

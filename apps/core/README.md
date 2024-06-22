@@ -24,6 +24,7 @@ Create a `.env.local` file and configure your environment variables:
 ```plaintext
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
+NEXT_PUBLIC_METADATA_BASE_URL=
 SUPABASE_SERVICE_ROLE_KEY=
 ASSET_PREFIX=
 ```
