@@ -23,6 +23,7 @@ RUN pnpm install --prod=false
 
 RUN --mount=type=secret,id=NEXT_PUBLIC_SUPABASE_URL \
   --mount=type=secret,id=NEXT_PUBLIC_SUPABASE_ANON_KEY \
+  --mount=type=secret,id=NEXT_PUBLIC_METADATA_BASE_URL \
   --mount=type=secret,id=SUPABASE_SERVICE_ROLE_KEY \
   --mount=type=secret,id=ASSET_PREFIX \
   NEXT_PUBLIC_SUPABASE_URL="$(cat /run/secrets/NEXT_PUBLIC_SUPABASE_URL)" \
