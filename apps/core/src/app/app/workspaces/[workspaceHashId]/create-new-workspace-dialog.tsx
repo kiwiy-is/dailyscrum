@@ -18,6 +18,8 @@ import {
   FormItem,
   FormLabel,
   FormControl,
+  FormMessage,
+  FormDescription,
 } from "ui/shadcn-ui/form";
 import { Input } from "ui/shadcn-ui/input";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -26,8 +28,10 @@ import { createNewWorkspace } from "./actions";
 import { useToast } from "ui/shadcn-ui/use-toast";
 import { CheckCircleIcon } from "lucide-react";
 
+import TimeZoneSelector from "@/components/time-zone-selector";
 const formSchema = z.object({
   name: z.string().min(1),
+  timeZone: z.string().min(1),
 });
 
 type Props = {};
@@ -50,6 +54,7 @@ const CreateNewWorkspaceDialog = (props: Props) => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     },
   });
 
@@ -73,7 +78,10 @@ const CreateNewWorkspaceDialog = (props: Props) => {
     (event: React.FormEvent<HTMLFormElement>) => {
       form.handleSubmit((values) => {
         startTransition(async () => {
-          const { data, error } = await createNewWorkspace(values.name);
+          const { data, error } = await createNewWorkspace(
+            values.name,
+            values.timeZone
+          );
 
           if (error) {
             form.setError("name", { message: error.message });
@@ -102,11 +110,15 @@ const CreateNewWorkspaceDialog = (props: Props) => {
         <DialogHeader>
           <DialogTitle>Create a new workspace</DialogTitle>
           <DialogDescription>
-            Enter the name of your workspace to start sharing and managing daily
-            scrum updates.
+            Create a new workspace to start sharing and managing daily scrum
+            updates.
           </DialogDescription>
         </DialogHeader>
-        <form id="create-new-workspace-form" onSubmit={handleSubmit}>
+        <form
+          id="create-new-workspace-form"
+          className="space-y-6"
+          onSubmit={handleSubmit}
+        >
           <Form {...form}>
             <FormField
               render={({ field }) => {
@@ -114,12 +126,43 @@ const CreateNewWorkspaceDialog = (props: Props) => {
                   <FormItem>
                     <FormLabel>Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Workspace name" {...field} />
+                      <Input
+                        placeholder="My workspace"
+                        autoFocus={false}
+                        {...field}
+                      />
                     </FormControl>
+                    <FormDescription>
+                      The name of your workspace.
+                    </FormDescription>
                   </FormItem>
                 );
               }}
               name="name"
+            />
+            <FormField
+              control={form.control}
+              name="timeZone"
+              render={({ field }) => {
+                return (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Default time zone</FormLabel>
+                    <FormControl>
+                      <TimeZoneSelector
+                        value={field.value}
+                        onSelect={field.onChange}
+                      />
+                    </FormControl>
+
+                    <FormDescription>
+                      All dates and times are considered to be in this time zone
+                      for the workspace. You can change this in the workspace
+                      settings later.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
             />
           </Form>
         </form>

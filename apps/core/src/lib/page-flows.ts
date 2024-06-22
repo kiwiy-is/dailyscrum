@@ -11,9 +11,15 @@ export const redirectIfNotSignedIn = async () => {
     return redirect("/app/sign-up");
   }
 
-  // TODO: check profile existance too? redirect to /onboard/create-profile
-
   return user;
+};
+
+export const redirectIfProfileDoesntExist = async () => {
+  const { data: profile } = await getCurrentUserProfile();
+
+  if (!profile) {
+    return redirect("/app/onboard/create-profile");
+  }
 };
 
 export const redirectIfNotWorkspaceMember = async (

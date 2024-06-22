@@ -1,9 +1,9 @@
 "use server";
 
-import { updateProfile } from "@/services/profiles";
+import { createProfile } from "@/services/profiles";
 
 export async function completeSignUp(name: string) {
-  return updateProfile({
+  return createProfile({
     name,
   });
 }

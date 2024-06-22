@@ -20,6 +20,7 @@ const JoinButton = ({ workspaceId, userId }: Props) => {
       onClick={() => {
         startTransition(async () => {
           const { data: workspace } = await join(workspaceId, userId);
+
           if (!workspace) {
             return;
           }

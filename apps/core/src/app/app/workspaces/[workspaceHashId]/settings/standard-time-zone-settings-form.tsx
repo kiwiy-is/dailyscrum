@@ -1,20 +1,11 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CheckIcon, ChevronsUpDownIcon } from "lucide-react";
 import { DateTime } from "luxon";
 import { useRouter } from "next/navigation";
-import { createRef, useEffect, useRef, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
-import { cn } from "ui";
 import { Button } from "ui/button";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "ui/command";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -31,10 +22,9 @@ import {
   FormControl,
   FormMessage,
 } from "ui/shadcn-ui/form";
-import { Popover, PopoverContent, PopoverTrigger } from "ui/shadcn-ui/popover";
-import { ScrollArea } from "ui/shadcn-ui/scroll-area";
 import { z } from "zod";
 import { updateStandardTimeZone } from "./actions";
+import TimeZoneSelector from "@/components/time-zone-selector";
 
 type Props = {
   workspaceId: number;
@@ -102,73 +92,12 @@ const StandardTimeZoneSettingsForm = ({ workspaceId, timeZone }: Props) => {
             render={({ field }) => {
               return (
                 <FormItem className="flex flex-col">
-                  <Popover open={open} onOpenChange={setOpen}>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant="outline"
-                          role="combobox"
-                          size="sm"
-                          className={cn(
-                            "justify-between h-10 font-normal",
-                            !field.value && "text-muted-foreground"
-                          )}
-                        >
-                          {field.value
-                            ? timeZones.find(
-                                (timeZone) => timeZone.value === field.value
-                              )?.label
-                            : "Select time zone"}
-
-                          <ChevronsUpDownIcon
-                            className="ml-auto h-4 w-4 shrink-0 opacity-50"
-                            strokeWidth={2}
-                          />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent
-                      className=" min-w-[360px] p-0"
-                      align="start"
-                    >
-                      <Command value={field.value}>
-                        <CommandInput placeholder="Search time zone..." />
-                        <CommandEmpty>No time zone found.</CommandEmpty>
-                        <CommandGroup className="">
-                          <ScrollArea className="h-[280px]">
-                            {timeZones.map((timeZone) => {
-                              const isSelected = timeZone.value === field.value;
-
-                              if (!refs.current[timeZone.value]) {
-                                refs.current[timeZone.value] =
-                                  createRef<HTMLDivElement>();
-                              }
-
-                              return (
-                                <CommandItem
-                                  value={timeZone.label}
-                                  key={timeZone.value}
-                                  ref={refs.current[timeZone.value]}
-                                  onSelect={() => {
-                                    field.onChange(timeZone.value);
-                                  }}
-                                >
-                                  <CheckIcon
-                                    className={cn(
-                                      "mr-2 h-4 w-4",
-                                      isSelected ? "opacity-100" : "opacity-0"
-                                    )}
-                                  />
-                                  {timeZone.label}
-                                </CommandItem>
-                              );
-                            })}
-                          </ScrollArea>
-                        </CommandGroup>
-                      </Command>
-                    </PopoverContent>
-                  </Popover>
-
+                  <FormControl>
+                    <TimeZoneSelector
+                      value={field.value}
+                      onSelect={field.onChange}
+                    />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               );

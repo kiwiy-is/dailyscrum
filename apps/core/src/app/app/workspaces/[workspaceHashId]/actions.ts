@@ -6,8 +6,8 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { getCurrentUserProfile, updateProfile } from "@/services/profiles";
 
-export async function createNewWorkspace(name: string) {
-  return setUpWorkspaceForCurrentUser({ name });
+export async function createNewWorkspace(name: string, timeZone: string) {
+  return setUpWorkspaceForCurrentUser({ name }, timeZone);
 }
 
 export async function signOut() {

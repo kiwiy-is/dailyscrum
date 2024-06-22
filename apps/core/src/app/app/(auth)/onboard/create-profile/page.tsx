@@ -4,6 +4,8 @@ import { getCurrentUserProfile } from "@/services/profiles";
 import { Suspense } from "react";
 import PageFlowHandler from "./page-flow-handler";
 import { Metadata } from "next";
+import { getCurrentUser } from "@/services/users";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Create profile",
@@ -21,6 +23,18 @@ const Page = async ({ searchParams }: Props) => {
 
   const { data: profile } = await getCurrentUserProfile();
 
+  if (profile) {
+    return redirect("/app");
+  }
+
+  const { data: user } = await getCurrentUser();
+
+  let emailUserName = "";
+  if (user) {
+    const [userName] = user.email ? user.email?.split("@") : [user.id];
+    emailUserName = userName;
+  }
+
   return (
     <>
       <Suspense>
@@ -35,7 +49,9 @@ const Page = async ({ searchParams }: Props) => {
           {/* TODO: wrap in loader component */}
           <CompleteSignUpForm
             returnPath={returnPath}
-            defaultValues={{ name: profile?.name ?? "" }}
+            defaultValues={{
+              name: emailUserName,
+            }}
           />
         </CardContent>
       </Card>
