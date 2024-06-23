@@ -1,0 +1,1 @@
+alter table "daily_scrum"."daily_scrum_update_entries" alter column "date" set data type date using "date"::date;
