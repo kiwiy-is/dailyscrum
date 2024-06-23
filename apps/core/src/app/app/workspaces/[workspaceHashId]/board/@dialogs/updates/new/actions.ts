@@ -2,7 +2,6 @@
 
 import { createDailyScrumUpdateAnswers } from "@/services/daily-scrum-update-answers";
 import { createDailyScrumUpdateEntry } from "@/services/daily-scrum-update-entries";
-import { DateTime } from "luxon";
 
 export async function addUpdate(
   workspaceHashId: string,
@@ -10,13 +9,13 @@ export async function addUpdate(
   timeZone: string,
   formValues: {
     [x: number]: string;
-  } & { date: Date }
+  } & {
+    date: string;
+  }
 ) {
   const { date, ...dynamicFormValues } = formValues;
 
-  const dateString = DateTime.fromJSDate(date).toISODate();
-
-  if (!dateString) {
+  if (!date) {
     return {
       error: {
         message: "Invalid date",
@@ -27,7 +26,7 @@ export async function addUpdate(
   const { data: entry, error: insertDailyScrumUpdateEntryError } =
     await createDailyScrumUpdateEntry(workspaceHashId, {
       daily_scrum_update_form_id: formId,
-      date: dateString,
+      date,
       time_zone: timeZone,
     });
 

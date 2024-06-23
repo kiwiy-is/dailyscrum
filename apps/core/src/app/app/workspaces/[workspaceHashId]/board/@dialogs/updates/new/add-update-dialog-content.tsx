@@ -318,10 +318,12 @@ const AddUpdateDialogContent: React.FC<AddUpdateDialogContentProps> = ({
     Promise.all([dynamicFormPromise, formPromise]).then(
       ([dynamicFormValues, formValues]) => {
         startTransition(async () => {
+          const dateString = DateTime.fromJSDate(formValues.date).toISODate()!;
+
           const mergedValues = {
-            ...formValues,
+            date: dateString,
             ...dynamicFormValues,
-          } as unknown as FormValues & DynamicFormValues;
+          };
 
           // TODO: handle error. Maybe trigger a toast?
           const { error } = await addUpdate(
@@ -345,7 +347,7 @@ const AddUpdateDialogContent: React.FC<AddUpdateDialogContentProps> = ({
               event: "updateAdd",
               payload: {
                 message: JSON.stringify({
-                  date: DateTime.fromJSDate(formValues.date).toISODate(),
+                  date: dateString,
                 }),
               },
             });
@@ -353,9 +355,9 @@ const AddUpdateDialogContent: React.FC<AddUpdateDialogContentProps> = ({
 
           const dateQuery = searchParams.get("date");
           const currentDate = dateQuery ? DateTime.fromISO(dateQuery) : today;
-          const formDate = DateTime.fromJSDate(formValues.date);
+          const date = DateTime.fromISO(dateString);
 
-          if (formDate.hasSame(currentDate, "day")) {
+          if (date.hasSame(currentDate, "day")) {
             router.push(
               `/app/workspaces/${
                 params.workspaceHashId
@@ -364,7 +366,7 @@ const AddUpdateDialogContent: React.FC<AddUpdateDialogContentProps> = ({
             router.refresh();
           } else {
             const mutableSearchParams = new URLSearchParams(searchParams);
-            mutableSearchParams.set("date", formDate.toISODate()!);
+            mutableSearchParams.set("date", date.toISODate()!);
             router.push(
               `/app/workspaces/${
                 params.workspaceHashId
