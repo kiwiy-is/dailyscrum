@@ -20,7 +20,11 @@ COPY . .
 
 RUN pnpm install --prod=false
 
-RUN --mount=type=secret,id=PROXY_URL PROXY_URL="$(cat /run/secrets/PROXY_URL)" pnpm exec nx build dailyscrum-website
+RUN --mount=type=secret,id=NEXT_PUBLIC_METADATA_BASE_URL \
+  --mount=type=secret,id=PROXY_URL \
+  NEXT_PUBLIC_METADATA_BASE_URL="$(cat /run/secrets/NEXT_PUBLIC_METADATA_BASE_URL)" \
+  PROXY_URL="$(cat /run/secrets/PROXY_URL)" \
+  pnpm exec nx build dailyscrum-website
 
 EXPOSE 3000
 

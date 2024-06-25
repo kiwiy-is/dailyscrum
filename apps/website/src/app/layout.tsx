@@ -6,14 +6,30 @@ import { cn } from "ui";
 
 const inter = Inter({ subsets: ["latin"] });
 
+const metadataTitle =
+  "Kiwiy Daily Scrum | Minimalist daily scrum board for your team";
+
 const metadataDescription =
-  "Simplify your daily scrum with Kiwiy Daily Scrum, a free, open-source board for agile teams. Share updates in seconds and track your team's status effortlessly. No more copying and pasting templates in Slack. Focus on delivering value.";
+  "A free minimalist daily scrum board for your team. Share updates in seconds and keep your team in sync with a centralized, real-time board view. Easily invite team members, add daily updates, and use the board during meetings. Enjoy all features for free.";
 
 export const metadata: Metadata = {
-  title: "Kiwiy Daily Scrum",
+  title: metadataTitle,
   description: metadataDescription,
+  keywords: [
+    "daily scrum board",
+    "daily updates",
+    "team updates",
+    "team productivity",
+    "real-time board",
+    "team collaboration",
+    "open-source",
+    "daily scrum questions",
+    "dedicated workspace",
+    "Kiwiy Daily Scrum",
+  ],
+  metadataBase: new URL(process.env.NEXT_PUBLIC_METADATA_BASE_URL!),
   openGraph: {
-    title: "Kiwiy Daily Scrum - A board to streamline team daily scrum",
+    title: metadataTitle,
     description: metadataDescription,
     url: "https://dailyscrum.kiwiy.is",
     siteName: "Kiwiy Daily Scrum",
