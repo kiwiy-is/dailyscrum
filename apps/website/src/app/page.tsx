@@ -77,16 +77,16 @@ const Page = () => {
       </header>
 
       <main className="flex-grow px-4 md:!px-8">
-        <section className="py-10 max-w-3xl mx-auto">
+        <section className="py-10 max-w-4xl mx-auto">
           <div className="space-y-6 text-center pt-10">
             <h1 className={cn(h1(), "")}>
-              Share updates in seconds, <br className="hidden md:!block" />
-              streamline team{`'`}s daily scrum
+              Minimalist daily scrum board <br className="hidden md:!block" />{" "}
+              for your team
             </h1>
             <p className={cn(p(), "")}>
-              Quickly share your own updates in seconds, and easily track your
-              team{`'`}s status on our dedicated workspace board - and it{`'`}s
-              free!
+              Share your updates in seconds, and keep daily team status in sync
+              with a dedicated workspace board.
+              <br className="hidden md:!block" /> All features are free!
             </p>
             <Button size="lg" className="w-full md:!w-auto" asChild>
               <a href="/app">Get Started</a>
@@ -129,76 +129,75 @@ const Page = () => {
 
         <section className="py-10 max-w-2xl mx-auto">
           <div className="text-left">
-            <h2 className={cn(h2(), "font-bold")}>
-              Convenient daily scrum, in a collaborative way
-            </h2>
-
-            <h3 className={cn(h3(), "mt-8")}>
-              Quickly share your updates without hassle
-            </h3>
-            <p className={cn(p(), "")}>
-              No more copying and pasting the daily scrum template into Slack.
-              Simply answer the ready-made questions to save time and effort,
-              quickly filling in your daily scrum updates without having to type
-              out the questions yourself.
-            </p>
-
-            <h3 className={cn(h3(), "mt-8")}>
-              See your team{`'`}s updates at a glance
-            </h3>
-
-            <p className={cn(p(), "")}>
-              View all team updates organized in one place for faster status
-              checks. Focus on teammates{`'`} blockers and assist them promptly.
-              The clear board view helps ensure everyone stays informed and
-              collaborative.
-            </p>
-          </div>
-        </section>
-
-        <div className="h-28"></div>
-
-        <section className="py-10 max-w-2xl mx-auto">
-          <div className="text-left">
             <h2 className={cn(h2(), "font-bold")}>How it works</h2>
 
-            <h3 className={cn(h3(), "mt-8")}>
-              Step 1. Invite your team to the workspace
-            </h3>
+            <h3 className={cn(h3(), "mt-8")}>Step 1. Invite your team</h3>
             <p className={cn(p(), "")}>
-              Bring your team together in a dedicated workspace.
+              Create a workspace and bring your team together. You can invite
+              them with an invitation link.
             </p>
 
-            <h3 className={cn(h3(), "mt-8")}>Step 2. Add your updates</h3>
+            <h3 className={cn(h3(), "mt-8")}>Step 2. Add updates</h3>
             <p className={cn(p(), "")}>
-              Answer the daily scrum questions and easily share your response by
-              adding it to the team board.
+              {/* Answer daily scrum questions and add your responses to the board. */}
+              Answer daily scrum questions. Your responses will be automatically
+              added to the board.
             </p>
 
             <h3 className={cn(h3(), "mt-8")}>
-              Step 3. Use the board in daily scrum meetings
+              {/* Step 3. Use in daily scrum meetings */}
+              Step 3. Use the board in meeting
             </h3>
             <p className={cn(p(), "")}>
-              View all team updates in one organized place. Inspect progress,
-              adjust the Sprint Backlog, and plan the next day{`'`}s work during
-              the meeting.
+              Share the board during the meeting and see all updates in one
+              place. Adjust plans and discuss blockers.
             </p>
           </div>
         </section>
+
         <div className="h-28"></div>
 
         <section className="py-10 max-w-2xl mx-auto">
           <div className="text-left">
-            {/* <h2 className={cn(h2(), "border-none")}>
-              Convenient daily scrum, in a more collaborative way
-            </h2> */}
+            <h2 className={cn(h2(), "font-bold")}>Key features</h2>
 
+            <h3 className={cn(h3(), "mt-8")}>
+              Centralized realtime board view
+            </h3>
+
+            <p className={cn(p(), "")}>
+              See all team updates at a glance on the realtime board. It helps
+              keep everyone informed.
+            </p>
+
+            <h3 className={cn(h3(), "mt-8")}>Question form for quick update</h3>
+            <p className={cn(p(), "")}>
+              Fill out the form with tailored questions for a daily scrum
+              update.
+            </p>
+
+            <h3 className={cn(h3(), "mt-8")}>
+              Custom question templates (Coming Soon)
+            </h3>
+
+            <p className={cn(p(), "")}>
+              In the near future, you{`'`}ll be able to edit daily scrum
+              questions to fit your team{`'`}s needs.
+            </p>
+          </div>
+        </section>
+
+        <div className="h-28"></div>
+
+        <section className="py-10 max-w-2xl mx-auto">
+          <div className="text-left">
             <h2 className={cn(h2(), "font-bold")}>Free and open source</h2>
 
             <h3 className={cn(h3(), "mt-8")}>Enjoy all features for free</h3>
             <p className={cn(p(), "")}>
-              Kiwiy Daily Scrum is entirely free to use. We believe in offering
-              valuable tools without any cost.
+              Kiwiy Daily Scrum is entirely free to use. We hope to promote the
+              overall happiness of the community by offering valuable tools at
+              no cost.
             </p>
 
             <h3 className={cn(h3(), "mt-8")}>Open source for the community</h3>
@@ -206,25 +205,24 @@ const Page = () => {
             <p className={cn(p(), "")}>
               Kiwiy Daily Scrum is an open-source project built by and for the
               community. This means you can use it freely and benefit from
-              continuous improvements.
+              continuous improvements by the community.
             </p>
           </div>
         </section>
 
-        {/* <div className="h-28 hidden sm:!block"></div> */}
         <div className="h-28"></div>
 
         <section className="py-10 max-w-2xl mx-auto ">
           <div className="text-left space-y-6">
-            {/* <h2 className={cn(h2(), "font-bold")}> */}
             <h2 className={cn(h1(), " !text-[40px]")}>
-              Ready to make your daily scrum seamless?
+              Make your team{`'`}s daily scrum minimal
             </h2>
 
             <p className={cn(p(), "")}>
-              Take the first step towards a smoother and more efficient daily
-              scrum. <br /> Try Kiwiy Daily Scrum now and see how it can
-              streamline your team{`'`}s daily scrum.
+              Easily share updates, keep everyone on the same page, and enjoy
+              all features for free.
+              <br />
+              Start today!
             </p>
 
             <Button size="lg" className="w-full md:!w-auto" asChild>
