@@ -12,6 +12,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: superfly/flyctl-actions/setup-flyctl@master
-      - run: flyctl deploy --config apps/website/fly.toml --build-secret PROXY_URL=${{ secrets.PROXY_URL }} --remote-only
+      - run: flyctl deploy --config apps/website/fly.toml --build-secret NEXT_PUBLIC_METADATA_BASE_URL=${{ secrets.NEXT_PUBLIC_METADATA_BASE_URL }} --build-secret PROXY_URL=${{ secrets.PROXY_URL }} --remote-only
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
