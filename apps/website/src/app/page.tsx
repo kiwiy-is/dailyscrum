@@ -86,8 +86,7 @@ const Page = () => {
             <p className={cn(p(), "")}>
               Share your updates in seconds, and keep daily team status in sync
               with a dedicated workspace board.
-              <br />
-              All features are free!
+              <br className="hidden md:!block" /> All features are free!
             </p>
             <Button size="lg" className="w-full md:!w-auto" asChild>
               <a href="/app">Get Started</a>
@@ -134,7 +133,8 @@ const Page = () => {
 
             <h3 className={cn(h3(), "mt-8")}>Step 1. Invite your team</h3>
             <p className={cn(p(), "")}>
-              Create a workspace and bring your team together.
+              Create a workspace and bring your team together. You can invite
+              them with an invitation link.
             </p>
 
             <h3 className={cn(h3(), "mt-8")}>Step 2. Add updates</h3>
@@ -145,11 +145,12 @@ const Page = () => {
             </p>
 
             <h3 className={cn(h3(), "mt-8")}>
-              Step 3. Use in daily scrum meetings
+              {/* Step 3. Use in daily scrum meetings */}
+              Step 3. Use the board in meeting
             </h3>
             <p className={cn(p(), "")}>
-              Share the board and view all updates in one place. Adjust plans
-              and discuss blockers.
+              Share the board during the meeting and see all updates in one
+              place. Adjust plans and discuss blockers.
             </p>
           </div>
         </section>
@@ -160,26 +161,27 @@ const Page = () => {
           <div className="text-left">
             <h2 className={cn(h2(), "font-bold")}>Key features</h2>
 
-            <h3 className={cn(h3(), "mt-8")}>Question form for quick update</h3>
-            <p className={cn(p(), "")}>
-              Fill out the form with tailored questions for a daily scrum
-              update. No more copying and pasting a daily scrum template into
-              Slack.
-            </p>
-
-            <h3 className={cn(h3(), "mt-8")}>Centralized board view</h3>
-
-            <p className={cn(p(), "")}>
-              See all team updates at a glance on the board. It helps keep
-              everyone informed.
-            </p>
-
             <h3 className={cn(h3(), "mt-8")}>
-              {/* See your team{`'`}s updates at a glance */}
+              Centralized realtime board view
             </h3>
 
             <p className={cn(p(), "")}>
-              In the near future, you{`'`}ll be able to tailor daily scrum
+              See all team updates at a glance on the realtime board. It helps
+              keep everyone informed.
+            </p>
+
+            <h3 className={cn(h3(), "mt-8")}>Question form for quick update</h3>
+            <p className={cn(p(), "")}>
+              Fill out the form with tailored questions for a daily scrum
+              update.
+            </p>
+
+            <h3 className={cn(h3(), "mt-8")}>
+              Custom question templates (Coming Soon)
+            </h3>
+
+            <p className={cn(p(), "")}>
+              In the near future, you{`'`}ll be able to edit daily scrum
               questions to fit your team{`'`}s needs.
             </p>
           </div>
