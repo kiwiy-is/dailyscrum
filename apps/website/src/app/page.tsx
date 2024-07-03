@@ -66,7 +66,7 @@ const Page = ({ searchParams }: Props) => {
   return (
     <>
       {process.env.NODE_ENV === "production" && !noTracking && (
-        <Script>
+        <Script id="clarity">
           {`
             (function(c,l,a,r,i,t,y){
               c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
