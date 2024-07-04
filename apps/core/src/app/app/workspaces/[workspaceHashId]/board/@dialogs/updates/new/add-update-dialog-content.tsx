@@ -107,10 +107,10 @@ const DateField: React.FC<{
             <FormControl>
               <Button
                 variant={"outline"}
-                className="w-[240px] font-normal h-10"
+                className="w-full sm:!w-[240px] font-normal h-10"
               >
-                <div>
-                  <span>{formattedDate}</span>{" "}
+                <div className="flex gap-x-2">
+                  <span>{formattedDate}</span>
                   <span className="text-muted-foreground">({gmtOffset})</span>
                 </div>
                 <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
