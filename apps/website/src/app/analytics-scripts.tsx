@@ -8,7 +8,7 @@ type Props = {};
 
 const AnalyticsScripts = (props: Props) => {
   const searchParams = useSearchParams();
-  console.log({ searchParams });
+
   const noTrackingQuery = searchParams.get("no-tracking");
   const noTracking = noTrackingQuery
     ? decodeURIComponent(noTrackingQuery) === "true"
