@@ -38,7 +38,11 @@ import {
 import { useToast } from "ui/shadcn-ui/use-toast";
 import { addUpdate } from "./actions";
 import { createBrowserClient } from "@/lib/supabase/browser-client";
-import { expressInJsDate } from "@/lib/date-time";
+import {
+  expressInJsDate,
+  formatDateAddYearIfDifferent,
+  getGmtOffset,
+} from "@/lib/date-time";
 
 type DynamicFormValues = { [x: string]: string };
 type FormValues = { date: Date };
@@ -58,10 +62,15 @@ const DateField: React.FC<{
   const tomorrow = useMemo(() => today.plus({ days: 1 }), [today]);
 
   const formattedDate = useMemo(() => {
-    return DateTime.fromJSDate(selected)
-      .setLocale("en-US")
-      .toLocaleString(DateTime.DATE_FULL);
-  }, [selected]);
+    return formatDateAddYearIfDifferent(
+      DateTime.fromJSDate(selected).setLocale("en-US"),
+      today
+    );
+  }, [selected, today]);
+
+  const gmtOffset = useMemo(() => {
+    return getGmtOffset(timeZone);
+  }, [timeZone]);
 
   const handleSelect = useCallback(
     (systemZoneDate: Date | undefined) => {
@@ -98,9 +107,12 @@ const DateField: React.FC<{
             <FormControl>
               <Button
                 variant={"outline"}
-                className="w-[240px] font-normal h-10"
+                className="w-full sm:!w-[240px] font-normal h-10"
               >
-                {formattedDate}
+                <div className="flex gap-x-2">
+                  <span>{formattedDate}</span>
+                  <span className="text-muted-foreground">({gmtOffset})</span>
+                </div>
                 <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
               </Button>
             </FormControl>
