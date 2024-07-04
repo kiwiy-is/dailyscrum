@@ -4,6 +4,7 @@ import "./globals.css";
 import "ui/dist/style.css";
 import { cn } from "ui";
 import AnalyticsScripts from "./analytics-scripts";
+import { Suspense } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -52,7 +53,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <AnalyticsScripts />
+      <Suspense>
+        <AnalyticsScripts />
+      </Suspense>
       <body className={cn(inter.className, "antialiased")}>{children}</body>
     </html>
   );
