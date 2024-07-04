@@ -4,6 +4,8 @@ import "../globals.css";
 import "ui/dist/style.css";
 import { cn } from "ui";
 import { Toaster } from "ui/shadcn-ui/toaster";
+import { Suspense } from "react";
+import AnalyticsScripts from "./analytics-scripts";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,6 +31,9 @@ export default async function Layout({
 }>) {
   return (
     <html lang="en">
+      <Suspense>
+        <AnalyticsScripts />
+      </Suspense>
       <body className={cn(inter.className, "antialiased")}>
         {children}
         <Toaster />
