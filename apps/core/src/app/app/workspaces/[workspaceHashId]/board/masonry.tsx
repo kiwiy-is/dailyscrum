@@ -67,6 +67,7 @@ const Masonry = ({ items, render }: Props) => {
         scrollTop: scrollY,
         overscanBy: 6,
         render,
+        tabIndex: -1, // NOTE: To disable the grid element being focused
       })}
     </div>
   );
