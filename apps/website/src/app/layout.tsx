@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import "ui/dist/style.css";
 import { cn } from "ui";
+import AnalyticsScripts from "./analytics-scripts";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -51,6 +52,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <AnalyticsScripts />
       <body className={cn(inter.className, "antialiased")}>{children}</body>
     </html>
   );
