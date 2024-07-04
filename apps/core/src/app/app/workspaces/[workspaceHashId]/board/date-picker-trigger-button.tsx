@@ -5,23 +5,41 @@ import { DateTime } from "luxon";
 import React from "react";
 import { Button, ButtonProps } from "ui/button";
 import { useSearchParams } from "next/navigation";
+import { formatDateAddYearIfDifferent, getGmtOffset } from "@/lib/date-time";
 
 type Props = {
   timeZone?: string;
-} & ButtonProps &
-  React.RefAttributes<HTMLButtonElement>;
+} & ButtonProps;
 
 const DatePickerTriggerButton = React.forwardRef<HTMLButtonElement, Props>(
   ({ timeZone, ...props }, ref) => {
     const searchParams = useSearchParams();
     const dateQuery = searchParams.get("date");
-    const today = timeZone
-      ? DateTime.local({ zone: timeZone }).startOf("day")
-      : null;
-    const date =
-      dateQuery && DateTime.fromISO(dateQuery).isValid
-        ? DateTime.fromISO(dateQuery).setZone(timeZone, { keepLocalTime: true })
-        : today;
+
+    const today = React.useMemo(
+      () =>
+        timeZone ? DateTime.local({ zone: timeZone }).startOf("day") : null,
+      [timeZone]
+    );
+
+    const date = React.useMemo(() => {
+      if (dateQuery && DateTime.fromISO(dateQuery).isValid) {
+        return DateTime.fromISO(dateQuery).setZone(timeZone, {
+          keepLocalTime: true,
+        });
+      }
+      return today;
+    }, [dateQuery, timeZone, today]);
+
+    const formattedDate = React.useMemo(
+      () => (date && today ? formatDateAddYearIfDifferent(date, today) : null),
+      [date, today]
+    );
+
+    const gmtOffset = React.useMemo(
+      () => (timeZone ? getGmtOffset(timeZone) : null),
+      [timeZone]
+    );
 
     return (
       <Button
@@ -32,8 +50,13 @@ const DatePickerTriggerButton = React.forwardRef<HTMLButtonElement, Props>(
       >
         <CalendarIcon width={16} height={16} strokeWidth={2} />
 
-        {date ? (
-          <span>{date.toLocaleString(DateTime.DATE_MED)}</span>
+        {formattedDate ? (
+          <>
+            <div>{formattedDate}</div>
+            {gmtOffset && (
+              <div className="text-muted-foreground">({gmtOffset})</div>
+            )}
+          </>
         ) : (
           <div className="w-[86px]" />
         )}
