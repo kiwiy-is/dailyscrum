@@ -249,9 +249,7 @@ const DailyScrumUpdateList = ({
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
     // Initial subscription based on the initial visibility state
-    if (document.visibilityState === "visible") {
-      handleVisibilityChange();
-    }
+    handleVisibilityChange();
 
     return () => {
       // Unsubscribe from the channel and remove the event listener when the component is unmounted

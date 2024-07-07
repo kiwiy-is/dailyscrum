@@ -349,20 +349,14 @@ const AddUpdateDialogContent: React.FC<AddUpdateDialogContentProps> = ({
           const channel = browserClient.channel(
             `workspaces/${params.workspaceHashId}`
           );
-          channel.subscribe((status) => {
-            if (status !== "SUBSCRIBED") {
-              return null;
-            }
-
-            channel.send({
-              type: "broadcast",
-              event: "updateAdd",
-              payload: {
-                message: JSON.stringify({
-                  date: dateString,
-                }),
-              },
-            });
+          channel.send({
+            type: "broadcast",
+            event: "updateAdd",
+            payload: {
+              message: JSON.stringify({
+                date: dateString,
+              }),
+            },
           });
 
           const dateQuery = searchParams.get("date");
