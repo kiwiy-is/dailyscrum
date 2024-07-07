@@ -5,7 +5,7 @@ on:
 
 jobs:
   deploy:
-    environment: core:staging
+    environment: core-staging
     name: fly.io deploy
     runs-on: ubuntu-latest
     steps:
