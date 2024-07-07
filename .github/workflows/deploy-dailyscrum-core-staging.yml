@@ -1,0 +1,16 @@
+name: Deploy staging dailyscrum-core
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    environment: core:staging
+    name: fly.io deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - run: flyctl deploy --config apps/core/fly.staging.toml --build-secret NEXT_PUBLIC_SUPABASE_URL=${{ secrets.NEXT_PUBLIC_SUPABASE_URL }} --build-secret NEXT_PUBLIC_SUPABASE_ANON_KEY=${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }} --build-secret NEXT_PUBLIC_METADATA_BASE_URL=${{ secrets.NEXT_PUBLIC_METADATA_BASE_URL }} --build-secret SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }} --build-secret ASSET_PREFIX=${{ secrets.ASSET_PREFIX }}
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}

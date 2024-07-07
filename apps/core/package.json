@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 4001",
-    "dev:public": "APP_ENV=public.local react-env --env APP_ENV -- next dev -p 4001",
+    "dev:live": "APP_ENV=live.local react-env --env APP_ENV -- next dev -p 4001",
     "build": "next build",
     "start": "next start -p 4001",
     "lint": "next lint",
