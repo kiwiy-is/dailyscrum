@@ -203,20 +203,14 @@ const EditUpdateDialogContent: React.FC<EditScrumUpdateDialogProps> = ({
           const channel = browserClient.channel(
             `workspaces/${params.workspaceHashId}`
           );
-          channel.subscribe((status) => {
-            if (status !== "SUBSCRIBED") {
-              return null;
-            }
-
-            channel.send({
-              type: "broadcast",
-              event: "updateEdit",
-              payload: {
-                message: JSON.stringify({
-                  date: DateTime.fromJSDate(formValues.date).toISODate(),
-                }),
-              },
-            });
+          channel.send({
+            type: "broadcast",
+            event: "updateEdit",
+            payload: {
+              message: JSON.stringify({
+                date: DateTime.fromJSDate(formValues.date).toISODate(),
+              }),
+            },
           });
 
           router.push(
