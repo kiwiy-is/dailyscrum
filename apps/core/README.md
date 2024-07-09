@@ -38,12 +38,13 @@ pnpm run dev
 
 ## Additional Information
 
-### Running the Client with Public Server
+### Running the Client with Live Server
 
-To run a client that connects to the public (real or production) server, set up `.env.public.local` then use:
+To run a client that connects to the live (real or production) server, set up `.env.live.local` then use:
 ```bash
-pnpm run dev:public
+pnpm run dev:live
 ```
+
 
 ### Stopping Services
 
