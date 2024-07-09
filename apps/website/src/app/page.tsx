@@ -82,6 +82,22 @@ const Page = ({ searchParams }: Props) => {
               </div>
             </Link>
           </div>
+
+          <div className="flex gap-x-2">
+            {/* TODO: Check if user is signed in */}
+            {false ? (
+              <Button>Go to Workspace</Button>
+            ) : (
+              <>
+                <Button variant="outline" className="hidden md:!block">
+                  <a href="/app/sign-in">Sign in</a>
+                </Button>
+                <Button>
+                  <a href="/app/sign-up">Get Started</a>
+                </Button>
+              </>
+            )}
+          </div>
         </div>
       </header>
 
