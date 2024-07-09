@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { verifyPassword } from "./actions";
 
 type Props = {
@@ -10,8 +10,16 @@ type Props = {
 const SiteProtector = ({ children }: Props) => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [isAuthenticated, setIsAuthenticatied] = useState(false);
 
-  const isAuthenticated = sessionStorage.getItem("isAuthenticated");
+  useEffect(() => {
+    const isAuthenticatedStorageValue =
+      sessionStorage.getItem("isAuthenticated");
+
+    if (isAuthenticatedStorageValue === "true") {
+      setIsAuthenticatied(true);
+    }
+  }, []);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
