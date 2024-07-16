@@ -141,7 +141,7 @@ const DailyScrumUpdateCard = ({
                   <h4 className="text-sm font-medium">{question.question}</h4>
 
                   <div
-                    className="text-sm [&>ul]:ml-6 [&>ul]:list-disc [&_a]:font-medium [&_a]:underline-offset-4 [&_a]:underline [&_p+*]:mt-2"
+                    className="text-sm break-words [&_ul]:ml-6 [&_ul]:list-disc [&_ol]:ml-6 [&_ol]:list-decimal [&_a]:font-medium [&_a]:underline-offset-4 [&_a]:underline [&_p+*]:mt-2 [&_code]:bg-slate-100 [&_code]:font-mono [&_code]:text-[90%] [&_code]:px-[0.3rem] [&_code]:py-[0.2rem] [&_code]:rounded [&_strong]:font-semibold"
                     dangerouslySetInnerHTML={{
                       __html: markdown.render(answer.answer),
                     }}
