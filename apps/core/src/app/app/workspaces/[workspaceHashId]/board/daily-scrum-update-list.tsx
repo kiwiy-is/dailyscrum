@@ -228,7 +228,6 @@ const DailyScrumUpdateList = ({
 
     const handleVisibilityChange = () => {
       if (document.visibilityState === "visible") {
-        router.refresh();
         // Subscribe to the channel when the page becomes visible
         channel = browserClient.channel(`workspaces/${workspaceHashId}`);
         channel

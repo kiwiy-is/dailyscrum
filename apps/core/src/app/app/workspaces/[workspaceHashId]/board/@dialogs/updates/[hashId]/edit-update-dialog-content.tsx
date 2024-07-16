@@ -149,26 +149,22 @@ const EditUpdateDialogContent: React.FC<EditScrumUpdateDialogProps> = ({
 
   const form = useForm<zod.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      date,
+    },
   });
 
   const dynamicForm = useForm<zod.infer<typeof dynamicFormSchema>>({
     resolver: zodResolver(dynamicFormSchema),
-  });
-
-  useEffect(() => {
-    form.reset({
-      date,
-    });
-
-    dynamicForm.reset(
-      answers.reduce<{ [answerId: number]: string }>((acc, cv) => {
+    defaultValues: {
+      ...answers.reduce<{ [answerId: number]: string }>((acc, cv) => {
         return {
           ...acc,
           [cv.id]: cv.answer,
         };
-      }, {})
-    );
-  }, [date, answers, form, dynamicForm]);
+      }, {}),
+    },
+  });
 
   const [isPending, startTransition] = useTransition();
 
