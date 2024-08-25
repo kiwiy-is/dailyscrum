@@ -1,15 +1,16 @@
 {
-  "extends": "next/core-web-vitals",
+  "extends": ["plugin:playwright/recommended", "next/core-web-vitals"],
   "overrides": [
-    // REF: https://github.com/vercel/next.js/issues/40687#issuecomment-1378845989
     {
-      // Adapt to your needs (e.g. some might want to only override "next.config.js")
       "files": ["*.js", "*.mjs"],
-      // This is the default parser of ESLint
       "parser": "espree",
       "parserOptions": {
         "ecmaVersion": 2020
       }
+    },
+    {
+      "files": ["tests/e2e/**/*.{ts,js,tsx,jsx}"],
+      "rules": {}
     }
   ]
 }
