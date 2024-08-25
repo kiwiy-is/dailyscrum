@@ -9,11 +9,14 @@
   },
   "keywords": [],
   "devDependencies": {
+    "@nx/devkit": "19.6.2",
     "@nx/eslint": "19.6.2",
     "@nx/eslint-plugin": "19.6.2",
     "@nx/js": "19.6.2",
+    "@nx/playwright": "19.6.2",
     "@nx/vite": "19.6.2",
     "@nx/web": "19.6.2",
+    "@playwright/test": "^1.36.0",
     "@swc-node/register": "1.9.2",
     "@swc/core": "1.5.7",
     "@swc/helpers": "0.5.12",
@@ -22,11 +25,13 @@
     "@typescript-eslint/parser": "7.18.0",
     "@vitest/coverage-v8": "^1.0.4",
     "@vitest/ui": "^1.0.4",
+    "eslint-plugin-playwright": "^0.15.3",
     "nx": "19.6.2",
     "typescript": "5.5.4",
     "vite": "^5.0.0",
     "vite-plugin-dts": "~2.3.0",
     "vitest": "^1.0.4"
   },
-  "packageManager": "pnpm@8.15.1+sha256.245fe901f8e7fa8782d7f17d32b6a83995e2ae03984cb5b62b8949bfdc27c7b5"
+  "packageManager": "pnpm@8.15.1+sha256.245fe901f8e7fa8782d7f17d32b6a83995e2ae03984cb5b62b8949bfdc27c7b5",
+  "dependencies": {}
 }
