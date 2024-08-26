@@ -25,6 +25,7 @@
     "@typescript-eslint/parser": "7.18.0",
     "@vitest/coverage-v8": "^1.0.4",
     "@vitest/ui": "^1.0.4",
+    "dotenv": "^16.4.5",
     "eslint-plugin-playwright": "^0.15.3",
     "nx": "19.6.2",
     "typescript": "5.5.4",
@@ -32,6 +33,5 @@
     "vite-plugin-dts": "~2.3.0",
     "vitest": "^1.0.4"
   },
-  "packageManager": "pnpm@8.15.1+sha256.245fe901f8e7fa8782d7f17d32b6a83995e2ae03984cb5b62b8949bfdc27c7b5",
-  "dependencies": {}
+  "packageManager": "pnpm@8.15.1+sha256.245fe901f8e7fa8782d7f17d32b6a83995e2ae03984cb5b62b8949bfdc27c7b5"
 }

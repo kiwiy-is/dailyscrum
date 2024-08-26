@@ -56,6 +56,9 @@ importers:
       '@vitest/ui':
         specifier: ^1.0.4
         version: 1.2.2(vitest@1.2.2)
+      dotenv:
+        specifier: ^16.4.5
+        version: 16.4.5
       eslint-plugin-playwright:
         specifier: ^0.15.3
         version: 0.15.3(eslint@8.57.0)
