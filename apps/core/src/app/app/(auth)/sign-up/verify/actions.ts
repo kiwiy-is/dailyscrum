@@ -18,7 +18,11 @@ export async function verify(email: string, code: string, returnPath?: string) {
   });
 
   if (verificationResponse.error || !verificationResponse.data.user) {
-    return verificationResponse;
+    return {
+      error: {
+        message: verificationResponse.error?.message,
+      },
+    };
   }
 
   const { user } = verificationResponse.data;
